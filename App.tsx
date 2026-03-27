@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SLIDES } from './constants';
 import SlideLayout from './components/SlideLayout';
-import { ChevronLeft, ChevronRight, LayoutGrid, Maximize, X, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LayoutGrid, Maximize, X, Clock, Github } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
 const App: React.FC = () => {
@@ -108,6 +108,16 @@ const App: React.FC = () => {
              >
                 <Maximize size={20} />
              </button>
+
+             <a
+               href="https://github.com/voku/Prompt_Intro"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors"
+               title="Contribute on GitHub"
+             >
+               <Github size={20} />
+             </a>
         </div>
       </div>
 
