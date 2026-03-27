@@ -103,7 +103,7 @@ const InteractivePlayground: React.FC = () => {
             <div className="w-full md:w-1/2 flex flex-col space-y-4">
                 <div className="flex-grow bg-gray-900 rounded-lg p-6 overflow-auto border border-gray-800 relative shadow-inner">
                     <div className="absolute top-2 right-2 text-xs text-gray-500 uppercase font-mono tracking-widest">
-                        Gemini Output
+                        AI Output
                     </div>
                     {response ? (
                     <pre className="text-green-400 font-mono text-xs md:text-sm whitespace-pre-wrap leading-relaxed">{response}</pre>
