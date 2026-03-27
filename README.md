@@ -1,10 +1,6 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Prompt Engineering Guide
 
-# Remondis Prompt Mastery
-
-An interactive, presentation-style web application for teaching **Prompt Engineering** to REMONDIS employees. Built with React, TypeScript, and Vite – deployable to GitHub Pages.
+An interactive, presentation-style web application for learning **Prompt Engineering** — covering the best practices and key techniques for 2025/2026. Built with React, TypeScript, and Vite. Deployable to GitHub Pages with a single push.
 
 🔗 **Live Demo:** [https://voku.github.io/Prompt_Intro/](https://voku.github.io/Prompt_Intro/)
 
@@ -12,12 +8,30 @@ An interactive, presentation-style web application for teaching **Prompt Enginee
 
 ## Features
 
-- 📊 **Slide deck** covering the fundamentals of Prompt Engineering
-- ⚖️ **Side-by-side comparisons** of standard vs. optimised prompts
+- 📊 **10-slide deck** covering fundamentals through advanced techniques (Zero-Shot → Few-Shot → CoT → Agentic)
+- ⚖️ **Side-by-side comparisons** of standard vs. optimised prompts for every technique
+- 🌐 **EN / DE language toggle** — switch between English and German at any time
 - ⌨️ Keyboard navigation (←/→ arrow keys, Space)
 - 🗂️ **Slide overview grid** for quick navigation
 - ⏱️ Session timer
 - 📱 Responsive design (mobile-friendly)
+
+---
+
+## Topics Covered
+
+| Slide | Topic |
+|---|---|
+| 1 | Introduction & goals |
+| 2 | Understanding LLMs — limitations and hallucinations |
+| 3 | **Structured Output** — JSON schema enforcement |
+| 4 | **Code-Aided Reasoning (PoT)** — delegate maths to Python |
+| 5 | The Prompt Hierarchy — Zero-Shot → Few-Shot → CoT → Agentic |
+| 6 | **Chain of Thought (CoT)** — step-by-step decomposition |
+| 7 | **Role & Context** — persona and constraint assignment |
+| 8 | **Fact Grounding / RAG** — retrieval-based generation |
+| 9 | Security & Responsible Use |
+| 10 | Key Takeaways |
 
 ---
 
@@ -64,13 +78,25 @@ To enable GitHub Pages in your fork:
 |---|---|
 | `index.html` | Entry HTML with meta tags and importmap |
 | `index.tsx` | React root mount |
-| `App.tsx` | Main application shell (navigation, layout) |
-| `constants.ts` | All slide content and data |
-| `types.ts` | TypeScript types for slides |
-| `components/SlideLayout.tsx` | Renders each slide type |
+| `App.tsx` | Main application shell (navigation, language toggle, layout) |
+| `constants.ts` | All slide content (bilingual EN/DE) |
+| `types.ts` | TypeScript types — `SlideData`, `Lang`, etc. |
+| `components/SlideLayout.tsx` | Renders each slide type with language awareness |
 | `components/PromptComparison.tsx` | Side-by-side prompt comparison component |
+| `components/InteractivePlayground.tsx` | Live prompt sandbox with metrics |
 | `vite.config.ts` | Vite build configuration (base path, aliases) |
 | `.github/workflows/deploy.yml` | CI/CD workflow for GitHub Pages |
+
+---
+
+## References
+
+The slide content is based on current best practices from:
+
+- [Prompt Engineering Guide (promptingguide.ai)](https://www.promptingguide.ai/)
+- [OpenAI — Best practices for prompt engineering](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
+- [Engineering Practices for LLM Application Development (martinfowler.com)](https://martinfowler.com/articles/engineering-practices-llm.html)
+- [prompt-engineering — GitHub (Tanmay1112004)](https://github.com/Tanmay1112004/prompt-engineering)
 
 ---
 

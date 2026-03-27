@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SLIDES } from './constants';
 import SlideLayout from './components/SlideLayout';
-import { ChevronLeft, ChevronRight, LayoutGrid, Maximize, X, Clock, Github } from 'lucide-react';
+import { Lang } from './types';
+import { ChevronLeft, ChevronRight, LayoutGrid, Maximize, X, Clock, Github, BrainCircuit } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [lang, setLang] = useState<Lang>('en');
   const mainRef = useRef<HTMLDivElement>(null);
 
   const nextSlide = () => {
@@ -70,14 +72,19 @@ const App: React.FC = () => {
   const currentSlide = SLIDES[currentSlideIndex];
   const progress = ((currentSlideIndex + 1) / SLIDES.length) * 100;
 
+  const prevLabel = lang === 'de' ? 'Zurück' : 'Back';
+  const nextLabel = lang === 'de' ? 'Weiter' : 'Next';
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col text-gray-900 font-sans selection:bg-red-200">
+    <div className="min-h-screen bg-slate-50 flex flex-col text-gray-900 font-sans selection:bg-blue-200">
       
       {/* Header / Nav Bar */}
       <div className="w-full bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
         <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-red-600 rounded-sm flex items-center justify-center text-white font-bold text-xs shadow-md">R</div>
-            <span className="font-semibold text-gray-700 tracking-tight hidden md:inline">REMONDIS Digital Training</span>
+            <div className="w-8 h-8 bg-blue-600 rounded-sm flex items-center justify-center text-white shadow-md">
+              <BrainCircuit size={18} />
+            </div>
+            <span className="font-semibold text-gray-700 tracking-tight hidden md:inline">Prompt Engineering Guide</span>
         </div>
         
         <div className="flex items-center space-x-4">
@@ -92,6 +99,15 @@ const App: React.FC = () => {
              </span>
              
              <div className="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
+
+             {/* Language Toggle */}
+             <button
+               onClick={() => setLang(l => l === 'en' ? 'de' : 'en')}
+               className="px-3 py-1 text-xs font-bold rounded-lg border border-gray-200 hover:bg-gray-100 text-gray-600 transition-colors font-mono tracking-widest"
+               title={lang === 'en' ? 'Switch to Deutsch' : 'Switch to English'}
+             >
+               {lang === 'en' ? 'DE' : 'EN'}
+             </button>
 
              <button 
                onClick={() => setIsGridOpen(!isGridOpen)}
@@ -125,7 +141,7 @@ const App: React.FC = () => {
       <main ref={mainRef} className="flex-grow flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
          {/* Slide View */}
          <div className={`w-full h-full flex justify-center transition-opacity duration-300 ${isGridOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} />
+            <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />
          </div>
 
          {/* Grid Overview Overlay */}
@@ -134,6 +150,7 @@ const App: React.FC = () => {
                 <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {SLIDES.map((slide, idx) => {
                          const IconComp = slide.icon && (Icons as any)[slide.icon] ? (Icons as any)[slide.icon] : Icons.HelpCircle;
+                         const slideTitle = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title;
                          return (
                              <button
                                 key={slide.id}
@@ -144,20 +161,20 @@ const App: React.FC = () => {
                                 className={`
                                     relative flex flex-col items-start p-6 rounded-xl border-2 transition-all duration-200 text-left group
                                     ${currentSlideIndex === idx 
-                                        ? 'border-red-500 bg-white shadow-lg scale-[1.02]' 
-                                        : 'border-gray-200 bg-white hover:border-red-300 hover:shadow-md'
+                                        ? 'border-blue-500 bg-white shadow-lg scale-[1.02]' 
+                                        : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
                                     }
                                 `}
                              >
-                                <div className={`mb-4 p-2 rounded-lg ${currentSlideIndex === idx ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500 group-hover:text-red-500 group-hover:bg-red-50'}`}>
+                                <div className={`mb-4 p-2 rounded-lg ${currentSlideIndex === idx ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:text-blue-500 group-hover:bg-blue-50'}`}>
                                     <IconComp size={24} />
                                 </div>
                                 <span className="text-xs font-mono text-gray-400 mb-2">Slide {idx + 1}</span>
                                 <h3 className={`font-bold leading-tight ${currentSlideIndex === idx ? 'text-gray-900' : 'text-gray-600'}`}>
-                                    {slide.title}
+                                    {slideTitle}
                                 </h3>
                                 {currentSlideIndex === idx && (
-                                    <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                    <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                                 )}
                              </button>
                          );
@@ -177,16 +194,16 @@ const App: React.FC = () => {
              className="flex items-center space-x-2 px-6 py-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-gray-700 font-medium active:scale-95"
            >
              <ChevronLeft size={20} />
-             <span>Zurück</span>
+             <span>{prevLabel}</span>
            </button>
 
            {/* Progress Bar */}
            <div className="flex-grow mx-8 h-2 bg-gray-200 rounded-full overflow-hidden cursor-pointer group" onClick={() => setIsGridOpen(true)} title="Show all slides">
               <div 
-                className="h-full bg-red-600 transition-all duration-500 ease-out group-hover:bg-red-500 relative" 
+                className="h-full bg-blue-600 transition-all duration-500 ease-out group-hover:bg-blue-500 relative" 
                 style={{ width: `${progress}%` }}
               >
-                  <div className="absolute right-0 top-0 h-full w-2 bg-red-400 opacity-0 group-hover:opacity-100 animate-pulse"></div>
+                  <div className="absolute right-0 top-0 h-full w-2 bg-blue-400 opacity-0 group-hover:opacity-100 animate-pulse"></div>
               </div>
            </div>
 
@@ -195,7 +212,7 @@ const App: React.FC = () => {
              disabled={currentSlideIndex === SLIDES.length - 1}
              className="flex items-center space-x-2 px-6 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium shadow-lg hover:shadow-xl transform active:scale-95"
            >
-             <span>Weiter</span>
+             <span>{nextLabel}</span>
              <ChevronRight size={20} />
            </button>
         </div>
