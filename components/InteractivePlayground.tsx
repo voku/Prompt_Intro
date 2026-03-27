@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { generateResponse, GenAIResponse } from '../services/geminiService';
 import { Play, RotateCcw, Loader2, BarChart2, Zap, Database } from 'lucide-react';
+import { Lang } from '../types';
 
 interface RunRecord {
     id: number;
@@ -8,7 +9,11 @@ interface RunRecord {
     metrics: GenAIResponse;
 }
 
-const InteractivePlayground: React.FC = () => {
+interface InteractivePlaygroundProps {
+  lang: Lang;
+}
+
+const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) => {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -16,22 +21,32 @@ const InteractivePlayground: React.FC = () => {
 
   const presets = [
     { 
-      label: "Diesel (Std)", 
-      text: "Ein Müllwagen verbraucht 32L/100km. Er fährt täglich 2 Touren à 45km. Diesel kostet 1,70€. Wie hoch sind die Kosten im November 2024 (ohne Sonntage)?" 
+      label: lang === 'de' ? 'Bug-Bericht (Std)' : 'Bug Report (Std)',
+      text: "Read this bug report and tell me what went wrong.\n\n<report>App crashes on login after upgrading to v2.4.1.</report>"
     },
     { 
-      label: "Diesel (Opt)", 
-      text: "Ein Müllwagen verbraucht 32L/100km. Er fährt täglich 2 Touren à 45km. Diesel kostet 1,70€. Ziel: Kosten November 2024 (Mo-Sa). \nAction: Schreibe Python Code um das exakt zu berechnen. Gib das Ergebnis aus." 
+      label: lang === 'de' ? 'Bug-Bericht (Opt)' : 'Bug Report (Opt)',
+      text: "<task>Extract bug report data</task>\n<format>\nReply ONLY in valid JSON:\n{\n  \"version\": \"string\",\n  \"severity\": \"low|medium|high|critical\",\n  \"component\": \"string\",\n  \"summary\": \"string (≤ 50 chars)\",\n  \"steps_to_reproduce\": []\n}\n</format>\n<report>App crashes on login after upgrading to v2.4.1.</report>"
     },
     { 
-      label: "Vorstand (Std)", 
-      text: "Wer sitzt aktuell im Vorstand der REMONDIS Gruppe?" 
+      label: lang === 'de' ? 'Berechnung (Std)' : 'Calculation (Std)',
+      text: "A server handles 12,000 requests/day at peak. Each request needs 0.003 CPU-seconds. How many CPU cores are required with a 3× traffic spike buffer?"
     },
     { 
-      label: "Vorstand (Opt)", 
-      text: "Wer sitzt aktuell im Vorstand der REMONDIS Gruppe?\nNutze Google Search. Finde die aktuelle Liste auf der Website. Zitiere Quellen." 
+      label: lang === 'de' ? 'Berechnung (Opt)' : 'Calculation (Opt)',
+      text: "Goal: Calculate required CPU cores.\nConstraint: Do NOT calculate yourself.\nAction: Write a Python snippet that:\n1. Defines peak_req_per_day=12000, cost_per_req_cpu_s=0.003, spike_factor=3.\n2. Computes required_cores with an explanation.\n3. Prints the result.\nReturn only the code block, no prose."
     }
   ];
+
+  const labels = {
+    placeholder: lang === 'de' ? 'Prompt hier eingeben…' : 'Enter your prompt here…',
+    runButton:   lang === 'de' ? 'Prompt ausführen'     : 'Run Prompt',
+    waiting:     lang === 'de' ? 'Auf Eingabe warten…'  : 'Waiting for input…',
+    error:       lang === 'de' ? 'Fehler beim Abrufen der Antwort.' : 'Error fetching response.',
+    perfTitle:   lang === 'de' ? 'Leistungsvergleich (Letzte 4)' : 'Performance Comparison (Last 4)',
+    latency:     lang === 'de' ? 'Latenz' : 'Latency',
+    tokens:      lang === 'de' ? 'Tokens' : 'Tokens',
+  };
 
   const handleRun = async (labelOverride?: string) => {
     if (!prompt.trim()) return;
@@ -44,13 +59,13 @@ const InteractivePlayground: React.FC = () => {
       
       const newRecord: RunRecord = {
           id: Date.now(),
-          label: labelOverride || "Custom",
+          label: labelOverride || 'Custom',
           metrics: res
       };
       
-      setRunHistory(prev => [newRecord, ...prev].slice(0, 4)); // Keep last 4
+      setRunHistory(prev => [newRecord, ...prev].slice(0, 4));
     } catch (e) {
-      setResponse("Fehler beim Abrufen der Antwort.");
+      setResponse(labels.error);
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +90,6 @@ const InteractivePlayground: React.FC = () => {
                             key={i}
                             onClick={() => {
                                 setPrompt(p.text);
-                                // Optional: Auto-run or just set text. Let's just set text to let user edit.
                             }}
                             className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-xs rounded-full text-gray-700 transition-colors border border-gray-200 font-medium"
                         >
@@ -86,16 +100,16 @@ const InteractivePlayground: React.FC = () => {
                 <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Geben Sie hier Ihren Prompt ein..."
-                className="flex-grow w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent font-mono text-sm resize-none shadow-sm"
+                placeholder={labels.placeholder}
+                className="flex-grow w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm resize-none shadow-sm"
                 />
                 <button
                 onClick={() => handleRun(presets.find(p => p.text === prompt)?.label)}
                 disabled={isLoading || !prompt.trim()}
-                className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                 {isLoading ? <Loader2 className="animate-spin" /> : <Play size={18} />}
-                <span>Prompt Ausführen</span>
+                <span>{labels.runButton}</span>
                 </button>
             </div>
 
@@ -109,7 +123,7 @@ const InteractivePlayground: React.FC = () => {
                     <pre className="text-green-400 font-mono text-xs md:text-sm whitespace-pre-wrap leading-relaxed">{response}</pre>
                     ) : (
                     <div className="h-full flex items-center justify-center text-gray-600 italic">
-                        Warten auf Eingabe...
+                        {labels.waiting}
                     </div>
                     )}
                     {response && (
@@ -130,7 +144,7 @@ const InteractivePlayground: React.FC = () => {
             <div className="w-full bg-gray-50 rounded-lg border border-gray-200 p-4 animate-fadeIn">
                 <div className="flex items-center space-x-2 mb-4 text-gray-700">
                     <BarChart2 size={20} />
-                    <h3 className="font-bold text-sm uppercase tracking-wide">Performance Vergleich (Letzte 4)</h3>
+                    <h3 className="font-bold text-sm uppercase tracking-wide">{labels.perfTitle}</h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {runHistory.map((run) => (
@@ -144,7 +158,7 @@ const InteractivePlayground: React.FC = () => {
                              {/* Latency Bar */}
                              <div className="space-y-1 z-10">
                                 <div className="flex justify-between text-xs text-gray-500">
-                                    <span className="flex items-center"><Zap size={10} className="mr-1 text-yellow-500"/> Latenz</span>
+                                    <span className="flex items-center"><Zap size={10} className="mr-1 text-yellow-500"/> {labels.latency}</span>
                                     <span>{run.metrics.latencyMs}ms</span>
                                 </div>
                                 <div className="w-full bg-gray-100 rounded-full h-1.5">
@@ -158,7 +172,7 @@ const InteractivePlayground: React.FC = () => {
                              {/* Token Bar */}
                              <div className="space-y-1 z-10">
                                 <div className="flex justify-between text-xs text-gray-500">
-                                    <span className="flex items-center"><Database size={10} className="mr-1 text-blue-500"/> Tokens</span>
+                                    <span className="flex items-center"><Database size={10} className="mr-1 text-blue-500"/> {labels.tokens}</span>
                                     <span>{run.metrics.usage?.totalTokens || 0}</span>
                                 </div>
                                 <div className="w-full bg-gray-100 rounded-full h-1.5">

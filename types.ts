@@ -1,3 +1,5 @@
+export type Lang = 'en' | 'de';
+
 export enum SlideType {
   TITLE = 'TITLE',
   CONTENT = 'CONTENT',
@@ -8,13 +10,21 @@ export enum SlideType {
 export interface SlideData {
   id: number;
   type: SlideType;
+  // Name of a lucide-react icon (e.g. "BrainCircuit"). Resolved dynamically via `(Icons as any)[icon]`.
+  icon?: string;
+  // English (primary)
   title: string;
   subtitle?: string;
-  content?: string | string[]; // Bullet points or text
+  content?: string | string[];
+  technique?: string;
+  // German variants
+  titleDE?: string;
+  subtitleDE?: string;
+  contentDE?: string | string[];
+  techniqueDE?: string;
+  // Language-neutral (prompts / code examples)
   codeStandard?: string;
   codeOptimized?: string;
-  technique?: string;
-  icon?: string;
 }
 
 export interface ChatMessage {
