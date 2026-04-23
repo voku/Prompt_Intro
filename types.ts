@@ -25,6 +25,9 @@ export interface SlideData {
   // Language-neutral (prompts / code examples)
   codeStandard?: string;
   codeOptimized?: string;
+  // vokuprompt-improved version (hidden/expandable in the slide)
+  codeVokuprompt?: string;
+  codeVokupromptDE?: string;
 }
 
 export interface ChatMessage {

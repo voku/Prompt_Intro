@@ -96,6 +96,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
                   technique={technique || (lang === 'de' ? 'Optimierung' : 'Optimisation')}
                   description={(content as string) || ''}
                   lang={lang}
+                  codeVokuprompt={lang === 'de' && data.codeVokupromptDE ? data.codeVokupromptDE : data.codeVokuprompt}
                />
             </div>
           </div>

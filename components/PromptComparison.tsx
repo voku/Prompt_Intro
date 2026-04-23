@@ -1,5 +1,5 @@
-import React from 'react';
-import { XCircle, CheckCircle, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { XCircle, CheckCircle, ArrowRight, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { Lang } from '../types';
 
 interface PromptComparisonProps {
@@ -8,9 +8,19 @@ interface PromptComparisonProps {
   technique: string;
   description: string;
   lang: Lang;
+  codeVokuprompt?: string;
 }
 
-const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized, technique, description, lang }) => {
+const PromptComparison: React.FC<PromptComparisonProps> = ({
+  standard,
+  optimized,
+  technique,
+  description,
+  lang,
+  codeVokuprompt,
+}) => {
+  const [showVokuprompt, setShowVokuprompt] = useState(false);
+
   const labels = {
     techniquePrefix: lang === 'de' ? 'Technik' : 'Technique',
     standardLabel:   lang === 'de' ? 'Standard-Prompt'   : 'Standard Prompt',
@@ -18,6 +28,18 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
     footer: lang === 'de'
       ? 'Der optimierte Prompt liefert deterministische, verlässliche Ergebnisse.'
       : 'The optimised prompt delivers deterministic, reliable results.',
+    showVokuprompt: lang === 'de'
+      ? 'vokuprompt-Ergebnis anzeigen'
+      : 'Show vokuprompt result',
+    hideVokuprompt: lang === 'de'
+      ? 'vokuprompt-Ergebnis ausblenden'
+      : 'Hide vokuprompt result',
+    vokupromptLabel: lang === 'de'
+      ? 'vokuprompt-verbesserter Prompt'
+      : 'vokuprompt-improved Prompt',
+    vokupromptNote: lang === 'de'
+      ? 'Automatisch aus den vokuprompt-Mustern zusammengestellt – mit kontextspezifischen Platzhaltern ausgefüllt.'
+      : 'Automatically compiled from vokuprompt patterns – placeholders filled with slide-specific context.',
   };
 
   return (
@@ -55,6 +77,39 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
         <ArrowRight className="inline mr-2" size={16} />
         {labels.footer}
       </div>
+
+      {/* vokuprompt expandable section */}
+      {codeVokuprompt && (
+        <div className="mt-2">
+          <button
+            onClick={() => setShowVokuprompt(v => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 border-violet-300 bg-violet-50 hover:bg-violet-100 transition-colors text-violet-800 font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            aria-expanded={showVokuprompt}
+            aria-label={showVokuprompt ? labels.hideVokuprompt : labels.showVokuprompt}
+          >
+            <span className="flex items-center gap-2">
+              <Sparkles size={16} className="text-violet-500" />
+              {showVokuprompt ? labels.hideVokuprompt : labels.showVokuprompt}
+            </span>
+            {showVokuprompt ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+
+          {showVokuprompt && (
+            <div className="mt-2 rounded-xl border-2 border-violet-400 overflow-hidden shadow-md">
+              <div className="bg-violet-600 px-4 py-3 flex items-center gap-2">
+                <Sparkles size={18} className="text-white" />
+                <span className="font-semibold text-white uppercase text-sm tracking-wider">{labels.vokupromptLabel}</span>
+              </div>
+              <div className="p-5 bg-violet-50">
+                <p className="text-xs text-violet-600 mb-3 italic">{labels.vokupromptNote}</p>
+                <pre className="font-mono text-sm text-violet-900 whitespace-pre-wrap leading-relaxed">
+                  {codeVokuprompt}
+                </pre>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
