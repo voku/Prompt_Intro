@@ -150,7 +150,7 @@ export const SLIDES: SlideData[] = [
   },
   {
     id: 10,
-    type: SlideType.END,
+    type: SlideType.CONTENT,
     title: "Key Takeaways",
     titleDE: "Wichtigste Erkenntnisse",
     subtitle: "Practical rules for every prompt you write",
@@ -170,5 +170,113 @@ export const SLIDES: SlideData[] = [
       "Prompts wie Code behandeln: versionieren, testen und iterieren."
     ],
     icon: "CheckCircle"
+  },
+  {
+    id: 11,
+    type: SlideType.CONTENT,
+    title: "Operational Prompts: The Core Shift",
+    titleDE: "Operative Prompts: Die entscheidende Veränderung",
+    subtitle: "Good prompts are small operational contracts — not motivational speeches",
+    subtitleDE: "Gute Prompts sind kleine operative Verträge — keine Motivationsreden",
+    content: [
+      "Old approach: 'You are an expert senior engineer. Write clean, scalable, maintainable code.' — This constrains almost nothing.",
+      "Good prompts allocate attention, constrain behavior, demand proof, and control stopping conditions.",
+      "A strong coding-agent prompt defines: what the task is, what must not change, what evidence is required, and when the work is done.",
+      "The prompt should frame the agent loop — not impersonate the engineer."
+    ],
+    contentDE: [
+      "Alter Ansatz: 'Du bist ein erfahrener Senior-Engineer. Schreib sauberen, skalierbaren, wartbaren Code.' — Das schränkt fast nichts ein.",
+      "Gute Prompts lenken Aufmerksamkeit, beschränken Verhalten, fordern Beweise und kontrollieren Abbruchbedingungen.",
+      "Ein starker Coding-Agent-Prompt definiert: Was ist die Aufgabe, was darf sich nicht ändern, welche Beweise sind nötig, wann ist die Arbeit fertig.",
+      "Der Prompt soll den Agenten-Loop rahmen — nicht den Ingenieur imitieren."
+    ],
+    icon: "AlertOctagon"
+  },
+  {
+    id: 12,
+    type: SlideType.CONTENT,
+    title: "The Four-Part Prompt Shape",
+    titleDE: "Die Vier-Teile-Prompt-Struktur",
+    subtitle: "A reusable template that survives handoffs, retries, and tool execution",
+    subtitleDE: "Eine wiederverwendbare Vorlage, die Übergaben, Wiederholungen und Werkzeugausführung übersteht",
+    content: [
+      "Goal — What should change? (Be precise and minimal.)",
+      "Context — Which files, examples, specs, or errors matter?",
+      "Constraints — What must not change? (Public API, existing tests, unrelated files.)",
+      "Done when — What must be true before the agent stops? (Test output, static analysis, observable evidence.)"
+    ],
+    contentDE: [
+      "Ziel — Was soll sich ändern? (Präzise und minimal formulieren.)",
+      "Kontext — Welche Dateien, Beispiele, Spezifikationen oder Fehler sind relevant?",
+      "Einschränkungen — Was darf sich nicht ändern? (Öffentliche API, bestehende Tests, nicht betroffene Dateien.)",
+      "Fertig wenn — Was muss wahr sein, bevor der Agent stoppt? (Testausgabe, statische Analyse, nachweisbare Ergebnisse.)"
+    ],
+    icon: "LayoutList"
+  },
+  {
+    id: 13,
+    type: SlideType.COMPARISON,
+    title: "Technique: Prompt Classes That Work",
+    titleDE: "Technik: Prompt-Klassen, die funktionieren",
+    subtitle: "Use constraint, verification, scope, and continuation prompts together",
+    subtitleDE: "Einschränkungs-, Verifikations-, Scope- und Fortsetzungs-Prompts kombinieren",
+    technique: "Constraint + Verification + Scope",
+    techniqueDE: "Einschränkung + Verifikation + Scope",
+    codeStandard: "Fix the concurrency bug in UserAccountService.",
+    codeOptimized: "Goal: Fix the concurrency bug in UserAccountService.\nContext: Compare the failing path with tests in tests/Unit/UserAccountServiceTest.php and follow the immutable value-object pattern already used in src/Domain.\nConstraints: Keep the public API unchanged. Do not add static-analysis ignores. Do not modify unrelated files.\nDone when: Add one regression test that fails before the fix and passes after, static analysis max passes, and paste the raw output.\nRun the CI pipeline and fix all findings on the way — do not stop after the first acceptable-looking step.",
+    content: "The weak prompt gives the agent no boundaries — it can rewrite half the repository. The strong version combines four prompt classes: constraint (what must not change), verification (evidence required), scope (minimum patch), and continuation (run until actually done).",
+    contentDE: "Der schwache Prompt gibt dem Agenten keine Grenzen — er könnte halb das Repository umschreiben. Die starke Version kombiniert vier Prompt-Klassen: Einschränkung (was nicht geändert werden darf), Verifikation (erforderliche Nachweise), Scope (minimaler Patch) und Fortsetzung (laufen bis wirklich fertig).",
+    icon: "ShieldCheck"
+  },
+  {
+    id: 14,
+    type: SlideType.COMPARISON,
+    title: "Technique: Eliminate Hedge Words",
+    titleDE: "Technik: Abschwächende Formulierungen eliminieren",
+    subtitle: "Vague words give the model permission to do nothing — and narrate it confidently",
+    subtitleDE: "Vage Wörter geben dem Modell die Erlaubnis, nichts zu tun — und es überzeugend zu beschreiben",
+    technique: "Operational Constraints",
+    techniqueDE: "Operative Einschränkungen",
+    codeStandard: "Maybe try to improve this code. Perhaps consider cleaning it up a bit if possible.",
+    codeOptimized: "Remove the three duplicated parsing steps in this module.\nKeep the public API unchanged.\nDo not touch unrelated files.\nRun the test suite and paste the output.\n\nIf the build fails three times in a row, stop.\nDo not attempt a fourth fix.\nSummarise the root cause and list what is still unknown.",
+    content: "Hedge words ('maybe', 'try to', 'perhaps', 'if possible', 'should probably') silently weaken every constraint they appear in. Replace each one with a concrete action, a measurable outcome, or an explicit stopping condition.",
+    contentDE: "Abschwächende Wörter ('vielleicht', 'versuche', 'falls möglich', 'sollte wahrscheinlich') schwächen jede Einschränkung, in der sie auftauchen. Jedes dieser Wörter durch eine konkrete Aktion, ein messbares Ergebnis oder eine explizite Abbruchbedingung ersetzen.",
+    icon: "Eraser"
+  },
+  {
+    id: 15,
+    type: SlideType.COMPARISON,
+    title: "Technique: Tests as Witnesses, Not Accomplices",
+    titleDE: "Technik: Tests als Zeugen, nicht als Mittäter",
+    subtitle: "Prompts must demand tests that challenge the code — not tests that confirm what already passes",
+    subtitleDE: "Prompts müssen Tests fordern, die den Code herausfordern — nicht Tests, die bestätigen, was schon funktioniert",
+    technique: "Test-Driven Verification",
+    techniqueDE: "Testgetriebene Verifikation",
+    codeStandard: "Write tests for this code and make sure they all pass.",
+    codeOptimized: "Verify your changes with tests and correct the code if necessary;\ndo not just write tests to make them pass, but use them for validation.\n\nWe need tests in a TDD way: start with a failing test, implement only enough to pass, and repeat.\nDo not stop at the happy path — add edge and failure-path coverage.\nIf a new test does not expose a real broken assumption, missing edge case, or behavior drift, it is still too weak — keep going until one does.\n\nIf a test fails, fix the code — not the test.",
+    content: "The weak prompt lets the agent retrofit tests to match whatever the code does. The strong version makes tests witnesses: they must challenge the code and expose risk. Changing tests to silence failures is a common agent failure mode.",
+    contentDE: "Der schwache Prompt erlaubt dem Agenten, Tests nachträglich an den Code anzupassen. Die starke Version macht Tests zu Zeugen: Sie müssen den Code herausfordern und Risiken aufdecken. Tests zu verändern, um Fehler zu unterdrücken, ist ein häufiger Fehler von Agenten.",
+    icon: "TestTube2"
+  },
+  {
+    id: 16,
+    type: SlideType.END,
+    title: "Final Thesis",
+    titleDE: "Abschlussthese",
+    subtitle: "Talk to your agent. Check its assumptions. Encode what you learn.",
+    subtitleDE: "Sprich mit deinem Agenten. Prüfe seine Annahmen. Halte fest, was du lernst.",
+    content: [
+      "Good prompts do not simulate expertise. They allocate attention, constrain behavior, demand proof, and control stopping conditions.",
+      "Before starting: 'Do not implement yet. Tell me what files you will touch, what must not change, and the three main risks. Wait for confirmation.'",
+      "After success: 'Update the Skills file or AGENTS.md to record the pattern used, the constraint that prevented the earlier mistake, and new conventions discovered.' — LLMs do not remember between sessions; you must encode the learning.",
+      "Every successful task is an opportunity to raise the floor for the next session."
+    ],
+    contentDE: [
+      "Gute Prompts simulieren keine Expertise. Sie lenken Aufmerksamkeit, beschränken Verhalten, fordern Beweise und kontrollieren Abbruchbedingungen.",
+      "Vor dem Start: 'Noch nicht implementieren. Nenne mir die Dateien, die du anfassen willst, was sich nicht ändern darf, und die drei größten Risiken. Warte auf meine Bestätigung.'",
+      "Nach dem Erfolg: 'Aktualisiere die Skills-Datei oder AGENTS.md mit dem verwendeten Muster, der Einschränkung, die den früheren Fehler verhindert hat, und neuen Konventionen.' — LLMs erinnern sich nicht zwischen Sitzungen; das Wissen muss in Dateien kodiert werden.",
+      "Jede erfolgreiche Aufgabe ist eine Chance, die Ausgangsbasis für die nächste Sitzung zu verbessern."
+    ],
+    icon: "Lightbulb"
   }
 ];
