@@ -22,9 +22,12 @@ export interface SlideData {
   subtitleDE?: string;
   contentDE?: string | string[];
   techniqueDE?: string;
-  // Language-neutral (prompts / code examples)
+  // Prompts / code examples (English)
   codeStandard?: string;
   codeOptimized?: string;
+  // German variants for the prompt examples
+  codeStandardDE?: string;
+  codeOptimizedDE?: string;
   // vokuprompt-improved version (hidden/expandable in the slide)
   codeVokuprompt?: string;
   codeVokupromptDE?: string;
