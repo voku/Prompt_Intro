@@ -91,8 +91,8 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
             
             <div className="flex-grow">
                <PromptComparison 
-                  standard={data.codeStandard || ''} 
-                  optimized={data.codeOptimized || ''}
+                  standard={(lang === 'de' && data.codeStandardDE ? data.codeStandardDE : data.codeStandard) || ''} 
+                  optimized={(lang === 'de' && data.codeOptimizedDE ? data.codeOptimizedDE : data.codeOptimized) || ''}
                   technique={technique || (lang === 'de' ? 'Optimierung' : 'Optimisation')}
                   description={(content as string) || ''}
                   lang={lang}
