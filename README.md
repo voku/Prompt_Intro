@@ -11,7 +11,7 @@ An interactive, presentation-style web application for learning **Prompt Enginee
 - 📊 **10-slide deck** covering fundamentals through advanced techniques (Zero-Shot → Few-Shot → CoT → Agentic)
 - ⚖️ **Side-by-side comparisons** of standard vs. optimised prompts for every technique
 - 🌐 **EN / DE language toggle** — switch between English and German at any time
-- ⌨️ Keyboard navigation (←/→ arrow keys, Space)
+- ⌨️ Keyboard navigation (←/→ arrow keys, Space) plus swipe navigation on touch devices
 - 🗂️ **Slide overview grid** for quick navigation
 - ⏱️ Session timer
 - 📱 Responsive design (mobile-friendly)
@@ -124,4 +124,3 @@ Repository file list:
 
 Pull requests and issues are welcome! Please open them at:
 👉 [https://github.com/voku/Prompt_Intro](https://github.com/voku/Prompt_Intro)
-
