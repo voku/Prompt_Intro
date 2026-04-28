@@ -11,6 +11,8 @@ const App: React.FC = () => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
   const mainRef = useRef<HTMLDivElement>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const touchEndRef = useRef<{ x: number; y: number } | null>(null);
 
   const nextSlide = () => {
     if (currentSlideIndex < SLIDES.length - 1) {
@@ -22,6 +24,50 @@ const App: React.FC = () => {
     if (currentSlideIndex > 0) {
       setCurrentSlideIndex(prev => prev - 1);
     }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+    if (isGridOpen || e.touches.length !== 1) {
+      touchStartRef.current = null;
+      touchEndRef.current = null;
+      return;
+    }
+
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    touchEndRef.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLElement>) => {
+    if (!touchStartRef.current || e.touches.length !== 1) {
+      return;
+    }
+
+    const touch = e.touches[0];
+    touchEndRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartRef.current || !touchEndRef.current) {
+      touchStartRef.current = null;
+      touchEndRef.current = null;
+      return;
+    }
+
+    const deltaX = touchEndRef.current.x - touchStartRef.current.x;
+    const deltaY = touchEndRef.current.y - touchStartRef.current.y;
+    const isHorizontalSwipe = Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4;
+
+    if (isHorizontalSwipe) {
+      if (deltaX < 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+
+    touchStartRef.current = null;
+    touchEndRef.current = null;
   };
 
   const toggleFullscreen = () => {
@@ -138,13 +184,25 @@ const App: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <main ref={mainRef} className="flex-grow flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
-         {/* Slide View */}
-         <div className={`w-full h-full flex justify-center transition-opacity duration-300 ${isGridOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />
-         </div>
+      <main
+        ref={mainRef}
+        className="flex-grow flex items-center justify-center p-4 md:p-8 overflow-hidden relative"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+          {/* Slide View */}
+          <div className={`w-full h-full flex justify-center transition-opacity duration-300 ${isGridOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+             <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />
+          </div>
 
-         {/* Grid Overview Overlay */}
+          {!isGridOpen && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-500 shadow-sm md:hidden">
+              {lang === 'de' ? 'Wischen zum Navigieren' : 'Swipe to navigate'}
+            </div>
+          )}
+
+          {/* Grid Overview Overlay */}
          {isGridOpen && (
              <div className="absolute inset-0 bg-slate-50/95 backdrop-blur-sm z-40 overflow-y-auto p-8 animate-fadeIn">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
