@@ -1,49 +1,51 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { SLIDES } from './constants';
-import SlideLayout from './components/SlideLayout';
-import { Lang } from './types';
-import { ChevronLeft, ChevronRight, LayoutGrid, Maximize, X, Clock, Github, BrainCircuit } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
 import * as Icons from 'lucide-react';
+import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Maximize, X } from 'lucide-react';
+import SlideLayout from './components/SlideLayout';
+import { SLIDES } from './constants';
+import { IconName, Lang } from './types';
+
+const iconMap = Icons as unknown as Record<string, Icons.LucideIcon>;
+const resolveIcon = (iconName?: IconName): Icons.LucideIcon => iconMap[iconName ?? 'HelpCircle'] ?? Icons.HelpCircle;
 
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
-  const mainRef = useRef<HTMLDivElement>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
 
   const nextSlide = () => {
     if (currentSlideIndex < SLIDES.length - 1) {
-      setCurrentSlideIndex(prev => prev + 1);
+      setCurrentSlideIndex((previous) => previous + 1);
     }
   };
 
   const prevSlide = () => {
     if (currentSlideIndex > 0) {
-      setCurrentSlideIndex(prev => prev - 1);
+      setCurrentSlideIndex((previous) => previous - 1);
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
-    if (isGridOpen || e.touches.length !== 1) {
+  const handleTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    if (isGridOpen || event.touches.length !== 1) {
       touchStartRef.current = null;
       touchEndRef.current = null;
       return;
     }
 
-    const touch = e.touches[0];
+    const touch = event.touches[0];
     touchStartRef.current = { x: touch.clientX, y: touch.clientY };
     touchEndRef.current = null;
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLElement>) => {
-    if (!touchStartRef.current || e.touches.length !== 1) {
+  const handleTouchMove = (event: React.TouchEvent<HTMLElement>) => {
+    if (!touchStartRef.current || event.touches.length !== 1) {
       return;
     }
 
-    const touch = e.touches[0];
+    const touch = event.touches[0];
     touchEndRef.current = { x: touch.clientX, y: touch.clientY };
   };
 
@@ -72,207 +74,207 @@ const App: React.FC = () => {
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
+      void document.documentElement.requestFullscreen();
+      return;
+    }
+
+    if (document.exitFullscreen) {
+      void document.exitFullscreen();
     }
   };
 
-  // Timer Effect
   useEffect(() => {
-      const interval = setInterval(() => {
-          setElapsedSeconds(s => s + 1);
-      }, 1000);
-      return () => clearInterval(interval);
+    const interval = window.setInterval(() => {
+      setElapsedSeconds((seconds) => seconds + 1);
+    }, 1000);
+
+    return () => window.clearInterval(interval);
   }, []);
 
-  const formatTime = (secs: number) => {
-      const minutes = Math.floor(secs / 60);
-      const remainingSeconds = secs % 60;
-      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is typing in an input or textarea
+    const handleKeyDown = (event: KeyboardEvent) => {
       const activeTag = document.activeElement?.tagName.toLowerCase();
-      if (activeTag === 'input' || activeTag === 'textarea') return;
+      if (activeTag === 'input' || activeTag === 'textarea') {
+        return;
+      }
 
-      if (e.key === 'ArrowRight') nextSlide();
-      if (e.key === 'ArrowLeft') prevSlide();
-      if (e.key === ' ' && !isGridOpen) {
-        e.preventDefault(); // Prevent scroll
+      if (event.key === 'ArrowRight') {
         nextSlide();
       }
-      if (e.key === 'Escape') {
-          if (isGridOpen) setIsGridOpen(false);
+      if (event.key === 'ArrowLeft') {
+        prevSlide();
+      }
+      if (event.key === ' ' && !isGridOpen) {
+        event.preventDefault();
+        nextSlide();
+      }
+      if (event.key === 'Escape' && isGridOpen) {
+        setIsGridOpen(false);
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentSlideIndex, isGridOpen]);
 
   const currentSlide = SLIDES[currentSlideIndex];
   const progress = ((currentSlideIndex + 1) / SLIDES.length) * 100;
-
   const prevLabel = lang === 'de' ? 'Zurück' : 'Back';
   const nextLabel = lang === 'de' ? 'Weiter' : 'Next';
+  const overviewLabel = lang === 'de' ? 'Übersicht' : 'Overview';
+  const deckTitle = lang === 'de' ? 'Operatives Prompting' : 'Operational Prompting';
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col text-gray-900 font-sans selection:bg-blue-200">
-      
-      {/* Header / Nav Bar */}
-      <div className="w-full bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+    <div className="flex min-h-screen flex-col bg-slate-50 font-sans text-gray-900 selection:bg-blue-200">
+      <div className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
         <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-sm flex items-center justify-center text-white shadow-md">
-              <BrainCircuit size={18} />
-            </div>
-            <span className="font-semibold text-gray-700 tracking-tight hidden md:inline">Prompt Engineering Guide</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-blue-600 text-white shadow-md">
+            <BrainCircuit size={18} />
+          </div>
+          <span className="hidden font-semibold tracking-tight text-gray-700 md:inline">{deckTitle}</span>
         </div>
-        
+
         <div className="flex items-center space-x-4">
-             {/* Timer */}
-             <div className="hidden md:flex items-center text-gray-400 font-mono text-xs border-r border-gray-200 pr-4 mr-2">
-                <Clock size={14} className="mr-2" />
-                {formatTime(elapsedSeconds)}
-             </div>
+          <div className="mr-2 hidden items-center border-r border-gray-200 pr-4 font-mono text-xs text-gray-400 md:flex">
+            <Clock size={14} className="mr-2" />
+            {formatTime(elapsedSeconds)}
+          </div>
 
-             <span className="text-sm text-gray-500 font-mono hidden sm:inline">
-                {currentSlideIndex + 1} / {SLIDES.length}
-             </span>
-             
-             <div className="h-6 w-px bg-gray-200 mx-2 hidden sm:block"></div>
+          <span className="hidden font-mono text-sm text-gray-500 sm:inline">
+            {currentSlideIndex + 1} / {SLIDES.length}
+          </span>
 
-             {/* Language Toggle */}
-             <button
-               onClick={() => setLang(l => l === 'en' ? 'de' : 'en')}
-               className="px-3 py-1 text-xs font-bold rounded-lg border border-gray-200 hover:bg-gray-100 text-gray-600 transition-colors font-mono tracking-widest"
-               title={lang === 'en' ? 'Switch to Deutsch' : 'Switch to English'}
-             >
-               {lang === 'en' ? 'DE' : 'EN'}
-             </button>
+          <div className="mx-2 hidden h-6 w-px bg-gray-200 sm:block"></div>
 
-             <button 
-               onClick={() => setIsGridOpen(!isGridOpen)}
-               className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors"
-               title={isGridOpen ? "Close Overview" : "Slide Overview"}
-             >
-                {isGridOpen ? <X size={20} /> : <LayoutGrid size={20} />}
-             </button>
+          <button
+            onClick={() => setLang((value) => (value === 'en' ? 'de' : 'en'))}
+            className="rounded-lg border border-gray-200 px-3 py-1 font-mono text-xs font-bold tracking-widest text-gray-600 transition-colors hover:bg-gray-100"
+            title={lang === 'en' ? 'Switch to Deutsch' : 'Switch to English'}
+          >
+            {lang === 'en' ? 'DE' : 'EN'}
+          </button>
 
-             <button 
-               onClick={toggleFullscreen}
-               className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors"
-               title="Fullscreen"
-             >
-                <Maximize size={20} />
-             </button>
+          <button
+            onClick={() => setIsGridOpen((value) => !value)}
+            className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100"
+            title={isGridOpen ? (lang === 'de' ? 'Übersicht schließen' : 'Close overview') : overviewLabel}
+          >
+            {isGridOpen ? <X size={20} /> : <LayoutGrid size={20} />}
+          </button>
 
-             <a
-               href="https://github.com/voku/Prompt_Intro"
-               target="_blank"
-               rel="noopener noreferrer"
-               className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors"
-               title="Contribute on GitHub"
-             >
-               <Github size={20} />
-             </a>
+          <button
+            onClick={toggleFullscreen}
+            className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100"
+            title={lang === 'de' ? 'Vollbild' : 'Fullscreen'}
+          >
+            <Maximize size={20} />
+          </button>
+
+          <a
+            href="https://github.com/voku/Prompt_Intro"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100"
+            title="Contribute on GitHub"
+          >
+            <Github size={20} />
+          </a>
         </div>
       </div>
 
-      {/* Main Content Area */}
       <main
-        ref={mainRef}
-        className="flex-grow flex items-center justify-center p-4 md:p-8 overflow-hidden relative"
+        className="relative flex flex-grow items-center justify-center overflow-hidden p-4 md:p-8"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-          {/* Slide View */}
-          <div className={`w-full h-full flex justify-center transition-opacity duration-300 ${isGridOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-             <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />
+        <div className={`flex h-full w-full justify-center transition-opacity duration-300 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
+          <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />
+        </div>
+
+        {!isGridOpen && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-500 shadow-sm md:hidden">
+            {lang === 'de' ? 'Wischen zum Navigieren' : 'Swipe to navigate'}
           </div>
+        )}
 
-          {!isGridOpen && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-500 shadow-sm md:hidden">
-              {lang === 'de' ? 'Wischen zum Navigieren' : 'Swipe to navigate'}
+        {isGridOpen && (
+          <div className="absolute inset-0 z-40 overflow-y-auto bg-slate-50/95 p-8 backdrop-blur-sm animate-fadeIn">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {SLIDES.map((slide, index) => {
+                const IconComponent = resolveIcon(slide.icon);
+                const slideTitle = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title;
+                const slideLabel = lang === 'de' ? 'Folie' : 'Slide';
+
+                return (
+                  <button
+                    key={slide.id}
+                    onClick={() => {
+                      setCurrentSlideIndex(index);
+                      setIsGridOpen(false);
+                    }}
+                    className={`group relative flex flex-col items-start rounded-xl border-2 p-6 text-left transition-all duration-200 ${
+                      currentSlideIndex === index
+                        ? 'scale-[1.02] border-blue-500 bg-white shadow-lg'
+                        : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
+                    }`}
+                  >
+                    <div className={`mb-4 rounded-lg p-2 ${currentSlideIndex === index ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-500'}`}>
+                      <IconComponent size={24} />
+                    </div>
+                    <span className="mb-2 text-xs font-mono text-gray-400">{slideLabel} {index + 1}</span>
+                    <h3 className={`font-bold leading-tight ${currentSlideIndex === index ? 'text-gray-900' : 'text-gray-600'}`}>
+                      {slideTitle}
+                    </h3>
+                    {currentSlideIndex === index && (
+                      <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-blue-500 animate-pulse"></div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          )}
-
-          {/* Grid Overview Overlay */}
-         {isGridOpen && (
-             <div className="absolute inset-0 bg-slate-50/95 backdrop-blur-sm z-40 overflow-y-auto p-8 animate-fadeIn">
-                <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {SLIDES.map((slide, idx) => {
-                         const IconComp = slide.icon && (Icons as any)[slide.icon] ? (Icons as any)[slide.icon] : Icons.HelpCircle;
-                         const slideTitle = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title;
-                         return (
-                             <button
-                                key={slide.id}
-                                onClick={() => {
-                                    setCurrentSlideIndex(idx);
-                                    setIsGridOpen(false);
-                                }}
-                                className={`
-                                    relative flex flex-col items-start p-6 rounded-xl border-2 transition-all duration-200 text-left group
-                                    ${currentSlideIndex === idx 
-                                        ? 'border-blue-500 bg-white shadow-lg scale-[1.02]' 
-                                        : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
-                                    }
-                                `}
-                             >
-                                <div className={`mb-4 p-2 rounded-lg ${currentSlideIndex === idx ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:text-blue-500 group-hover:bg-blue-50'}`}>
-                                    <IconComp size={24} />
-                                </div>
-                                <span className="text-xs font-mono text-gray-400 mb-2">Slide {idx + 1}</span>
-                                <h3 className={`font-bold leading-tight ${currentSlideIndex === idx ? 'text-gray-900' : 'text-gray-600'}`}>
-                                    {slideTitle}
-                                </h3>
-                                {currentSlideIndex === idx && (
-                                    <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                                )}
-                             </button>
-                         );
-                    })}
-                </div>
-             </div>
-         )}
+          </div>
+        )}
       </main>
 
-      {/* Bottom Navigation Control */}
-      <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-sm border-t border-gray-200 p-4 z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-           
-           <button 
-             onClick={prevSlide}
-             disabled={currentSlideIndex === 0}
-             className="flex items-center space-x-2 px-6 py-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-gray-700 font-medium active:scale-95"
-           >
-             <ChevronLeft size={20} />
-             <span>{prevLabel}</span>
-           </button>
+      <div className="fixed bottom-0 left-0 z-50 w-full border-t border-gray-200 bg-white/90 p-4 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
+          <button
+            onClick={prevSlide}
+            disabled={currentSlideIndex === 0}
+            className="flex items-center space-x-2 rounded-lg px-6 py-2 font-medium text-gray-700 transition-all active:scale-95 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            <ChevronLeft size={20} />
+            <span>{prevLabel}</span>
+          </button>
 
-           {/* Progress Bar */}
-           <div className="flex-grow mx-8 h-2 bg-gray-200 rounded-full overflow-hidden cursor-pointer group" onClick={() => setIsGridOpen(true)} title="Show all slides">
-              <div 
-                className="h-full bg-blue-600 transition-all duration-500 ease-out group-hover:bg-blue-500 relative" 
-                style={{ width: `${progress}%` }}
-              >
-                  <div className="absolute right-0 top-0 h-full w-2 bg-blue-400 opacity-0 group-hover:opacity-100 animate-pulse"></div>
-              </div>
-           </div>
+          <div
+            className="group mx-8 h-2 flex-grow cursor-pointer overflow-hidden rounded-full bg-gray-200"
+            onClick={() => setIsGridOpen(true)}
+            title={overviewLabel}
+          >
+            <div
+              className="relative h-full bg-blue-600 transition-all duration-500 ease-out group-hover:bg-blue-500"
+              style={{ width: `${progress}%` }}
+            >
+              <div className="absolute right-0 top-0 h-full w-2 animate-pulse bg-blue-400 opacity-0 group-hover:opacity-100"></div>
+            </div>
+          </div>
 
-           <button 
-             onClick={nextSlide}
-             disabled={currentSlideIndex === SLIDES.length - 1}
-             className="flex items-center space-x-2 px-6 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium shadow-lg hover:shadow-xl transform active:scale-95"
-           >
-             <span>{nextLabel}</span>
-             <ChevronRight size={20} />
-           </button>
+          <button
+            onClick={nextSlide}
+            disabled={currentSlideIndex === SLIDES.length - 1}
+            className="flex items-center space-x-2 rounded-lg bg-gray-900 px-6 py-2 font-medium text-white shadow-lg transition-all hover:bg-gray-800 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            <span>{nextLabel}</span>
+            <ChevronRight size={20} />
+          </button>
         </div>
       </div>
     </div>

@@ -23,67 +23,59 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
 
   const labels = {
     techniquePrefix: lang === 'de' ? 'Technik' : 'Technique',
-    standardLabel:   lang === 'de' ? 'Standard-Prompt'   : 'Standard Prompt',
-    optimizedLabel:  lang === 'de' ? 'Optimierter Prompt' : 'Optimised Prompt',
+    standardLabel: lang === 'de' ? 'Schwacher Prompt' : 'Weak Prompt',
+    optimizedLabel: lang === 'de' ? 'Operativer Prompt' : 'Operational Prompt',
     footer: lang === 'de'
-      ? 'Der optimierte Prompt liefert deterministische, verlässliche Ergebnisse.'
-      : 'The optimised prompt delivers deterministic, reliable results.',
+      ? 'Der stärkere Prompt ist strukturierter, überprüfbarer, leichter zu validieren und weniger driftanfällig.'
+      : 'The stronger prompt is more structured, more verifiable, easier to validate, and less likely to drift.',
     showVokuprompt: lang === 'de'
-      ? 'vokuprompt-Ergebnis anzeigen'
-      : 'Show vokuprompt result',
+      ? 'vokuprompt-Variante anzeigen'
+      : 'Show vokuprompt variant',
     hideVokuprompt: lang === 'de'
-      ? 'vokuprompt-Ergebnis ausblenden'
-      : 'Hide vokuprompt result',
+      ? 'vokuprompt-Variante ausblenden'
+      : 'Hide vokuprompt variant',
     vokupromptLabel: lang === 'de'
-      ? 'vokuprompt-verbesserter Prompt'
-      : 'vokuprompt-improved Prompt',
+      ? 'vokuprompt-Variante'
+      : 'vokuprompt variant',
     vokupromptNote: lang === 'de'
-      ? 'Automatisch aus den vokuprompt-Mustern zusammengestellt – mit kontextspezifischen Platzhaltern ausgefüllt.'
-      : 'Automatically compiled from vokuprompt patterns – placeholders filled with slide-specific context.',
+      ? 'Zusätzliche, stärker operationalisierte Version mit expliziten Prüfschritten.'
+      : 'Optional, even more operational version with explicit validation steps.',
   };
 
   return (
-    <div className="h-full flex flex-col space-y-4">
-      
-      <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-blue-900 text-sm mb-2">
+    <div className="flex h-full flex-col space-y-4">
+      <div className="mb-2 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
         <strong>{labels.techniquePrefix}: {technique}</strong> — {description}
       </div>
 
-      <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-        {/* Standard (Bad) */}
-        <div className="flex flex-col border-2 border-gray-200 rounded-xl overflow-hidden bg-gray-50">
-          <div className="bg-gray-200 px-4 py-3 flex items-center justify-between border-b border-gray-300">
-            <span className="font-semibold text-gray-700 uppercase text-sm tracking-wider">{labels.standardLabel}</span>
+      <div className="grid h-full flex-grow grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="flex flex-col overflow-hidden rounded-xl border-2 border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between border-b border-gray-300 bg-gray-200 px-4 py-3">
+            <span className="text-sm font-semibold uppercase tracking-wider text-gray-700">{labels.standardLabel}</span>
             <XCircle size={20} className="text-red-500" />
           </div>
-          <div className="p-6 flex-grow font-mono text-sm text-gray-600 whitespace-pre-wrap">
-            {standard}
-          </div>
+          <div className="flex-grow p-6 font-mono text-sm text-gray-700 whitespace-pre-wrap">{standard}</div>
         </div>
 
-        {/* Optimized (Good) */}
-        <div className="flex flex-col border-2 border-green-500 rounded-xl overflow-hidden bg-white shadow-lg transform md:-translate-y-2 md:hover:-translate-y-3 transition-transform duration-300">
-          <div className="bg-green-600 px-4 py-3 flex items-center justify-between">
-            <span className="font-semibold text-white uppercase text-sm tracking-wider">{labels.optimizedLabel}</span>
+        <div className="flex flex-col overflow-hidden rounded-xl border-2 border-green-500 bg-white shadow-lg transition-transform duration-300 md:-translate-y-2 md:hover:-translate-y-3">
+          <div className="flex items-center justify-between bg-green-600 px-4 py-3">
+            <span className="text-sm font-semibold uppercase tracking-wider text-white">{labels.optimizedLabel}</span>
             <CheckCircle size={20} className="text-white" />
           </div>
-          <div className="p-6 flex-grow font-mono text-sm text-gray-800 whitespace-pre-wrap bg-green-50">
-            {optimized}
-          </div>
+          <div className="flex-grow bg-green-50 p-6 font-mono text-sm text-gray-800 whitespace-pre-wrap">{optimized}</div>
         </div>
       </div>
-      
-      <div className="flex justify-center text-gray-400 text-sm italic">
-        <ArrowRight className="inline mr-2" size={16} />
+
+      <div className="flex justify-center text-sm italic text-gray-500">
+        <ArrowRight className="mr-2 inline" size={16} />
         {labels.footer}
       </div>
 
-      {/* vokuprompt expandable section */}
       {codeVokuprompt && (
         <div className="mt-2">
           <button
-            onClick={() => setShowVokuprompt(v => !v)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 border-violet-300 bg-violet-50 hover:bg-violet-100 transition-colors text-violet-800 font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+            onClick={() => setShowVokuprompt((value) => !value)}
+            className="flex w-full items-center justify-between rounded-xl border-2 border-violet-300 bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-800 transition-colors hover:bg-violet-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
             aria-expanded={showVokuprompt}
             aria-label={showVokuprompt ? labels.hideVokuprompt : labels.showVokuprompt}
           >
@@ -95,16 +87,14 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
           </button>
 
           {showVokuprompt && (
-            <div className="mt-2 rounded-xl border-2 border-violet-400 overflow-hidden shadow-md">
-              <div className="bg-violet-600 px-4 py-3 flex items-center gap-2">
+            <div className="mt-2 overflow-hidden rounded-xl border-2 border-violet-400 shadow-md">
+              <div className="flex items-center gap-2 bg-violet-600 px-4 py-3">
                 <Sparkles size={18} className="text-white" />
-                <span className="font-semibold text-white uppercase text-sm tracking-wider">{labels.vokupromptLabel}</span>
+                <span className="text-sm font-semibold uppercase tracking-wider text-white">{labels.vokupromptLabel}</span>
               </div>
-              <div className="p-5 bg-violet-50">
-                <p className="text-xs text-violet-600 mb-3 italic">{labels.vokupromptNote}</p>
-                <pre className="font-mono text-sm text-violet-900 whitespace-pre-wrap leading-relaxed">
-                  {codeVokuprompt}
-                </pre>
+              <div className="bg-violet-50 p-5">
+                <p className="mb-3 text-xs italic text-violet-700">{labels.vokupromptNote}</p>
+                <pre className="font-mono text-sm leading-relaxed text-violet-900 whitespace-pre-wrap">{codeVokuprompt}</pre>
               </div>
             </div>
           )}
