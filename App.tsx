@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import * as Icons from 'lucide-react';
 import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Maximize, X } from 'lucide-react';
 import SlideLayout from './components/SlideLayout';
 import { SLIDES } from './constants';
-import { IconName, Lang } from './types';
-
-const iconMap = Icons as unknown as Record<string, Icons.LucideIcon>;
-const resolveIcon = (iconName?: IconName): Icons.LucideIcon => iconMap[iconName ?? 'HelpCircle'] ?? Icons.HelpCircle;
+import { resolveIcon } from './iconUtils';
+import { Lang } from './types';
 
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);

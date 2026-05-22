@@ -67,8 +67,6 @@ $ npx tsc --noEmit
 
 ### Final validation after changes
 
-_To be filled after the final validation run._
-
 ```text
 $ npm run typecheck
 > prompt-engineering-guide@0.0.0 typecheck
@@ -80,16 +78,16 @@ $ npm run build
 
 vite v6.4.2 building for production...
 transforming...
-✓ 1748 modules transformed.
+✓ 1749 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/assets/favicon-C5OxlRER.svg      0.69 kB │ gzip:   0.28 kB
 dist/index.html                       2.42 kB │ gzip:   0.88 kB
-dist/assets/index-BNaGSnUn.js     1,150.27 kB │ gzip: 244.65 kB
+dist/assets/index-C8N9b3Du.js     1,150.35 kB │ gzip: 244.65 kB
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.14s
+✓ built in 3.05s
 ```

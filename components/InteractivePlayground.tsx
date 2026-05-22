@@ -52,8 +52,10 @@ const PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
   ],
 };
 
+const getDefaultPreset = (lang: Lang) => PROMPT_PRESETS[lang][1] ?? PROMPT_PRESETS[lang][0];
+
 const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) => {
-  const [prompt, setPrompt] = useState(PROMPT_PRESETS[lang][1].text);
+  const [prompt, setPrompt] = useState(getDefaultPreset(lang)?.text ?? '');
   const [evaluation, setEvaluation] = useState<PromptEvaluation | null>(null);
   const [runHistory, setRunHistory] = useState<RunRecord[]>([]);
 
@@ -94,12 +96,13 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
       return;
     }
 
+    const matchingPreset = presets.find((preset) => preset.text === prompt);
     const nextEvaluation = evaluatePrompt(prompt);
     setEvaluation(nextEvaluation);
     setRunHistory((previous) => [
       {
         id: Date.now(),
-        label: labelOverride ?? (lang === 'de' ? 'Eigener Prompt' : 'Custom prompt'),
+        label: labelOverride ?? matchingPreset?.label ?? (lang === 'de' ? 'Eigener Prompt' : 'Custom prompt'),
         evaluation: nextEvaluation,
       },
       ...previous,
@@ -107,7 +110,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
   };
 
   const handleReset = () => {
-    setPrompt(PROMPT_PRESETS[lang][1].text);
+    setPrompt(getDefaultPreset(lang)?.text ?? '');
     setEvaluation(null);
     setRunHistory([]);
   };
@@ -145,7 +148,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
-              onClick={() => handleRun(presets.find((preset) => preset.text === prompt)?.label)}
+              onClick={() => handleRun()}
               disabled={!prompt.trim()}
               className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-md transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >

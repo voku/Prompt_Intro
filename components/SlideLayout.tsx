@@ -1,18 +1,14 @@
 import React from 'react';
-import * as Icons from 'lucide-react';
 import PromptComparison from './PromptComparison';
 import InteractivePlayground from './InteractivePlayground';
-import { IconName, Lang, SlideData, SlideType } from '../types';
+import { resolveIcon } from '../iconUtils';
+import { Lang, SlideData, SlideType } from '../types';
 
 interface SlideLayoutProps {
   data: SlideData;
   isActive: boolean;
   lang: Lang;
 }
-
-const iconMap = Icons as unknown as Record<string, Icons.LucideIcon>;
-
-const resolveIcon = (iconName?: IconName): Icons.LucideIcon => iconMap[iconName ?? 'HelpCircle'] ?? Icons.HelpCircle;
 
 const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const IconComponent = resolveIcon(data.icon);

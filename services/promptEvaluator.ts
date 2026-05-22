@@ -92,8 +92,30 @@ const sectionChecks: Array<Pick<PromptCheck, 'key' | 'label' | 'detail'> & { pat
   },
 ];
 
-const hedgeWordPatterns = [/\bmaybe\b/gi, /\bperhaps\b/gi, /\btry to\b/gi, /\bif possible\b/gi, /\bshould probably\b/gi, /\bvielleicht\b/gi, /\beventuell\b/gi, /\bversuch(?:e|en)?\b/gi, /\bfalls möglich\b/gi];
-const unsafeDataPatterns = [/api[_ -]?key/gi, /password/gi, /secret/gi, /token/gi, /private key/gi, /credential/gi, /ssn/gi, /ghp_[A-Za-z0-9]+/g, /sk-[A-Za-z0-9]+/g, /-----BEGIN [A-Z ]+PRIVATE KEY-----/g];
+const hedgeWordPatterns = [
+  /\bmaybe\b/gi,
+  /\bperhaps\b/gi,
+  /\btry to\b/gi,
+  /\bif possible\b/gi,
+  /\bshould probably\b/gi,
+  /\bvielleicht\b/gi,
+  /\beventuell\b/gi,
+  /\bversuch(?:e|en)?\b/gi,
+  /\bfalls möglich\b/gi,
+];
+
+const unsafeDataPatterns = [
+  /api[_ -]?key/gi,
+  /password/gi,
+  /secret/gi,
+  /token/gi,
+  /private key/gi,
+  /credential/gi,
+  /ssn/gi,
+  /ghp_[A-Za-z0-9]+/g,
+  /sk-[A-Za-z0-9]+/g,
+  /-----BEGIN [A-Z ]+PRIVATE KEY-----/g,
+];
 
 const uniqueMatches = (input: string, patterns: RegExp[]): string[] => {
   const matches = new Set<string>();
