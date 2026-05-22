@@ -1,5 +1,5 @@
 {
-  "name": "Prompt Engineering Guide",
-  "description": "An interactive presentation deck about the art of Prompt Engineering, featuring live comparisons and interactive demos.",
+  "name": "Operational Prompting for Real Software Work",
+  "description": "An interactive presentation deck about operational prompting for developers, with prompt comparisons and a local evaluator.",
   "requestFramePermissions": []
 }
