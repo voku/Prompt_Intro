@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { XCircle, CheckCircle, ArrowRight, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
-import { Lang } from '../types';
+import { GuideMode, Lang } from '../types';
 
 interface PromptComparisonProps {
   standard: string;
@@ -9,6 +9,7 @@ interface PromptComparisonProps {
   description: string;
   lang: Lang;
   codeVokuprompt?: string;
+  guideMode: GuideMode;
 }
 
 const PromptComparison: React.FC<PromptComparisonProps> = ({
@@ -18,16 +19,25 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
   description,
   lang,
   codeVokuprompt,
+  guideMode,
 }) => {
   const [showVokuprompt, setShowVokuprompt] = useState(false);
 
   const labels = {
     techniquePrefix: lang === 'de' ? 'Technik' : 'Technique',
-    standardLabel: lang === 'de' ? 'Schwacher Prompt' : 'Weak Prompt',
-    optimizedLabel: lang === 'de' ? 'Operativer Prompt' : 'Operational Prompt',
-    footer: lang === 'de'
-      ? 'Der stärkere Prompt ist strukturierter, überprüfbarer, leichter zu validieren und weniger driftanfällig.'
-      : 'The stronger prompt is more structured, more verifiable, easier to validate, and less likely to drift.',
+    standardLabel: guideMode === 'serviceOps'
+      ? (lang === 'de' ? 'Unkontrollierter Request' : 'Uncontrolled Request')
+      : (lang === 'de' ? 'Schwacher Prompt' : 'Weak Prompt'),
+    optimizedLabel: guideMode === 'serviceOps'
+      ? (lang === 'de' ? 'Operativer Request' : 'Operational Request')
+      : (lang === 'de' ? 'Operativer Prompt' : 'Operational Prompt'),
+    footer: guideMode === 'serviceOps'
+      ? (lang === 'de'
+          ? 'Die operative Version steuert Risiko mit Struktur, Belegen, Grenzen und Validierung — nicht mit Länge.'
+          : 'The operational version controls risk with structure, evidence, boundaries, and validation — not length.')
+      : (lang === 'de'
+          ? 'Der stärkere Prompt ist strukturierter, überprüfbarer, leichter zu validieren und weniger driftanfällig.'
+          : 'The stronger prompt is more structured, more verifiable, easier to validate, and less likely to drift.'),
     showVokuprompt: lang === 'de'
       ? 'vokuprompt-Variante anzeigen'
       : 'Show vokuprompt variant',

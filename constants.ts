@@ -1,6 +1,6 @@
-import { SlideData, SlideType } from './types';
+import { GuideMode, SlideData, SlideType } from './types';
 
-export const SLIDES: SlideData[] = [
+export const CODING_SLIDES: SlideData[] = [
   {
     id: 1,
     type: SlideType.TITLE,
@@ -264,3 +264,207 @@ export const SLIDES: SlideData[] = [
     ],
   },
 ];
+
+
+export const SERVICE_OPS_SLIDES: SlideData[] = [
+  {
+    id: 1,
+    type: SlideType.TITLE,
+    icon: 'ShieldCheck',
+    title: 'Operational Prompting for Service Operations',
+    titleDE: 'Operatives Prompting für Service Operations',
+    subtitle: 'Good service prompts do not create longer tickets. They prepare safe operational work by structuring text, evidence, questions, handoffs, checklists, and write-back drafts.',
+    subtitleDE: 'Gute Service-Prompts erzeugen keine längeren Tickets. Sie bereiten sichere operative Arbeit vor: durch Struktur, Evidenz, Fragen, Übergaben, Checklisten und Write-back-Entwürfe.',
+  },
+
+  {
+    id: 2,
+    type: SlideType.COMPARISON,
+    icon: 'FileCheck2',
+    title: 'Tickets Are Operational Records, Not Chat Messages',
+    titleDE: 'Tickets sind operative Nachweise, keine Chat-Nachrichten',
+    subtitle: 'Ticket-as-contract prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Ticket-as-contract prompting',
+    codeStandard: 'Please clean up this ticket:\n\n"Anna needs access to the reporting folder today. Max has it too. Month-end is blocked. Please add urgency and mention that her manager said it is okay."',
+    codeOptimized: 'Goal:\nTurn the raw ticket text into an execution-ready ticket summary without hiding missing approval or scope gaps.\n\nInput:\nUse only this provided ticket text:\n"Anna needs access to the reporting folder today. Max has it too. Month-end is blocked. Please add urgency and mention that her manager said it is okay."\n\nConstraints:\nDo not invent approval, resource owner, group name, access level, or business impact. Do not treat "Max has it too" as proof that the same access is valid. Separate facts from assumptions.\n\nValidation:\nCheck whether the ticket contains target user, target resource, access level, requester, approval source, business reason, urgency basis, and missing owner approval.\n\nOutput format:\nReturn sections for Clean Ticket Summary, Facts, Assumptions, Missing Information, Risk Notes, Questions for Requester, and Suggested Ticket Update.\n\nDone when:\nThe ticket is clearer without making the request look more approved or safer than the provided text supports.',
+    content: 'Risk: asks for cleanup without defining clean, may polish unsafe assumptions, preserves “Max has it too” as approval-like evidence, fails to separate facts from gaps, and can make a blocked ticket look ready. Lesson: The LLM is not granting access. It is improving ticket quality while preserving uncertainty and missing evidence.',
+  },
+
+  {
+    id: 3,
+    type: SlideType.COMPARISON,
+    icon: 'LockKeyhole',
+    title: 'Uncontrolled Requests Create Unsafe Work',
+    titleDE: 'Unkontrollierte Requests erzeugen unsichere Arbeit',
+    subtitle: 'Constraint prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Constraint prompting',
+    codeStandard: 'Review this login ticket and suggest what to do:\n\n"User cannot log in since this morning. Might be locked. Maybe reset the password or unlock the account. The user needs access urgently because accounting closes today."',
+    codeOptimized: 'Goal:\nReview the provided login ticket text and identify safe next information needs.\n\nInput:\nUse only this ticket text:\n"User cannot log in since this morning. Might be locked. Maybe reset the password or unlock the account. The user needs access urgently because accounting closes today."\n\nConstraints:\nDo not recommend password reset, account unlock, group changes, or production changes without provided policy/runbook permission and evidence. Do not treat "might be locked" as a fact.\n\nValidation:\nIdentify facts, assumptions, missing evidence, unsafe suggested actions, and the minimum information a human operator needs before acting.\n\nOutput format:\nReturn sections for Facts, Assumptions, Unsafe Action Risks, Missing Information, Questions for Requester, Operator Checklist, and Safe Ticket Reply.\n\nDone when:\nA human operator can see what is known, what is guessed, and what must be checked before any account action.',
+    content: 'Risk: invites action recommendations without a policy boundary, mixes guesses with facts, may recommend reset or unlock without evidence, skips missing information, and treats urgency as enough context. Lesson: Constraints make the LLM useful as a reviewer and structuring assistant, not as an imaginary account admin.',
+  },
+
+  {
+    id: 4,
+    type: SlideType.CONTENT,
+    icon: 'ClipboardList',
+    title: 'Goal, Input, Constraints, Done-When',
+    titleDE: 'Ziel, Input, Einschränkungen, Fertig-wenn',
+    subtitle: 'Contract prompting is the reusable framework for LLM-suitable service operations support work.',
+    subtitleDE: 'Contract Prompting ist das wiederverwendbare Framework für LLM-geeignete Service-Operations-Unterstützung.',
+    content: [
+      'Goal: What should be rewritten, extracted, reviewed, compared, drafted, or prepared?',
+      'Input: Which ticket text, logs, command output, screenshots, policy excerpt, runbook excerpt, or closure notes are provided?',
+      'Constraints: What must not be invented, approved, changed, closed, or treated as fact?',
+      'Validation: Which checks prove the output preserves evidence and exposes gaps?',
+      'Output format: What structure is needed for a human operator, requester, approver, or next support team?',
+      'Done when: What exact condition makes the draft, checklist, handoff, or update ready for human use?',
+      'Write-back: What should be added to the ticket, KB, runbook draft, or known-error candidate?',
+    ],
+    contentDE: [
+      'Ziel: Was soll umgeschrieben, extrahiert, geprüft, verglichen, entworfen oder vorbereitet werden?',
+      'Input: Welche Tickettexte, Logs, Command Outputs, Screenshots, Policies, Runbooks oder Abschlussnotizen liegen vor?',
+      'Einschränkungen: Was darf nicht erfunden, genehmigt, geändert, geschlossen oder als Fakt behandelt werden?',
+      'Validierung: Welche Checks beweisen, dass Evidenz erhalten bleibt und Lücken sichtbar werden?',
+      'Ausgabeformat: Welche Struktur braucht ein Operator, Requester, Approver oder das nächste Support-Team?',
+      'Fertig wenn: Welche exakte Bedingung macht Entwurf, Checkliste, Übergabe oder Update menschlich nutzbar?',
+      'Write-back: Was gehört ins Ticket, den KB-Entwurf, Runbook-Entwurf oder Known-Error-Kandidaten?',
+    ],
+  },
+
+  {
+    id: 5,
+    type: SlideType.COMPARISON,
+    icon: 'Activity',
+    title: 'Incidents Need Evidence Before Action',
+
+    subtitle: 'Evidence-first prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Evidence-first prompting',
+    codeStandard: 'Summarize this incident and tell us whether we should restart the API:\n\nTicket:\n"API timeout started again after lunch. It happened last month too."\n\nMonitoring note:\n"13:05-13:22 increased p95 latency. Error rate normal. No deployment today."\n\nLog excerpt:\n"13:08 upstream timeout to payment-service"\n"13:10 retry succeeded"\n"13:14 upstream timeout to payment-service"',
+    codeOptimized: 'Goal:\nSummarize the provided incident evidence and prepare a safe investigation note for the ticket.\n\nInput:\nUse only the provided ticket text, monitoring note, and log excerpt.\n\nConstraints:\nDo not recommend restart or production mitigation as a final action. Do not infer root cause beyond the provided evidence. Separate observed symptoms from possible causes.\n\nValidation:\nCheck whether the evidence contains timeline, affected service, error rate, latency impact, deployment context, recurring pattern, and missing data.\n\nOutput format:\nReturn sections for Timeline, Observed Evidence, What This Evidence Supports, What It Does Not Prove, Missing Checks, Suggested Next Investigation Steps, and Ticket Update Text.\n\nDone when:\nThe ticket has an evidence-based summary that helps a human operator decide the next safe action.',
+    content: 'Risk: asks for an operational decision from limited evidence, jumps toward restart, blurs symptom/evidence/missing data, and may overstate what the snippets prove. Lesson: The LLM can preserve and structure evidence. It should not pretend limited text is enough to authorize mitigation.',
+  },
+
+  {
+    id: 6,
+    type: SlideType.COMPARISON,
+    icon: 'UserCheck',
+    title: 'Access Requests Need Approval Boundaries',
+
+    subtitle: 'Policy-bound prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Policy-bound prompting',
+    codeStandard: 'Check whether this request is okay:\n\nTicket:\n"Anna moved to controlling and needs the same finance access as Max. Her manager approved it. Please process today."\n\nPolicy excerpt:\n"Finance report folder access requires approval from the resource owner. Access must be granted through the least-privilege AD group matching the requested resource and access level. Access must not be copied from another user as the only evidence."',
+    codeOptimized: 'Goal:\nCompare the provided access request against the provided policy excerpt and identify whether the ticket is ready for human processing.\n\nInput:\nUse only the ticket text and policy excerpt provided.\n\nConstraints:\nDo not approve or reject the request as a final authority. Do not invent owner approval, group names, or access levels. Do not treat another user’s access as sufficient evidence.\n\nValidation:\nCheck the ticket against each policy requirement: resource owner approval, least-privilege group, requested resource, access level, and no access-copying as sole evidence.\n\nOutput format:\nReturn sections for Policy Requirements, Evidence Present, Evidence Missing, Risk Notes, Questions for Requester, and Suggested Ticket Update.\n\nDone when:\nA human operator can clearly see whether the request is ready, blocked, or missing required information.',
+    content: 'Risk: is underspecified, may collapse policy review into yes/no, ignore missing owner approval, treat manager approval as sufficient, and fail to produce useful ticket text. Lesson: The LLM is useful for policy comparison and gap detection, not for granting permissions.',
+  },
+
+  {
+    id: 7,
+    type: SlideType.COMPARISON,
+    icon: 'SearchCheck',
+    title: 'Facts Require Retrieval from Systems',
+
+    subtitle: 'Retrieval prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Retrieval prompting',
+    codeStandard: 'Please review this mailbox issue and explain what might be wrong:\n\nTicket:\n"The department says emails are not arriving in the shared mailbox."\n\nProvided mailbox output:\nPrimarySmtpAddress: invoices@example.org\nForwardingAddress: accounting-archive@example.org\nDeliverToMailboxAndForward: false\n\nProvided distribution list output:\nDL invoices-team@example.org members:\n- anna@example.org\n- max@example.org',
+    codeOptimized: 'Goal:\nReview the provided mailbox and distribution-list output and identify what can be concluded safely.\n\nInput:\nUse only the ticket text and provided command output.\n\nConstraints:\nDo not claim the configuration is wrong unless the expected standard is provided. Do not invent mailbox policy. Do not suggest changing forwarding or distribution list membership without an approved expected state.\n\nValidation:\nSeparate current observed state from missing expected state. Identify which facts are supported by the output and which checks are still needed.\n\nOutput format:\nReturn sections for Current Observed State, Supported Facts, Missing Expected State, Possible Questions, Risk Notes, and Ticket Update Text.\n\nDone when:\nThe ticket clearly documents what the provided output shows and what cannot be concluded yet.',
+    content: 'Risk: asks for explanation without expected state, may infer correctness without a standard, can overlook that output alone is insufficient, and may fail to ask for the missing mailbox standard. Lesson: Retrieval prompting should make evidence visible and bounded. It should not turn partial output into fake certainty.',
+  },
+
+  {
+    id: 8,
+    type: SlideType.COMPARISON,
+    icon: 'TerminalSquare',
+    title: 'Repeatable Checks Require Tools or Scripts',
+
+    subtitle: 'Tool-use prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Tool-use prompting',
+    codeStandard: 'Tell the service desk how to check whether a user has the right AD groups and mailbox settings.',
+    codeOptimized: 'Goal:\nCreate a read-only verification checklist for a human operator.\n\nContext:\nThe operator needs to verify user account status, group membership, mailbox aliases, forwarding, and distribution-list membership before changing anything.\n\nConstraints:\nOnly propose read-only checks. Do not include commands that modify users, groups, mailbox settings, or distribution lists. Mark placeholders clearly.\n\nValidation:\nFor each check, define the purpose, required input, expected evidence, and what output should be pasted back into the ticket.\n\nOutput format:\nReturn a table with columns: Check, Purpose, Placeholder Input, Read-Only Command or Manual Step, Evidence to Paste, and Follow-Up If Missing.\n\nDone when:\nThe operator has a reproducible verification checklist that does not perform changes.',
+    content: 'Risk: is too broad, may suggest unsafe write commands, fails to distinguish read-only checks from changes, leaves expected output undefined, and is not ticket-ready. Lesson: The LLM can draft a safe checklist or command plan. The human or approved tool performs the actual checks.',
+  },
+
+  {
+    id: 9,
+    type: SlideType.COMPARISON,
+    icon: 'MessagesSquare',
+    title: 'Output Must Be Structured for Handoff',
+
+    subtitle: 'Structured-output prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Structured-output prompting',
+    codeStandard: 'Write an escalation for this ticket:\n\n"The user still cannot access the report. We checked some things. It might be network or permissions. The user is annoyed and wants it fixed today."',
+    codeOptimized: 'Goal:\nDraft an escalation note from the provided ticket notes without inventing evidence.\n\nInput:\nUse only these notes:\n"The user still cannot access the report. We checked some things. It might be network or permissions. The user is annoyed and wants it fixed today."\n\nConstraints:\nDo not invent checks, timestamps, systems, teams, priority, or root cause. Do not present guesses as facts. Keep missing information visible.\n\nValidation:\nIdentify whether the notes include impact, timeline, attempted steps, evidence, current blocker, suspected target team, and requested action.\n\nOutput format:\nReturn sections for Escalation Draft, Facts Available, Missing Information, Assumptions to Avoid, Questions Before Escalation, and Suggested Ticket Update.\n\nDone when:\nThe escalation draft is usable only if clearly marked gaps are resolved, instead of hiding weak evidence behind polished wording.',
+    content: 'Risk: may polish vague notes, invent completed checks, turn annoyance into priority, escalate without a clear question, and hide missing evidence. Lesson: Structured output helps prevent polished nonsense from becoming someone else’s problem.',
+  },
+
+  {
+    id: 10,
+    type: SlideType.COMPARISON,
+    icon: 'ShieldAlert',
+    title: 'Validation Must Prove the Next Action Is Safe',
+
+    subtitle: 'Validation prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Validation prompting',
+    codeStandard: 'Improve this change approval text:\n\n"The vendor recommends changing timeout from 30s to 60s tonight. It should fix the API errors. Rollback is changing it back. The change is small."',
+    codeOptimized: 'Goal:\nReview the provided change approval text for readiness gaps before rewriting it.\n\nInput:\nUse only this change text:\n"The vendor recommends changing timeout from 30s to 60s tonight. It should fix the API errors. Rollback is changing it back. The change is small."\n\nConstraints:\nDo not make the change sound approved or low-risk unless evidence is present. Separate vendor claim from verified local evidence. Do not invent rollback testing, impact analysis, approvals, or post-change checks.\n\nValidation:\nCheck for affected systems, observed error evidence, user impact, approval status, tested rollback, implementation steps, maintenance window, dependencies, and post-change validation.\n\nOutput format:\nReturn sections for Verified Facts, Unsupported Claims, Missing Readiness Evidence, Risk Notes, Questions Before Approval, and Safer Draft Text.\n\nDone when:\nThe revised text improves clarity without hiding that the change is not approval-ready.',
+    content: 'Risk: asks for better wording instead of readiness review, may make unsafe change text sound approved, hides rollback gaps, accepts vendor claims as facts, and treats “small” as risk assessment. Lesson: Validation prompting makes the LLM challenge unsafe wording before it makes the wording prettier. Humanity occasionally deserves that mercy.',
+  },
+
+  {
+    id: 11,
+    type: SlideType.PLAYGROUND,
+    icon: 'Radar',
+    title: 'Playground: Score the Request Before You Run It',
+    titleDE: 'Playground: Request prüfen, bevor du ihn nutzt',
+    subtitle: 'Local evaluator for LLM-suitable service-operation support work: operational quality, not prompt length.',
+    subtitleDE: 'Lokaler Evaluator für LLM-geeignete Service-Operations-Unterstützung: operative Qualität, nicht Prompt-Länge.',
+  },
+
+  {
+    id: 12,
+    type: SlideType.COMPARISON,
+    icon: 'BookOpenCheck',
+    title: 'Successful Patterns Must Become Runbooks',
+
+    subtitle: 'Write-back prompting: LLMs should prepare the work, not pretend they performed the work.',
+    technique: 'Write-back prompting',
+    codeStandard: 'Make a KB article from these closure notes:\n\n"Restarted job queue. Emails went out again. Same as last time. Tell people to restart queue if it happens again."',
+    codeOptimized: 'Goal:\nTurn the closure notes into a draft KB article without overstating certainty.\n\nInput:\nUse only these closure notes:\n"Restarted job queue. Emails went out again. Same as last time. Tell people to restart queue if it happens again."\n\nConstraints:\nDo not present restart as the approved standard fix unless the notes prove it. Mark missing evidence and approval gaps. Separate confirmed observation from proposed procedure.\n\nValidation:\nCheck whether the notes include symptoms, affected system, detection method, evidence before restart, approved restart condition, validation after restart, rollback or stop condition, and escalation owner.\n\nOutput format:\nReturn a KB draft with sections for Symptoms, Confirmed Observations, Missing Evidence, Safe Preconditions, Draft Procedure, Stop Conditions, Validation, Escalation Path, and Related Tickets.\n\nDone when:\nThe KB draft is useful for review without turning an unverified workaround into policy.',
+    content: 'Risk: may turn a fragile workaround into official guidance, lacks symptoms/evidence/stop conditions/escalation path, mixes fix and assumption, and may recommend restart without safety boundaries. Lesson: The LLM can draft knowledge safely, but it must preserve uncertainty instead of laundering guesses into documentation.',
+  },
+
+  {
+    id: 13,
+    type: SlideType.CONTENT,
+    icon: 'Workflow',
+    title: 'Service Operations Control Loop',
+    subtitle: 'Input → Extract → Bound → Draft → Validate → Handoff → Write-back.',
+    content: [
+      'Input: What ticket text, logs, command output, screenshots, policy, runbook, or closure notes are provided?',
+      'Extract: What facts, assumptions, missing information, risks, and unsafe requested actions are visible?',
+      'Bound: What must the LLM not invent, approve, execute, close, or treat as verified?',
+      'Draft: What ticket update, requester questions, checklist, escalation note, or KB/runbook draft should be prepared?',
+      'Validation: Which checks prove the draft preserves uncertainty and exposes gaps?',
+      'Handoff: What structure does the human operator, approver, or next support team need?',
+      'Write-back: What belongs in the ticket, knowledge base, runbook draft, or known-error candidate?',
+    ],
+  },
+  {
+    id: 14,
+    type: SlideType.END,
+    icon: 'Lightbulb',
+    title: 'Final Thesis',
+    titleDE: 'Abschlussthese',
+    subtitle: 'The LLM should prepare the work, not pretend it performed the work.',
+    subtitleDE: 'Das LLM soll die Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.',
+    content: [
+      'Good service-operations prompts do not create longer tickets. They create safer prepared work.',
+      'They structure provided evidence, separate facts from assumptions, detect unsafe requests, draft questions and handoffs, prepare read-only checklists, and turn resolved notes into reviewable KB or runbook drafts.',
+      'They do not frame the model as a hidden operator with invisible access to AD, mailboxes, monitoring, or production systems.',
+    ],
+  },
+];
+
+export const GUIDE_SLIDES: Record<GuideMode, SlideData[]> = {
+  coding: CODING_SLIDES,
+  serviceOps: SERVICE_OPS_SLIDES,
+};

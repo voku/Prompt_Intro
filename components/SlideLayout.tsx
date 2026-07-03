@@ -2,15 +2,16 @@ import React from 'react';
 import PromptComparison from './PromptComparison';
 import InteractivePlayground from './InteractivePlayground';
 import { resolveIcon } from '../iconUtils';
-import { Lang, SlideData, SlideType } from '../types';
+import { GuideMode, Lang, SlideData, SlideType } from '../types';
 
 interface SlideLayoutProps {
   data: SlideData;
   isActive: boolean;
   lang: Lang;
+  guideMode: GuideMode;
 }
 
-const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
+const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang, guideMode }) => {
   const IconComponent = resolveIcon(data.icon);
 
   if (!isActive) {
@@ -98,6 +99,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
                 technique={technique ?? (lang === 'de' ? 'Operativer Prompt' : 'Operational Prompt')}
                 description={typeof content === 'string' ? content : ''}
                 lang={lang}
+                guideMode={guideMode}
                 codeVokuprompt={lang === 'de' && data.codeVokupromptDE ? data.codeVokupromptDE : data.codeVokuprompt}
               />
             </div>
@@ -114,7 +116,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               <h2 className="text-3xl font-bold text-gray-800">{title}</h2>
             </div>
             {subtitle && <p className="mb-6 text-lg text-gray-500">{subtitle}</p>}
-            <InteractivePlayground lang={lang} />
+            <InteractivePlayground lang={lang} guideMode={guideMode} />
           </div>
         );
 

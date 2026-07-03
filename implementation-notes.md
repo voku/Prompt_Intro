@@ -2,6 +2,12 @@
 
 ## Decisions made because the spec was incomplete
 
+- Added a **GuideMode** deck switch with the internal keys `coding` and `serviceOps`, defaulting to `coding`, so the original coding narrative remains the default while service operations becomes a parallel deck rather than a diluted set of examples.
+- Kept slide content in `constants.ts` instead of splitting into `constants/codingSlides.ts` and `constants/serviceOpsSlides.ts` because the repository already used a single constants module and the resulting `GUIDE_SLIDES` map remains readable.
+- Used **Uncontrolled Request** / **Operational Request** labels for service-operations comparisons because those requests can be long and detailed; the teaching point is missing control, not missing words.
+- Made the playground mode-aware so service-operations examples and scoring signals reward evidence, approvals, safe next actions, ticket update text, rollback, post-change checks, runbooks, and knowledge-base write-back rather than prompt length.
+- Reframed the Service Operations examples around **LLM-suitable support work**: structuring provided ticket text, reviewing supplied evidence, identifying gaps, drafting handoffs, preparing checklists, and creating KB/runbook drafts instead of implying hidden live access to AD, mailboxes, monitoring, or production systems.
+
 - Chose **Option B** for the playground and implemented a local prompt-quality evaluator instead of a fake model response, because it keeps the feature honest and requires no backend service.
 - Kept the deck as **14 slides** so the narrative stays focused while still covering all required examples, the playground, and the final control loop.
 - Reframed chain-of-thought material into **named passes, assumptions, validation, and concise reasoning summaries** instead of exposing hidden reasoning.

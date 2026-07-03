@@ -17,9 +17,9 @@ An interactive React + TypeScript + Vite presentation about **operational prompt
 
 ## Features
 
-- 📊 **14-slide deck** focused on operational prompting for real software work
-- ⚖️ Side-by-side **weak vs. operational prompt comparisons**
-- 🧪 **Local prompt-quality evaluator** in the playground (no backend, no real model call)
+- 📊 **Two-mode, 14-slide deck** with a frontpage toggle for Coding Guide and Service Operations Guide
+- ⚖️ Side-by-side comparisons for **Weak Prompt vs. Operational Prompt** in coding mode and **Uncontrolled Request vs. Operational Request** in service-operations mode
+- 🧪 **Mode-aware local prompt-quality evaluator** in the playground (no backend, no real model call)
 - 🌐 **EN / DE language toggle**
 - ⌨️ Keyboard navigation plus swipe navigation on touch devices
 - 🗂️ Slide overview grid for quick navigation
@@ -28,6 +28,28 @@ An interactive React + TypeScript + Vite presentation about **operational prompt
 - 🚀 GitHub Pages deployment with the `/Prompt_Intro/` base path preserved
 
 ---
+
+
+## Guide modes
+
+The frontpage toggle switches between two decks while preserving language selection, timer state, navigation, fullscreen, swipe navigation, and overview behavior:
+
+- **Coding Guide** — teaches operational prompting for software work with scope, retrieval, tools, structured output, validation, and write-back patterns.
+- **Service Operations Guide** — teaches prompting techniques for turning uncontrolled operational work into bounded, evidence-based, safe, and handoff-ready work.
+
+
+The Service Operations Guide intentionally focuses on LLM-suitable work: structuring ticket text, reviewing provided evidence, identifying gaps, drafting handoffs, preparing checklists, and creating KB/runbook drafts. It does not frame the LLM as a hidden operator with direct access to AD, mailboxes, monitoring, or production systems.
+
+The Service Operations Guide focuses on reusable operational prompting techniques for:
+
+- tickets as operational records
+- constraints and approval boundaries
+- evidence-first incident handling
+- retrieval from operational systems
+- repeatable checks with tools/scripts
+- structured escalation handoff
+- validation for safe next actions
+- runbook and knowledge base write-back
 
 ## Topics covered
 
@@ -104,11 +126,11 @@ To enable GitHub Pages in your fork:
 | `index.html` | Entry HTML and social metadata |
 | `index.tsx` | React root mount |
 | `App.tsx` | App shell, navigation, language toggle, overview, timer |
-| `constants.ts` | Entire slide deck content in EN / DE |
+| `constants.ts` | Coding and Service Operations slide deck content, keyed by guide mode |
 | `types.ts` | Shared TypeScript types for slides and language state |
 | `components/SlideLayout.tsx` | Renders slide types, including the playground slide |
-| `components/PromptComparison.tsx` | Weak vs. operational prompt comparisons |
-| `components/InteractivePlayground.tsx` | Local prompt-quality evaluator UI |
+| `components/PromptComparison.tsx` | Mode-aware comparison labels for coding and service operations |
+| `components/InteractivePlayground.tsx` | Mode-aware local prompt-quality evaluator UI |
 | `services/promptEvaluator.ts` | Local prompt scoring rules and warnings |
 | `vite.config.ts` | Vite config with the `/Prompt_Intro/` base path |
 | `.github/workflows/deploy.yml` | GitHub Pages workflow |
