@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { BadgeCheck, Play, RotateCcw, ShieldAlert, Target, TriangleAlert } from 'lucide-react';
-import { Lang } from '../types';
+import { GuideMode, Lang } from '../types';
 import { PromptEvaluation, evaluatePrompt } from '../services/promptEvaluator';
 
 interface RunRecord {
@@ -11,9 +11,10 @@ interface RunRecord {
 
 interface InteractivePlaygroundProps {
   lang: Lang;
+  guideMode: GuideMode;
 }
 
-const PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
+const CODING_PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
   en: [
     {
       label: 'Weak bug fix',
@@ -52,10 +53,62 @@ const PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
   ],
 };
 
-const getDefaultPreset = (lang: Lang) => PROMPT_PRESETS[lang][1] ?? PROMPT_PRESETS[lang][0];
+const SERVICE_OPS_PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
+  en: [
+    {
+      label: 'Messy ticket cleanup',
+      text: 'Goal: Rewrite the provided ticket text into a clearer ticket update without making it look more approved than it is.\nInput: "Anna needs access to the reporting folder today. Max has it too. Month-end is blocked. Please add urgency and mention that her manager said it is okay."\nConstraints: Do not invent owner approval, group names, access level, or business impact. Do not treat Max having access as approval evidence.\nValidation: Identify facts, assumptions, missing information, risk notes, and questions for the requester.\nOutput format: Clean Ticket Summary, Facts, Assumptions, Missing Information, Risk Notes, Questions for Requester, Suggested Ticket Update.\nDone when: The ticket is clearer while preserving uncertainty and missing approval.'
+    },
+    {
+      label: 'Unsafe action review',
+      text: 'Goal: Review the provided login ticket for unsafe suggested actions and missing information.\nInput: "User cannot log in since this morning. Might be locked. Maybe reset the password or unlock the account. The user needs access urgently because accounting closes today."\nConstraints: Do not recommend password reset, account unlock, group changes, or production changes without provided policy/runbook permission and evidence.\nValidation: Separate facts from assumptions, identify unsafe action risks, and list the minimum information a human operator needs before acting.\nOutput format: Facts, Assumptions, Unsafe Action Risks, Missing Information, Questions for Requester, Operator Checklist, Safe Ticket Reply.\nDone when: A human operator can see what is known, guessed, and still required before any account action.'
+    },
+    {
+      label: 'Policy gap analysis',
+      text: 'Goal: Compare the provided access request against the provided policy excerpt and identify readiness gaps.\nInput ticket: "Anna moved to controlling and needs the same finance access as Max. Her manager approved it. Please process today."\nInput policy: "Finance report folder access requires approval from the resource owner. Access must be granted through the least-privilege AD group matching the requested resource and access level. Access must not be copied from another user as the only evidence."\nConstraints: Do not approve or reject as final authority. Do not invent owner approval, group names, or access levels.\nValidation: Check resource owner approval, least-privilege group, requested resource, access level, and no access-copying as sole evidence.\nOutput format: Policy Requirements, Evidence Present, Evidence Missing, Risk Notes, Questions for Requester, Suggested Ticket Update.\nDone when: A human operator can see whether the request is ready, blocked, or missing information.'
+    },
+    {
+      label: 'Escalation draft',
+      text: 'Goal: Draft an escalation note from the provided weak ticket notes without inventing evidence.\nInput: "The user still cannot access the report. We checked some things. It might be network or permissions. The user is annoyed and wants it fixed today."\nConstraints: Do not invent checks, timestamps, systems, teams, priority, or root cause. Keep missing information visible.\nValidation: Identify whether impact, timeline, attempted steps, evidence, blocker, target team, and requested action are present.\nOutput format: Escalation Draft, Facts Available, Missing Information, Assumptions to Avoid, Questions Before Escalation, Suggested Ticket Update.\nDone when: The draft is useful only with clearly marked gaps resolved.'
+    },
+    {
+      label: 'KB draft from notes',
+      text: 'Goal: Turn the provided closure notes into a draft KB article without overstating certainty.\nInput: "Restarted job queue. Emails went out again. Same as last time. Tell people to restart queue if it happens again."\nConstraints: Do not present restart as an approved standard fix unless the notes prove it. Mark missing evidence and approval gaps.\nValidation: Check symptoms, affected system, detection method, evidence before restart, approved restart condition, post-fix validation, stop condition, and escalation owner.\nOutput format: Symptoms, Confirmed Observations, Missing Evidence, Safe Preconditions, Draft Procedure, Stop Conditions, Validation, Escalation Path, Related Tickets.\nDone when: The KB draft is reviewable without laundering an unverified workaround into policy.'
+    },
+  ],
+  de: [
+    {
+      label: 'Ticket bereinigen',
+      text: 'Ziel: Den bereitgestellten Tickettext klarer umschreiben, ohne ihn genehmigter wirken zu lassen.\nInput: "Anna braucht heute Zugriff auf den Reporting-Ordner. Max hat ihn auch. Monatsabschluss ist blockiert. Bitte Dringlichkeit ergänzen und erwähnen, dass ihr Manager es okay findet."\nEinschränkungen: Keine Owner-Freigabe, Gruppennamen, Zugriffsstufe oder Business Impact erfinden. Max-Zugriff nicht als Genehmigungsbeleg behandeln.\nValidierung: Fakten, Annahmen, fehlende Informationen, Risiken und Fragen an den Requester identifizieren.\nAusgabeformat: Clean Ticket Summary, Facts, Assumptions, Missing Information, Risk Notes, Questions for Requester, Suggested Ticket Update.\nFertig wenn: Das Ticket klarer ist und Unsicherheit sowie fehlende Freigabe sichtbar bleiben.'
+    },
+    {
+      label: 'Unsichere Aktion prüfen',
+      text: 'Ziel: Das bereitgestellte Login-Ticket auf unsichere Aktionsvorschläge und fehlende Informationen prüfen.\nInput: "User kann sich seit heute Morgen nicht anmelden. Vielleicht gesperrt. Vielleicht Passwort zurücksetzen oder Account entsperren. User braucht dringend Zugriff, weil Accounting heute abschließt."\nEinschränkungen: Kein Passwort-Reset, Account-Unlock, Gruppenänderung oder Production Change empfehlen ohne bereitgestellte Policy/Runbook-Erlaubnis und Evidenz.\nValidierung: Fakten von Annahmen trennen, unsichere Aktionen markieren und Mindestinformationen für menschliche Operatoren auflisten.\nAusgabeformat: Facts, Assumptions, Unsafe Action Risks, Missing Information, Questions for Requester, Operator Checklist, Safe Ticket Reply.\nFertig wenn: Ein Operator sieht, was bekannt, geraten und vor jeder Account-Aktion noch nötig ist.'
+    },
+    {
+      label: 'Policy-Lückenanalyse',
+      text: 'Ziel: Den bereitgestellten Access Request gegen den Policy-Auszug vergleichen und Bereitschaftslücken identifizieren.\nInput Ticket: "Anna wechselte zu Controlling und braucht denselben Finance-Zugriff wie Max. Ihr Manager hat genehmigt. Bitte heute bearbeiten."\nInput Policy: "Finance report folder access requires approval from the resource owner. Access must be granted through the least-privilege AD group matching the requested resource and access level. Access must not be copied from another user as the only evidence."\nEinschränkungen: Nicht final genehmigen oder ablehnen. Keine Owner-Freigabe, Gruppennamen oder Zugriffsstufen erfinden.\nValidierung: Resource Owner Approval, Least-Privilege-Gruppe, Ressource, Zugriffsstufe und kein Kopieren als alleiniger Beleg prüfen.\nAusgabeformat: Policy Requirements, Evidence Present, Evidence Missing, Risk Notes, Questions for Requester, Suggested Ticket Update.\nFertig wenn: Ein Operator sieht, ob der Request bereit, blockiert oder unvollständig ist.'
+    },
+    {
+      label: 'Eskalationsentwurf',
+      text: 'Ziel: Aus bereitgestellten schwachen Ticketnotizen eine Eskalationsnotiz entwerfen, ohne Evidenz zu erfinden.\nInput: "User kann weiterhin nicht auf den Report zugreifen. Wir haben ein paar Dinge geprüft. Vielleicht Netzwerk oder Berechtigungen. User ist genervt und will heute eine Lösung."\nEinschränkungen: Keine Checks, Zeiten, Systeme, Teams, Priorität oder Root Cause erfinden. Fehlende Informationen sichtbar lassen.\nValidierung: Prüfen, ob Impact, Timeline, Schritte, Evidenz, Blocker, Zielteam und angeforderte Aktion vorhanden sind.\nAusgabeformat: Escalation Draft, Facts Available, Missing Information, Assumptions to Avoid, Questions Before Escalation, Suggested Ticket Update.\nFertig wenn: Der Entwurf nur mit klar markierten Lücken nutzbar ist.'
+    },
+    {
+      label: 'KB-Entwurf aus Notizen',
+      text: 'Ziel: Aus bereitgestellten Abschlussnotizen einen KB-Entwurf erstellen, ohne Sicherheit vorzutäuschen.\nInput: "Job Queue neu gestartet. E-Mails gingen wieder raus. Wie letztes Mal. Leuten sagen, sie sollen Queue neu starten, wenn es wieder passiert."\nEinschränkungen: Restart nicht als genehmigten Standard-Fix darstellen, wenn die Notizen das nicht belegen. Fehlende Evidenz und Approval-Gaps markieren.\nValidierung: Symptome, betroffenes System, Erkennung, Evidenz vor Restart, genehmigte Restart-Bedingung, Post-Fix-Validierung, Stop Condition und Eskalationsowner prüfen.\nAusgabeformat: Symptoms, Confirmed Observations, Missing Evidence, Safe Preconditions, Draft Procedure, Stop Conditions, Validation, Escalation Path, Related Tickets.\nFertig wenn: Der KB-Entwurf reviewbar ist, ohne einen ungeprüften Workaround zur Policy zu machen.'
+    },
+  ],
+};
 
-const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) => {
-  const [prompt, setPrompt] = useState(getDefaultPreset(lang)?.text ?? '');
+const PROMPT_PRESETS: Record<GuideMode, Record<Lang, Array<{ label: string; text: string }>>> = {
+  coding: CODING_PROMPT_PRESETS,
+  serviceOps: SERVICE_OPS_PROMPT_PRESETS,
+};
+
+const getDefaultPreset = (lang: Lang, guideMode: GuideMode) => PROMPT_PRESETS[guideMode][lang][1] ?? PROMPT_PRESETS[guideMode][lang][0];
+
+const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, guideMode }) => {
+  const [prompt, setPrompt] = useState(getDefaultPreset(lang, guideMode)?.text ?? '');
   const [evaluation, setEvaluation] = useState<PromptEvaluation | null>(null);
   const [runHistory, setRunHistory] = useState<RunRecord[]>([]);
 
@@ -80,6 +133,8 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
       history: lang === 'de' ? 'Letzte Auswertungen' : 'Recent evaluations',
       score: lang === 'de' ? 'Punktzahl' : 'Score',
       noWarnings: lang === 'de' ? 'Keine Warnungen erkannt.' : 'No warnings detected.',
+      operationalSignals: lang === 'de' ? 'Service-Operations-Signale' : 'Service operations signals',
+      operationalWarnings: lang === 'de' ? 'Service-Operations-Warnungen' : 'Service operations warnings',
       waiting:
         lang === 'de'
           ? 'Wähle einen Preset oder prüfe deinen eigenen Prompt.'
@@ -89,7 +144,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
     [lang],
   );
 
-  const presets = PROMPT_PRESETS[lang];
+  const presets = PROMPT_PRESETS[guideMode][lang];
 
   const handleRun = (labelOverride?: string) => {
     if (!prompt.trim()) {
@@ -97,7 +152,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
     }
 
     const matchingPreset = presets.find((preset) => preset.text === prompt);
-    const nextEvaluation = evaluatePrompt(prompt);
+    const nextEvaluation = evaluatePrompt(prompt, guideMode);
     setEvaluation(nextEvaluation);
     setRunHistory((previous) => [
       {
@@ -110,7 +165,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
   };
 
   const handleReset = () => {
-    setPrompt(getDefaultPreset(lang)?.text ?? '');
+    setPrompt(getDefaultPreset(lang, guideMode)?.text ?? '');
     setEvaluation(null);
     setRunHistory([]);
   };
@@ -227,7 +282,22 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
                         <div>{evaluation.unsafeDataMatches.join(', ')}</div>
                       </div>
                     )}
-                    {evaluation.hedgeWords.length === 0 && evaluation.unsafeDataMatches.length === 0 && (
+                    {guideMode === 'serviceOps' && evaluation.operationalSignals.length > 0 && (
+                      <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-3 text-green-800">
+                        <div className="mb-1 font-semibold">{labels.operationalSignals}</div>
+                        <div>{evaluation.operationalSignals.join(', ')}</div>
+                      </div>
+                    )}
+                    {guideMode === 'serviceOps' && evaluation.operationalWarnings.length > 0 && (
+                      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-800">
+                        <div className="mb-1 inline-flex items-center gap-2 font-semibold">
+                          <ShieldAlert size={16} />
+                          {labels.operationalWarnings}
+                        </div>
+                        <div>{evaluation.operationalWarnings.join(', ')}</div>
+                      </div>
+                    )}
+                    {evaluation.hedgeWords.length === 0 && evaluation.unsafeDataMatches.length === 0 && evaluation.operationalWarnings.length === 0 && (
                       <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-600">{labels.noWarnings}</div>
                     )}
                   </div>
@@ -247,7 +317,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {runHistory.map((run) => {
                   const missingCount = run.evaluation.checks.filter((check) => !check.passed).length;
-                  const warningCount = run.evaluation.hedgeWords.length + run.evaluation.unsafeDataMatches.length;
+                  const warningCount = run.evaluation.hedgeWords.length + run.evaluation.unsafeDataMatches.length + run.evaluation.operationalWarnings.length;
 
                   return (
                     <div key={run.id} className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">

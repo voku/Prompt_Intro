@@ -1,5 +1,7 @@
 export type Lang = 'en' | 'de';
 
+export type GuideMode = 'coding' | 'serviceOps';
+
 export enum SlideType {
   TITLE = 'TITLE',
   CONTENT = 'CONTENT',

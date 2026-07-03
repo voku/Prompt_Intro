@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Maximize, X } from 'lucide-react';
 import SlideLayout from './components/SlideLayout';
-import { SLIDES } from './constants';
+import { GUIDE_SLIDES } from './constants';
+import { GuideMode } from './types';
 import { resolveIcon } from './iconUtils';
 import { Lang } from './types';
 
@@ -10,11 +11,12 @@ const App: React.FC = () => {
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
+  const [guideMode, setGuideMode] = useState<GuideMode>('coding');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
 
   const nextSlide = () => {
-    if (currentSlideIndex < SLIDES.length - 1) {
+    if (currentSlideIndex < slides.length - 1) {
       setCurrentSlideIndex((previous) => previous + 1);
     }
   };
@@ -118,14 +120,17 @@ const App: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlideIndex, isGridOpen]);
+  }, [currentSlideIndex, isGridOpen, guideMode]);
 
-  const currentSlide = SLIDES[currentSlideIndex];
-  const progress = ((currentSlideIndex + 1) / SLIDES.length) * 100;
+  const slides = GUIDE_SLIDES[guideMode];
+  const currentSlide = slides[currentSlideIndex];
+  const progress = ((currentSlideIndex + 1) / slides.length) * 100;
   const prevLabel = lang === 'de' ? 'Zurück' : 'Back';
   const nextLabel = lang === 'de' ? 'Weiter' : 'Next';
   const overviewLabel = lang === 'de' ? 'Übersicht' : 'Overview';
-  const deckTitle = lang === 'de' ? 'Operatives Prompting' : 'Operational Prompting';
+  const deckTitle = guideMode === 'serviceOps'
+    ? (lang === 'de' ? 'Service Operations Guide' : 'Service Operations Guide')
+    : (lang === 'de' ? 'Coding Guide' : 'Coding Guide');
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 font-sans text-gray-900 selection:bg-blue-200">
@@ -138,13 +143,32 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
+          <div className="hidden rounded-xl border border-gray-200 bg-gray-100 p-1 text-xs font-semibold sm:flex">
+            {([
+              { value: 'coding' as GuideMode, label: 'Coding Guide' },
+              { value: 'serviceOps' as GuideMode, label: 'Service Operations Guide' },
+            ]).map((mode) => (
+              <button
+                key={mode.value}
+                onClick={() => {
+                  setGuideMode(mode.value);
+                  setCurrentSlideIndex(0);
+                  setIsGridOpen(false);
+                }}
+                className={`rounded-lg px-3 py-1 transition-colors ${guideMode === mode.value ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-white'}`}
+                aria-pressed={guideMode === mode.value}
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
           <div className="mr-2 hidden items-center border-r border-gray-200 pr-4 font-mono text-xs text-gray-400 md:flex">
             <Clock size={14} className="mr-2" />
             {formatTime(elapsedSeconds)}
           </div>
 
           <span className="hidden font-mono text-sm text-gray-500 sm:inline">
-            {currentSlideIndex + 1} / {SLIDES.length}
+            {currentSlideIndex + 1} / {slides.length}
           </span>
 
           <div className="mx-2 hidden h-6 w-px bg-gray-200 sm:block"></div>
@@ -192,7 +216,7 @@ const App: React.FC = () => {
         onTouchEnd={handleTouchEnd}
       >
         <div className={`flex h-full w-full justify-center transition-opacity duration-300 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
-          <SlideLayout key={currentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />
+          <SlideLayout key={`${guideMode}-${currentSlideIndex}`} data={currentSlide} isActive={!isGridOpen} lang={lang} guideMode={guideMode} />
         </div>
 
         {!isGridOpen && (
@@ -204,7 +228,7 @@ const App: React.FC = () => {
         {isGridOpen && (
           <div className="absolute inset-0 z-40 overflow-y-auto bg-slate-50/95 p-8 backdrop-blur-sm animate-fadeIn">
             <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {SLIDES.map((slide, index) => {
+              {slides.map((slide, index) => {
                 const IconComponent = resolveIcon(slide.icon);
                 const slideTitle = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title;
                 const slideLabel = lang === 'de' ? 'Folie' : 'Slide';
@@ -266,7 +290,7 @@ const App: React.FC = () => {
 
           <button
             onClick={nextSlide}
-            disabled={currentSlideIndex === SLIDES.length - 1}
+            disabled={currentSlideIndex === slides.length - 1}
             className="flex items-center space-x-2 rounded-lg bg-gray-900 px-6 py-2 font-medium text-white shadow-lg transition-all hover:bg-gray-800 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-30"
           >
             <span>{nextLabel}</span>

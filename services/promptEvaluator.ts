@@ -1,4 +1,4 @@
-import { Lang } from '../types';
+import { GuideMode, Lang } from '../types';
 
 export interface PromptCheck {
   key: 'goal' | 'context' | 'constraints' | 'outputFormat' | 'doneWhen' | 'validation';
@@ -12,6 +12,8 @@ export interface PromptEvaluation {
   checks: PromptCheck[];
   hedgeWords: string[];
   unsafeDataMatches: string[];
+  operationalSignals: string[];
+  operationalWarnings: string[];
   summary: Record<Lang, string>;
 }
 
@@ -117,6 +119,58 @@ const unsafeDataPatterns = [
   /-----BEGIN [A-Z ]+PRIVATE KEY-----/g,
 ];
 
+const serviceOpsPositivePatterns = [
+  /\bextract\b|\bsummarize\b|\bclassify\b|\bcompare\b|\brewrite\b|\bdraft\b|\breview\b/gi,
+  /identify gaps|identify missing|missing information|generate questions|questions for requester/gi,
+  /prepare (?:a )?(?:checklist|ticket update|handoff|escalation)/gi,
+  /structure(?:d)? handoff|escalation draft|ticket update text|safe ticket reply/gi,
+  /provided (?:ticket|text|output|logs?|policy|runbook|notes|evidence|command output)/gi,
+  /facts?\s+vs\s+assumptions?|facts|assumptions/gi,
+  /evidence checked|observed evidence|supported facts/gi,
+  /approval status|approval chain|policy requirements/gi,
+  /rollback|post-change checks?|readiness gaps/gi,
+  /runbook|knowledge base|\bKB\b|KB draft/gi,
+];
+
+const safeSupportRolePatterns = [
+  /draft (?:a )?(?:checklist|ticket update|handoff|escalation|KB|runbook)/i,
+  /review (?:the )?provided (?:output|logs?|ticket|text|policy|runbook|notes|evidence)/i,
+  /summari[sz]e (?:the )?provided (?:logs?|output|ticket|text|evidence|notes)/i,
+  /identify (?:missing information|gaps|unsafe|risks?|questions)/i,
+  /prepare (?:a )?(?:ticket update|checklist|handoff|escalation|questions)/i,
+  /compare (?:the )?.*against (?:the )?provided policy/i,
+  /use only (?:the )?(?:provided|this)/i,
+  /provided (?:AD|mailbox|command|tool|policy|runbook|log|monitoring|ticket|closure) (?:output|excerpt|text|notes?)/i,
+  /read-only verification checklist/i,
+  /operator checklist/i,
+  /create (?:a )?(?:KB|knowledge base|runbook) draft/i,
+];
+
+const directOperationalActionPatterns = [
+  /check AD/gi,
+  /unlock (?:the )?account/gi,
+  /reset (?:the )?password/gi,
+  /add (?:the )?group|add .* AD groups?/gi,
+  /remove (?:the )?group|remove .* AD groups?/gi,
+  /grant access/gi,
+  /fix (?:the )?mailbox/gi,
+  /restart (?:the )?service/gi,
+  /apply (?:the )?change/gi,
+  /close (?:the )?ticket/gi,
+  /approve (?:the )?change/gi,
+];
+
+const serviceOpsWarningPatterns = [
+  /permission change|give (?:her|him|them) (?:the )?same permissions?/gi,
+  /same access as|copy(?:ing)? access|copy another user/gi,
+  /production change|modify production/gi,
+  /escalate(?:d|s|ion)? without (?:a )?requested action/gi,
+  /urgent|asap|today/gi,
+  /probably|maybe|guess|might be/gi,
+  /closest matching group/gi,
+  /probably (?:a )?(?:server|network) problem/gi,
+];
+
 const uniqueMatches = (input: string, patterns: RegExp[]): string[] => {
   const matches = new Set<string>();
 
@@ -128,7 +182,7 @@ const uniqueMatches = (input: string, patterns: RegExp[]): string[] => {
   return Array.from(matches);
 };
 
-export const evaluatePrompt = (prompt: string): PromptEvaluation => {
+export const evaluatePrompt = (prompt: string, guideMode: GuideMode = 'coding'): PromptEvaluation => {
   const checks: PromptCheck[] = sectionChecks.map(({ key, label, detail, patterns }) => ({
     key,
     label,
@@ -138,6 +192,14 @@ export const evaluatePrompt = (prompt: string): PromptEvaluation => {
 
   const hedgeWords = uniqueMatches(prompt, hedgeWordPatterns);
   const unsafeDataMatches = uniqueMatches(prompt, unsafeDataPatterns);
+  const operationalSignals = guideMode === 'serviceOps' ? uniqueMatches(prompt, serviceOpsPositivePatterns) : [];
+  const safeSupportRole = safeSupportRolePatterns.some((pattern) => pattern.test(prompt));
+  const directOperationalWarnings = guideMode === 'serviceOps' && !safeSupportRole
+    ? uniqueMatches(prompt, directOperationalActionPatterns)
+    : [];
+  const operationalWarnings = guideMode === 'serviceOps'
+    ? [...uniqueMatches(prompt, serviceOpsWarningPatterns), ...directOperationalWarnings]
+    : [];
 
   const passedChecks = checks.filter((check) => check.passed).length;
   const coreContractReady = ['goal', 'context', 'constraints', 'doneWhen'].every((key) =>
@@ -159,6 +221,10 @@ export const evaluatePrompt = (prompt: string): PromptEvaluation => {
   }
   if (unsafeDataMatches.length > 0) {
     score -= 20;
+  }
+  if (guideMode === 'serviceOps') {
+    score += Math.min(18, operationalSignals.length * 3);
+    score -= Math.min(20, operationalWarnings.length * 4);
   }
 
   score = Math.max(0, Math.min(100, score));
@@ -184,6 +250,8 @@ export const evaluatePrompt = (prompt: string): PromptEvaluation => {
     checks,
     hedgeWords,
     unsafeDataMatches,
+    operationalSignals,
+    operationalWarnings,
     summary,
   };
 };
