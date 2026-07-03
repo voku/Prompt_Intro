@@ -4,14 +4,29 @@ import InteractivePlayground from './InteractivePlayground';
 import { resolveIcon } from '../iconUtils';
 import { GuideMode, Lang, SlideData, SlideType } from '../types';
 
+interface GuideModeOption {
+  value: GuideMode;
+  label: string;
+  shortLabel: string;
+}
+
 interface SlideLayoutProps {
   data: SlideData;
   isActive: boolean;
   lang: Lang;
   guideMode: GuideMode;
+  guideModeOptions: GuideModeOption[];
+  onGuideModeChange: (nextGuideMode: GuideMode) => void;
 }
 
-const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang, guideMode }) => {
+const SlideLayout: React.FC<SlideLayoutProps> = ({
+  data,
+  isActive,
+  lang,
+  guideMode,
+  guideModeOptions,
+  onGuideModeChange,
+}) => {
   const IconComponent = resolveIcon(data.icon);
 
   if (!isActive) {
@@ -33,6 +48,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang, guideMo
 
   const thanksLabel = lang === 'de' ? 'Danke für Ihre Aufmerksamkeit!' : 'Thank you for your attention!';
   const trainingLabel = lang === 'de' ? 'Operatives Prompting für die Praxis' : 'Operational Prompting for Real Software Work';
+  const guideSwitchLabel = lang === 'de' ? 'Guide auswählen' : 'Choose guide';
 
   const renderContent = () => {
     switch (data.type) {
@@ -44,7 +60,28 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang, guideMo
             </div>
             <h1 className="text-5xl font-bold tracking-tight text-gray-900 md:text-6xl">{title}</h1>
             <h2 className="max-w-3xl text-xl font-light text-gray-600 md:text-2xl">{subtitle}</h2>
-            <div className="mt-12 text-sm uppercase tracking-widest text-gray-400">{trainingLabel}</div>
+            <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-gray-50 p-2 shadow-inner" role="group" aria-label={guideSwitchLabel}>
+              <div className="grid grid-cols-2 gap-2">
+                {guideModeOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => onGuideModeChange(option.value)}
+                    aria-pressed={guideMode === option.value}
+                    aria-label={option.label}
+                    className={`rounded-xl px-4 py-3 text-sm font-bold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      guideMode === option.value
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-white text-gray-700 shadow-sm hover:bg-blue-50 hover:text-blue-700'
+                    }`}
+                  >
+                    <span className="sm:hidden">{option.shortLabel}</span>
+                    <span className="hidden sm:inline">{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mt-4 text-sm uppercase tracking-widest text-gray-400">{trainingLabel}</div>
           </div>
         );
 

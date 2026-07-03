@@ -171,6 +171,25 @@ const serviceOpsWarningPatterns = [
   /probably (?:a )?(?:server|network) problem/gi,
 ];
 
+
+const quotedBlockPatterns = [
+  /"(?:[^"\\]|\\.)*"/gs,
+  /'(?:[^'\\]|\\.)*'/gs,
+  /`(?:[^`\\]|\\.)*`/gs,
+];
+
+const providedInputSectionPattern = /(?:^|\n)\s*(?:Input|Use only this|Ticket|Provided [^:\n]*|Log excerpt|Policy excerpt|Closure notes)\s*:\s*[\s\S]*?(?=\n\s*(?:Goal|Context|Constraints|Validation|Output format|Done when|Input|Ticket|Provided [^:\n]*|Log excerpt|Policy excerpt|Closure notes)\s*:|$)/gi;
+
+const maskOperationalInputLayer = (input: string): string => {
+  let masked = input.replace(providedInputSectionPattern, '\n[provided input masked]\n');
+
+  for (const pattern of quotedBlockPatterns) {
+    masked = masked.replace(pattern, '[quoted input masked]');
+  }
+
+  return masked;
+};
+
 const uniqueMatches = (input: string, patterns: RegExp[]): string[] => {
   const matches = new Set<string>();
 
@@ -193,12 +212,19 @@ export const evaluatePrompt = (prompt: string, guideMode: GuideMode = 'coding'):
   const hedgeWords = uniqueMatches(prompt, hedgeWordPatterns);
   const unsafeDataMatches = uniqueMatches(prompt, unsafeDataPatterns);
   const operationalSignals = guideMode === 'serviceOps' ? uniqueMatches(prompt, serviceOpsPositivePatterns) : [];
-  const safeSupportRole = safeSupportRolePatterns.some((pattern) => pattern.test(prompt));
+  const operationalInstructionLayer = guideMode === 'serviceOps' ? maskOperationalInputLayer(prompt) : prompt;
+  const rawInputRiskSignals = guideMode === 'serviceOps'
+    ? uniqueMatches(prompt.replace(operationalInstructionLayer, ''), serviceOpsWarningPatterns)
+    : [];
+  const safeSupportRole = safeSupportRolePatterns.some((pattern) => pattern.test(operationalInstructionLayer));
   const directOperationalWarnings = guideMode === 'serviceOps' && !safeSupportRole
-    ? uniqueMatches(prompt, directOperationalActionPatterns)
+    ? uniqueMatches(operationalInstructionLayer, directOperationalActionPatterns)
+    : [];
+  const instructionWarnings = guideMode === 'serviceOps'
+    ? uniqueMatches(operationalInstructionLayer, serviceOpsWarningPatterns)
     : [];
   const operationalWarnings = guideMode === 'serviceOps'
-    ? [...uniqueMatches(prompt, serviceOpsWarningPatterns), ...directOperationalWarnings]
+    ? [...instructionWarnings, ...directOperationalWarnings, ...rawInputRiskSignals.map((match) => `raw input mentions: ${match}`)]
     : [];
 
   const passedChecks = checks.filter((check) => check.passed).length;
@@ -224,7 +250,7 @@ export const evaluatePrompt = (prompt: string, guideMode: GuideMode = 'coding'):
   }
   if (guideMode === 'serviceOps') {
     score += Math.min(18, operationalSignals.length * 3);
-    score -= Math.min(20, operationalWarnings.length * 4);
+    score -= Math.min(20, (instructionWarnings.length + directOperationalWarnings.length) * 4);
   }
 
   score = Math.max(0, Math.min(100, score));
