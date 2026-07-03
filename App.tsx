@@ -6,6 +6,11 @@ import { GuideMode } from './types';
 import { resolveIcon } from './iconUtils';
 import { Lang } from './types';
 
+const GUIDE_MODE_OPTIONS: Array<{ value: GuideMode; label: string; shortLabel: string }> = [
+  { value: 'coding', label: 'Coding Guide', shortLabel: 'Coding' },
+  { value: 'serviceOps', label: 'Service Operations Guide', shortLabel: 'Service Ops' },
+];
+
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isGridOpen, setIsGridOpen] = useState(false);
@@ -14,15 +19,26 @@ const App: React.FC = () => {
   const [guideMode, setGuideMode] = useState<GuideMode>('coding');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
+  const slides = GUIDE_SLIDES[guideMode] ?? [];
+  const safeSlideCount = Math.max(slides.length, 1);
+  const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
+  const currentSlide = slides[safeCurrentSlideIndex];
+  const progress = slides.length > 0 ? ((safeCurrentSlideIndex + 1) / slides.length) * 100 : 0;
+
+  const handleGuideModeChange = (nextGuideMode: GuideMode): void => {
+    setGuideMode(nextGuideMode);
+    setCurrentSlideIndex(0);
+    setIsGridOpen(false);
+  };
 
   const nextSlide = () => {
-    if (currentSlideIndex < slides.length - 1) {
+    if (safeCurrentSlideIndex < slides.length - 1) {
       setCurrentSlideIndex((previous) => previous + 1);
     }
   };
 
   const prevSlide = () => {
-    if (currentSlideIndex > 0) {
+    if (safeCurrentSlideIndex > 0) {
       setCurrentSlideIndex((previous) => previous - 1);
     }
   };
@@ -90,6 +106,10 @@ const App: React.FC = () => {
     return () => window.clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    setCurrentSlideIndex((index) => Math.min(index, Math.max(slides.length - 1, 0)));
+  }, [slides.length]);
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -122,9 +142,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentSlideIndex, isGridOpen, guideMode]);
 
-  const slides = GUIDE_SLIDES[guideMode];
-  const currentSlide = slides[currentSlideIndex];
-  const progress = ((currentSlideIndex + 1) / slides.length) * 100;
   const prevLabel = lang === 'de' ? 'Zurück' : 'Back';
   const nextLabel = lang === 'de' ? 'Weiter' : 'Next';
   const overviewLabel = lang === 'de' ? 'Übersicht' : 'Overview';
@@ -144,17 +161,10 @@ const App: React.FC = () => {
 
         <div className="flex items-center space-x-4">
           <div className="hidden rounded-xl border border-gray-200 bg-gray-100 p-1 text-xs font-semibold sm:flex">
-            {([
-              { value: 'coding' as GuideMode, label: 'Coding Guide' },
-              { value: 'serviceOps' as GuideMode, label: 'Service Operations Guide' },
-            ]).map((mode) => (
+            {GUIDE_MODE_OPTIONS.map((mode) => (
               <button
                 key={mode.value}
-                onClick={() => {
-                  setGuideMode(mode.value);
-                  setCurrentSlideIndex(0);
-                  setIsGridOpen(false);
-                }}
+                onClick={() => handleGuideModeChange(mode.value)}
                 className={`rounded-lg px-3 py-1 transition-colors ${guideMode === mode.value ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-white'}`}
                 aria-pressed={guideMode === mode.value}
               >
@@ -168,7 +178,7 @@ const App: React.FC = () => {
           </div>
 
           <span className="hidden font-mono text-sm text-gray-500 sm:inline">
-            {currentSlideIndex + 1} / {slides.length}
+            {safeCurrentSlideIndex + 1} / {slides.length}
           </span>
 
           <div className="mx-2 hidden h-6 w-px bg-gray-200 sm:block"></div>
@@ -216,7 +226,17 @@ const App: React.FC = () => {
         onTouchEnd={handleTouchEnd}
       >
         <div className={`flex h-full w-full justify-center transition-opacity duration-300 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
-          <SlideLayout key={`${guideMode}-${currentSlideIndex}`} data={currentSlide} isActive={!isGridOpen} lang={lang} guideMode={guideMode} />
+          {currentSlide && (
+            <SlideLayout
+              key={`${guideMode}-${safeCurrentSlideIndex}`}
+              data={currentSlide}
+              isActive={!isGridOpen}
+              lang={lang}
+              guideMode={guideMode}
+              guideModeOptions={GUIDE_MODE_OPTIONS}
+              onGuideModeChange={handleGuideModeChange}
+            />
+          )}
         </div>
 
         {!isGridOpen && (
@@ -241,19 +261,19 @@ const App: React.FC = () => {
                       setIsGridOpen(false);
                     }}
                     className={`group relative flex flex-col items-start rounded-xl border-2 p-6 text-left transition-all duration-200 ${
-                      currentSlideIndex === index
+                      safeCurrentSlideIndex === index
                         ? 'scale-[1.02] border-blue-500 bg-white shadow-lg'
                         : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
                     }`}
                   >
-                    <div className={`mb-4 rounded-lg p-2 ${currentSlideIndex === index ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-500'}`}>
+                    <div className={`mb-4 rounded-lg p-2 ${safeCurrentSlideIndex === index ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-500'}`}>
                       <IconComponent size={24} />
                     </div>
                     <span className="mb-2 text-xs font-mono text-gray-400">{slideLabel} {index + 1}</span>
-                    <h3 className={`font-bold leading-tight ${currentSlideIndex === index ? 'text-gray-900' : 'text-gray-600'}`}>
+                    <h3 className={`font-bold leading-tight ${safeCurrentSlideIndex === index ? 'text-gray-900' : 'text-gray-600'}`}>
                       {slideTitle}
                     </h3>
-                    {currentSlideIndex === index && (
+                    {safeCurrentSlideIndex === index && (
                       <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-blue-500 animate-pulse"></div>
                     )}
                   </button>
@@ -268,7 +288,7 @@ const App: React.FC = () => {
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <button
             onClick={prevSlide}
-            disabled={currentSlideIndex === 0}
+            disabled={safeCurrentSlideIndex === 0}
             className="flex items-center space-x-2 rounded-lg px-6 py-2 font-medium text-gray-700 transition-all active:scale-95 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronLeft size={20} />
@@ -290,7 +310,7 @@ const App: React.FC = () => {
 
           <button
             onClick={nextSlide}
-            disabled={currentSlideIndex === slides.length - 1}
+            disabled={safeCurrentSlideIndex === slides.length - 1 || slides.length === 0}
             className="flex items-center space-x-2 rounded-lg bg-gray-900 px-6 py-2 font-medium text-white shadow-lg transition-all hover:bg-gray-800 hover:shadow-xl active:scale-95 disabled:cursor-not-allowed disabled:opacity-30"
           >
             <span>{nextLabel}</span>

@@ -284,10 +284,15 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     title: 'Tickets Are Operational Records, Not Chat Messages',
     titleDE: 'Tickets sind operative Nachweise, keine Chat-Nachrichten',
     subtitle: 'Ticket-as-contract prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Ticket-as-contract prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Please clean up this ticket:\n\n"Anna needs access to the reporting folder today. Max has it too. Month-end is blocked. Please add urgency and mention that her manager said it is okay."',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nTurn the raw ticket text into an execution-ready ticket summary without hiding missing approval or scope gaps.\n\nInput:\nUse only this provided ticket text:\n"Anna needs access to the reporting folder today. Max has it too. Month-end is blocked. Please add urgency and mention that her manager said it is okay."\n\nConstraints:\nDo not invent approval, resource owner, group name, access level, or business impact. Do not treat "Max has it too" as proof that the same access is valid. Separate facts from assumptions.\n\nValidation:\nCheck whether the ticket contains target user, target resource, access level, requester, approval source, business reason, urgency basis, and missing owner approval.\n\nOutput format:\nReturn sections for Clean Ticket Summary, Facts, Assumptions, Missing Information, Risk Notes, Questions for Requester, and Suggested Ticket Update.\n\nDone when:\nThe ticket is clearer without making the request look more approved or safer than the provided text supports.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: asks for cleanup without defining clean, may polish unsafe assumptions, preserves “Max has it too” as approval-like evidence, fails to separate facts from gaps, and can make a blocked ticket look ready. Lesson: The LLM is not granting access. It is improving ticket quality while preserving uncertainty and missing evidence.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -297,10 +302,15 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     title: 'Uncontrolled Requests Create Unsafe Work',
     titleDE: 'Unkontrollierte Requests erzeugen unsichere Arbeit',
     subtitle: 'Constraint prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Constraint prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Review this login ticket and suggest what to do:\n\n"User cannot log in since this morning. Might be locked. Maybe reset the password or unlock the account. The user needs access urgently because accounting closes today."',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nReview the provided login ticket text and identify safe next information needs.\n\nInput:\nUse only this ticket text:\n"User cannot log in since this morning. Might be locked. Maybe reset the password or unlock the account. The user needs access urgently because accounting closes today."\n\nConstraints:\nDo not recommend password reset, account unlock, group changes, or production changes without provided policy/runbook permission and evidence. Do not treat "might be locked" as a fact.\n\nValidation:\nIdentify facts, assumptions, missing evidence, unsafe suggested actions, and the minimum information a human operator needs before acting.\n\nOutput format:\nReturn sections for Facts, Assumptions, Unsafe Action Risks, Missing Information, Questions for Requester, Operator Checklist, and Safe Ticket Reply.\n\nDone when:\nA human operator can see what is known, what is guessed, and what must be checked before any account action.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: invites action recommendations without a policy boundary, mixes guesses with facts, may recommend reset or unlock without evidence, skips missing information, and treats urgency as enough context. Lesson: Constraints make the LLM useful as a reviewer and structuring assistant, not as an imaginary account admin.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -336,12 +346,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'Activity',
     title: 'Incidents Need Evidence Before Action',
-
+    titleDE: 'Incidents brauchen Evidenz vor Aktionen',
     subtitle: 'Evidence-first prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Evidence-first prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Summarize this incident and tell us whether we should restart the API:\n\nTicket:\n"API timeout started again after lunch. It happened last month too."\n\nMonitoring note:\n"13:05-13:22 increased p95 latency. Error rate normal. No deployment today."\n\nLog excerpt:\n"13:08 upstream timeout to payment-service"\n"13:10 retry succeeded"\n"13:14 upstream timeout to payment-service"',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nSummarize the provided incident evidence and prepare a safe investigation note for the ticket.\n\nInput:\nUse only the provided ticket text, monitoring note, and log excerpt.\n\nConstraints:\nDo not recommend restart or production mitigation as a final action. Do not infer root cause beyond the provided evidence. Separate observed symptoms from possible causes.\n\nValidation:\nCheck whether the evidence contains timeline, affected service, error rate, latency impact, deployment context, recurring pattern, and missing data.\n\nOutput format:\nReturn sections for Timeline, Observed Evidence, What This Evidence Supports, What It Does Not Prove, Missing Checks, Suggested Next Investigation Steps, and Ticket Update Text.\n\nDone when:\nThe ticket has an evidence-based summary that helps a human operator decide the next safe action.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: asks for an operational decision from limited evidence, jumps toward restart, blurs symptom/evidence/missing data, and may overstate what the snippets prove. Lesson: The LLM can preserve and structure evidence. It should not pretend limited text is enough to authorize mitigation.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -349,12 +364,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'UserCheck',
     title: 'Access Requests Need Approval Boundaries',
-
+    titleDE: 'Access Requests brauchen Genehmigungsgrenzen',
     subtitle: 'Policy-bound prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Policy-bound prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Check whether this request is okay:\n\nTicket:\n"Anna moved to controlling and needs the same finance access as Max. Her manager approved it. Please process today."\n\nPolicy excerpt:\n"Finance report folder access requires approval from the resource owner. Access must be granted through the least-privilege AD group matching the requested resource and access level. Access must not be copied from another user as the only evidence."',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nCompare the provided access request against the provided policy excerpt and identify whether the ticket is ready for human processing.\n\nInput:\nUse only the ticket text and policy excerpt provided.\n\nConstraints:\nDo not approve or reject the request as a final authority. Do not invent owner approval, group names, or access levels. Do not treat another user’s access as sufficient evidence.\n\nValidation:\nCheck the ticket against each policy requirement: resource owner approval, least-privilege group, requested resource, access level, and no access-copying as sole evidence.\n\nOutput format:\nReturn sections for Policy Requirements, Evidence Present, Evidence Missing, Risk Notes, Questions for Requester, and Suggested Ticket Update.\n\nDone when:\nA human operator can clearly see whether the request is ready, blocked, or missing required information.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: is underspecified, may collapse policy review into yes/no, ignore missing owner approval, treat manager approval as sufficient, and fail to produce useful ticket text. Lesson: The LLM is useful for policy comparison and gap detection, not for granting permissions.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -362,12 +382,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'SearchCheck',
     title: 'Facts Require Retrieval from Systems',
-
+    titleDE: 'Fakten erfordern Retrieval aus Systemen',
     subtitle: 'Retrieval prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Retrieval prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Please review this mailbox issue and explain what might be wrong:\n\nTicket:\n"The department says emails are not arriving in the shared mailbox."\n\nProvided mailbox output:\nPrimarySmtpAddress: invoices@example.org\nForwardingAddress: accounting-archive@example.org\nDeliverToMailboxAndForward: false\n\nProvided distribution list output:\nDL invoices-team@example.org members:\n- anna@example.org\n- max@example.org',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nReview the provided mailbox and distribution-list output and identify what can be concluded safely.\n\nInput:\nUse only the ticket text and provided command output.\n\nConstraints:\nDo not claim the configuration is wrong unless the expected standard is provided. Do not invent mailbox policy. Do not suggest changing forwarding or distribution list membership without an approved expected state.\n\nValidation:\nSeparate current observed state from missing expected state. Identify which facts are supported by the output and which checks are still needed.\n\nOutput format:\nReturn sections for Current Observed State, Supported Facts, Missing Expected State, Possible Questions, Risk Notes, and Ticket Update Text.\n\nDone when:\nThe ticket clearly documents what the provided output shows and what cannot be concluded yet.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: asks for explanation without expected state, may infer correctness without a standard, can overlook that output alone is insufficient, and may fail to ask for the missing mailbox standard. Lesson: Retrieval prompting should make evidence visible and bounded. It should not turn partial output into fake certainty.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -375,12 +400,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'TerminalSquare',
     title: 'Repeatable Checks Require Tools or Scripts',
-
+    titleDE: 'Wiederholbare Checks brauchen Tools oder Skripte',
     subtitle: 'Tool-use prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Tool-use prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Tell the service desk how to check whether a user has the right AD groups and mailbox settings.',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nCreate a read-only verification checklist for a human operator.\n\nContext:\nThe operator needs to verify user account status, group membership, mailbox aliases, forwarding, and distribution-list membership before changing anything.\n\nConstraints:\nOnly propose read-only checks. Do not include commands that modify users, groups, mailbox settings, or distribution lists. Mark placeholders clearly.\n\nValidation:\nFor each check, define the purpose, required input, expected evidence, and what output should be pasted back into the ticket.\n\nOutput format:\nReturn a table with columns: Check, Purpose, Placeholder Input, Read-Only Command or Manual Step, Evidence to Paste, and Follow-Up If Missing.\n\nDone when:\nThe operator has a reproducible verification checklist that does not perform changes.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: is too broad, may suggest unsafe write commands, fails to distinguish read-only checks from changes, leaves expected output undefined, and is not ticket-ready. Lesson: The LLM can draft a safe checklist or command plan. The human or approved tool performs the actual checks.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -388,12 +418,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'MessagesSquare',
     title: 'Output Must Be Structured for Handoff',
-
+    titleDE: 'Output muss für Übergaben strukturiert sein',
     subtitle: 'Structured-output prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Structured-output prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Write an escalation for this ticket:\n\n"The user still cannot access the report. We checked some things. It might be network or permissions. The user is annoyed and wants it fixed today."',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nDraft an escalation note from the provided ticket notes without inventing evidence.\n\nInput:\nUse only these notes:\n"The user still cannot access the report. We checked some things. It might be network or permissions. The user is annoyed and wants it fixed today."\n\nConstraints:\nDo not invent checks, timestamps, systems, teams, priority, or root cause. Do not present guesses as facts. Keep missing information visible.\n\nValidation:\nIdentify whether the notes include impact, timeline, attempted steps, evidence, current blocker, suspected target team, and requested action.\n\nOutput format:\nReturn sections for Escalation Draft, Facts Available, Missing Information, Assumptions to Avoid, Questions Before Escalation, and Suggested Ticket Update.\n\nDone when:\nThe escalation draft is usable only if clearly marked gaps are resolved, instead of hiding weak evidence behind polished wording.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: may polish vague notes, invent completed checks, turn annoyance into priority, escalate without a clear question, and hide missing evidence. Lesson: Structured output helps prevent polished nonsense from becoming someone else’s problem.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -401,12 +436,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'ShieldAlert',
     title: 'Validation Must Prove the Next Action Is Safe',
-
+    titleDE: 'Validierung muss beweisen, dass die nächste Aktion sicher ist',
     subtitle: 'Validation prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Validation prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Improve this change approval text:\n\n"The vendor recommends changing timeout from 30s to 60s tonight. It should fix the API errors. Rollback is changing it back. The change is small."',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nReview the provided change approval text for readiness gaps before rewriting it.\n\nInput:\nUse only this change text:\n"The vendor recommends changing timeout from 30s to 60s tonight. It should fix the API errors. Rollback is changing it back. The change is small."\n\nConstraints:\nDo not make the change sound approved or low-risk unless evidence is present. Separate vendor claim from verified local evidence. Do not invent rollback testing, impact analysis, approvals, or post-change checks.\n\nValidation:\nCheck for affected systems, observed error evidence, user impact, approval status, tested rollback, implementation steps, maintenance window, dependencies, and post-change validation.\n\nOutput format:\nReturn sections for Verified Facts, Unsupported Claims, Missing Readiness Evidence, Risk Notes, Questions Before Approval, and Safer Draft Text.\n\nDone when:\nThe revised text improves clarity without hiding that the change is not approval-ready.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: asks for better wording instead of readiness review, may make unsafe change text sound approved, hides rollback gaps, accepts vendor claims as facts, and treats “small” as risk assessment. Lesson: Validation prompting makes the LLM challenge unsafe wording before it makes the wording prettier. Humanity occasionally deserves that mercy.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -424,12 +464,17 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.COMPARISON,
     icon: 'BookOpenCheck',
     title: 'Successful Patterns Must Become Runbooks',
-
+    titleDE: 'Erfolgreiche Muster müssen zu Runbooks werden',
     subtitle: 'Write-back prompting: LLMs should prepare the work, not pretend they performed the work.',
+    subtitleDE: 'Service-Operations-Prompting: LLMs sollen die Arbeit vorbereiten, nicht so tun, als hätten sie sie ausgeführt.',
     technique: 'Write-back prompting',
+    techniqueDE: 'Service-Operations-Prompting',
     codeStandard: 'Make a KB article from these closure notes:\n\n"Restarted job queue. Emails went out again. Same as last time. Tell people to restart queue if it happens again."',
+    codeStandardDE: 'Bitte prüfe den bereitgestellten Service-Operations-Request. Nutze nur sichtbare Ticketdaten und formuliere keine operative Aktion als bereits ausgeführt.',
     codeOptimized: 'Goal:\nTurn the closure notes into a draft KB article without overstating certainty.\n\nInput:\nUse only these closure notes:\n"Restarted job queue. Emails went out again. Same as last time. Tell people to restart queue if it happens again."\n\nConstraints:\nDo not present restart as the approved standard fix unless the notes prove it. Mark missing evidence and approval gaps. Separate confirmed observation from proposed procedure.\n\nValidation:\nCheck whether the notes include symptoms, affected system, detection method, evidence before restart, approved restart condition, validation after restart, rollback or stop condition, and escalation owner.\n\nOutput format:\nReturn a KB draft with sections for Symptoms, Confirmed Observations, Missing Evidence, Safe Preconditions, Draft Procedure, Stop Conditions, Validation, Escalation Path, and Related Tickets.\n\nDone when:\nThe KB draft is useful for review without turning an unverified workaround into policy.',
+    codeOptimizedDE: 'Ziel:\nBereite den bereitgestellten Service-Operations-Fall für menschliche Bearbeitung vor.\n\nInput:\nNutze nur die bereitgestellten Tickettexte, Outputs, Logs, Policies oder Notizen.\n\nEinschränkungen:\nErfinde keine Evidenz, Genehmigung, Systemzugriffe, Änderungen oder Abschlüsse. Das LLM soll Arbeit vorbereiten, nicht so tun, als hätte es sie ausgeführt.\n\nValidierung:\nTrenne Fakten, Annahmen, fehlende Informationen, Risiken und offene Fragen.\n\nAusgabeformat:\nGib eine strukturierte, ticketfähige Antwort mit Fakten, Lücken, Fragen, Risikohinweisen und Entwurfstext zurück.\n\nFertig wenn:\nEin menschlicher Operator die nächsten sicheren Schritte und fehlende Evidenz klar erkennen kann.',
     content: 'Risk: may turn a fragile workaround into official guidance, lacks symptoms/evidence/stop conditions/escalation path, mixes fix and assumption, and may recommend restart without safety boundaries. Lesson: The LLM can draft knowledge safely, but it must preserve uncertainty instead of laundering guesses into documentation.',
+    contentDE: 'Risiko: Der schwache Prompt kann fehlende Evidenz überdecken, Annahmen polieren oder operative Aktionen nahelegen. Lektion: Das LLM soll bereitgestellte Informationen strukturieren, Lücken sichtbar machen und sichere Entwürfe vorbereiten, nicht Zugriff, Änderungen oder Mitigationen ausführen.',
   },
 
   {
@@ -437,7 +482,9 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
     type: SlideType.CONTENT,
     icon: 'Workflow',
     title: 'Service Operations Control Loop',
+    titleDE: 'Service Operations Control Loop',
     subtitle: 'Input → Extract → Bound → Draft → Validate → Handoff → Write-back.',
+    subtitleDE: 'Input → Extrahieren → Begrenzen → Entwerfen → Validieren → Übergeben → Write-back.',
     content: [
       'Input: What ticket text, logs, command output, screenshots, policy, runbook, or closure notes are provided?',
       'Extract: What facts, assumptions, missing information, risks, and unsafe requested actions are visible?',
@@ -446,6 +493,15 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
       'Validation: Which checks prove the draft preserves uncertainty and exposes gaps?',
       'Handoff: What structure does the human operator, approver, or next support team need?',
       'Write-back: What belongs in the ticket, knowledge base, runbook draft, or known-error candidate?',
+    ],
+    contentDE: [
+      'Input: Welche Tickettexte, Logs, Command Outputs, Screenshots, Policies, Runbooks oder Abschlussnotizen liegen vor?',
+      'Extrahieren: Welche Fakten, Annahmen, fehlenden Informationen, Risiken und unsicheren angefragten Aktionen sind sichtbar?',
+      'Begrenzen: Was darf das LLM nicht erfinden, genehmigen, ausführen, schließen oder als verifiziert behandeln?',
+      'Entwerfen: Welches Ticket-Update, welche Requester-Fragen, Checkliste, Eskalationsnotiz oder welcher KB-/Runbook-Entwurf soll vorbereitet werden?',
+      'Validierung: Welche Checks beweisen, dass der Entwurf Unsicherheit erhält und Lücken sichtbar macht?',
+      'Übergabe: Welche Struktur braucht der menschliche Operator, Approver oder das nächste Support-Team?',
+      'Write-back: Was gehört ins Ticket, in die Knowledge Base, den Runbook-Entwurf oder den Known-Error-Kandidaten?',
     ],
   },
   {
@@ -460,6 +516,11 @@ export const SERVICE_OPS_SLIDES: SlideData[] = [
       'Good service-operations prompts do not create longer tickets. They create safer prepared work.',
       'They structure provided evidence, separate facts from assumptions, detect unsafe requests, draft questions and handoffs, prepare read-only checklists, and turn resolved notes into reviewable KB or runbook drafts.',
       'They do not frame the model as a hidden operator with invisible access to AD, mailboxes, monitoring, or production systems.',
+    ],
+    contentDE: [
+      'Gute Service-Operations-Prompts erzeugen keine längeren Tickets. Sie erzeugen sicherer vorbereitete Arbeit.',
+      'Sie strukturieren bereitgestellte Evidenz, trennen Fakten von Annahmen, erkennen unsichere Requests, entwerfen Fragen und Übergaben, bereiten Read-only-Checklisten vor und verwandeln Abschlussnotizen in prüfbare KB- oder Runbook-Entwürfe.',
+      'Sie rahmen das Modell nicht als versteckten Operator mit unsichtbarem Zugriff auf AD, Mailboxen, Monitoring oder Produktionssysteme.',
     ],
   },
 ];
