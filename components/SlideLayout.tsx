@@ -47,7 +47,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
   const technique = t(data.technique, data.techniqueDE);
 
   const thanksLabel = lang === 'de' ? 'Danke für Ihre Aufmerksamkeit!' : 'Thank you for your attention!';
-  const trainingLabel = lang === 'de' ? 'Operatives Prompting für die Praxis' : 'Operational Prompting for Real Software Work';
+  const trainingLabel = lang === 'de' ? 'Operatives Prompting für echte IT-Arbeit' : 'Operational Prompting for Real IT Work';
   const guideSwitchLabel = lang === 'de' ? 'Guide auswählen' : 'Choose guide';
 
   const renderContent = () => {
@@ -164,7 +164,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
 
   return (
     <div className="relative mx-auto h-full w-full max-w-6xl overflow-hidden rounded-xl border border-gray-100 bg-white p-6 shadow-2xl md:p-12">
-      <div className="pointer-events-none absolute right-0 top-0 -z-10 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-50 opacity-50 blur-3xl filter"></div>
+      <div className="pointer-events-none absolute right-0 top-0 -z-10 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-50 opacity-50 blur-3xl filter" />
       {renderContent()}
     </div>
   );

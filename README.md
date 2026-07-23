@@ -1,82 +1,97 @@
-# Operational Prompting for Real Software Work
+# Operational Prompting for Real IT Work
 
-An interactive React + TypeScript + Vite presentation about **operational prompting** for developers, IT teams, and technical stakeholders. The deck focuses on how to control LLMs and coding agents with context, constraints, retrieval, tools, validation, and explicit stopping conditions.
+An interactive React + TypeScript + Vite presentation about **task-fit operational prompting** across IT engineering, architecture, data, operations, support, and IT service management.
+
+The central lesson is deliberately not “write a bigger prompt.” A good prompt is the **smallest sufficient operational contract** for the task. Simple work may need one sentence. Risky, ambiguous, long-running, or handoff-heavy work needs more explicit context, boundaries, evidence, validation, and stopping conditions.
 
 🔗 **Live Demo:** [https://voku.github.io/Prompt_Intro/](https://voku.github.io/Prompt_Intro/)
 
 ---
 
+## Core thesis
+
+- Prompt quality is **task fit**, not length.
+- More words do not compensate for missing evidence, scope, validation, or a clear outcome.
+- IT is more than code: the examples include engineering, architecture, infrastructure, data, identity, capacity, operations, documentation, governance, and technical decisions.
+- ITSM is more than tickets: the examples include incident, request, problem, change, knowledge, configuration, capacity, availability, supplier, measurement, and continual-improvement work.
+- LLMs may prepare analysis, decisions, handoffs, checklists, and write-back. Accountable people and approved systems still authorize and perform operational work.
+
+---
+
 ## Target audience
 
-- Developers
-- IT teams and engineering leads
-- Technical stakeholders working with LLM-assisted delivery
-- Anyone who should understand that good prompts are operational contracts, not magic sentences
+- Developers, system engineers, architects, administrators, and platform teams
+- Service desk, operations, IAM, infrastructure, and IT service management teams
+- Engineering and service owners
+- Technical and business stakeholders working with LLM-assisted delivery
+- Anyone who should understand that good prompts are operational contracts, not magic sentences or token-heavy rituals
 
 ---
 
 ## Features
 
-- 📊 **Two-mode, 14-slide deck** with a frontpage toggle for Coding Guide and Service Operations Guide
-- ⚖️ Side-by-side comparisons for **Weak Prompt vs. Operational Prompt** in coding mode and **Uncontrolled Request vs. Operational Request** in service-operations mode
-- 🧪 **Mode-aware local prompt-quality evaluator** in the playground (no backend, no real model call)
-- 🌐 **EN / DE language toggle**
-- ⌨️ Keyboard navigation plus swipe navigation on touch devices
-- 🗂️ Slide overview grid for quick navigation
+- 📊 **Two bilingual 14-slide decks**:
+  - **IT Engineering & Delivery**
+  - **IT Service Management**
+- ⚖️ Side-by-side comparisons for **not task-fit vs. task-fit** prompts
+- 🔢 Visible word counts to show that the better prompt may be shorter or longer
+- 🧪 **Mode-aware local task-fit evaluator** with no backend and no model call
+- 🚫 Filler and repetition warnings for phrases such as “be extremely thorough” or unlimited-scope requests
+- 🌐 English and German content throughout
+- ⌨️ Keyboard and swipe navigation
+- 🗂️ Slide overview grid
 - ⏱️ Session timer
 - 📱 Responsive design
 - 🚀 GitHub Pages deployment with the `/Prompt_Intro/` base path preserved
 
 ---
 
-
 ## Guide modes
 
-The frontpage toggle switches between two decks while preserving language selection, timer state, navigation, fullscreen, swipe navigation, and overview behavior:
+### IT Engineering & Delivery
 
-- **Coding Guide** — teaches operational prompting for software work with scope, retrieval, tools, structured output, validation, and write-back patterns.
-- **Service Operations Guide** — teaches prompting techniques for turning uncontrolled operational work into bounded, evidence-based, safe, and handoff-ready work.
+The engineering deck covers operational prompting across broader IT work, not only code generation:
 
+- selecting the smallest sufficient prompt
+- scope and decision boundaries
+- evidence retrieval from files, systems, logs, diagrams, policies, and current state
+- architecture and migration decisions
+- capacity and repeatable calculations through tools
+- structured and verifiable output
+- validation that challenges assumptions
+- write-back into repositories, tests, runbooks, service maps, architecture records, and operating procedures
 
-The Service Operations Guide intentionally focuses on LLM-suitable work: structuring ticket text, reviewing provided evidence, identifying gaps, drafting handoffs, preparing checklists, and creating KB/runbook drafts. It does not frame the LLM as a hidden operator with direct access to AD, mailboxes, monitoring, or production systems.
+### IT Service Management
 
-The Service Operations Guide focuses on reusable operational prompting techniques for:
+The ITSM deck treats tickets as one operational record among many. It covers:
 
-- tickets as operational records
-- constraints and approval boundaries
-- evidence-first incident handling
-- retrieval from operational systems
-- repeatable checks with tools/scripts
-- structured escalation handoff
-- validation for safe next actions
-- runbook and knowledge base write-back
+- service outcomes rather than document volume
+- incident evidence and safe investigation support
+- request and approval boundaries
+- recurring-problem analysis
+- change readiness and rollback evidence
+- service maps, configuration data, expected state, and ownership
+- capacity and availability analysis
+- service-aware handoffs
+- knowledge, known errors, monitoring, policy, and continual-improvement write-back
 
-## Topics covered
+The model is not framed as a hidden operator with invisible access to AD, mailboxes, monitoring, production systems, or approval authority.
 
-| Slide | Topic |
-|---|---|
-| 1 | Operational Prompting for Real Software Work |
-| 2 | Useful, Fast, and Still Unreliable Without Control |
-| 3 | Weak Prompts Are Vague Tickets *(bug fix example)* |
-| 4 | The Contract Shape: Goal, Context, Constraints, Done-When |
-| 5 | Coding Agents Need Scope Boundaries *(legacy migration example)* |
-| 6 | Facts Require Retrieval *(SQL debugging example)* |
-| 7 | Arithmetic and Repeatable Logic Require Tools or Code |
-| 8 | Output Must Be Structured and Validated |
-| 9 | Named Passes, Assumptions, and Reasoning Summaries |
-| 10 | Tests Must Be Witnesses, Not Accomplices |
-| 11 | Playground: Score the Prompt Before You Run It |
-| 12 | Successful Patterns Must Be Written Back |
-| 13 | LLM Control Loop |
-| 14 | Final Thesis |
+---
+
+## Evaluator behavior
+
+The playground evaluator checks for usable control signals such as goal, context, constraints, validation, output format, and stopping conditions. It also detects operational risks, possible sensitive data, hedge words, generic intensity language, unlimited scope, and repeated instructions.
+
+**Prompt length is not scored directly.** A long prompt with few useful signals can score worse than a concise prompt with clear evidence, boundaries, and output requirements. The evaluator remains a local heuristic, not a model or a substitute for testing the real result.
 
 ---
 
 ## Presentation usage
 
-- **15-minute version:** Slides 1, 2, 3, 4, 6, 8, 10, 13, 14
+- **15-minute version:** Slides 1, 2, 3, 4, 7, 11, 13, and 14
 - **30-minute version:** Slides 1–10, then 13 and 14
-- **45-minute version:** Full deck including the playground and discussion on state updates / repo conventions
+- **45-minute version:** Full deck including the playground and discussion about durable write-back
 
 ---
 
@@ -84,15 +99,12 @@ The Service Operations Guide focuses on reusable operational prompting technique
 
 **Prerequisites:** Node.js ≥ 18
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
-3. Open [http://localhost:3000](http://localhost:3000)
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
@@ -107,48 +119,43 @@ The production build writes static output to `dist/` and keeps the public GitHub
 
 ---
 
-## Deploy to GitHub Pages
-
-Deployment is automated. Every push to `main` triggers the [GitHub Actions workflow](.github/workflows/deploy.yml), which installs dependencies, builds the app, and publishes the result to GitHub Pages.
-
-To enable GitHub Pages in your fork:
-
-1. Go to **Settings → Pages** in your repository.
-2. Set the **Source** to **GitHub Actions**.
-3. Push to `main`.
-
----
-
 ## Project structure
 
 | File / Directory | Purpose |
 |---|---|
-| `index.html` | Entry HTML and social metadata |
-| `index.tsx` | React root mount |
-| `App.tsx` | App shell, navigation, language toggle, overview, timer |
-| `constants.ts` | Coding and Service Operations slide deck content, keyed by guide mode |
-| `types.ts` | Shared TypeScript types for slides and language state |
-| `components/SlideLayout.tsx` | Renders slide types, including the playground slide |
-| `components/PromptComparison.tsx` | Mode-aware comparison labels for coding and service operations |
-| `components/InteractivePlayground.tsx` | Mode-aware local prompt-quality evaluator UI |
-| `services/promptEvaluator.ts` | Local prompt scoring rules and warnings |
-| `vite.config.ts` | Vite config with the `/Prompt_Intro/` base path |
+| `App.tsx` | App shell, navigation, localized guide labels, language toggle, overview, and timer |
+| `constants.ts` | Original slide content |
+| `guideContent.ts` | Typed English/German task-fit and broader-IT content overrides |
+| `promptPresets.ts` | Engineering and ITSM playground presets |
+| `types.ts` | Shared TypeScript types |
+| `components/SlideLayout.tsx` | Slide renderer |
+| `components/PromptComparison.tsx` | Neutral task-fit comparison with word counts |
+| `components/InteractivePlayground.tsx` | Local evaluator UI |
+| `services/promptEvaluator.ts` | Existing contract and operational checks |
+| `services/taskFitEvaluator.ts` | Task-fit wrapper with filler and repetition detection |
+| `implementation-notes.md` | Decisions, trade-offs, stale docs, and validation logs |
 | `.github/workflows/deploy.yml` | GitHub Pages workflow |
-| `implementation-notes.md` | Decisions, trade-offs, stale docs, and validation logs for maintainers |
+
+---
+
+## Deploy to GitHub Pages
+
+Every push to `main` triggers the GitHub Actions workflow, installs dependencies, builds the app, and publishes the result to GitHub Pages.
 
 ---
 
 ## References
 
-The deck is informed by current operational prompting and LLM engineering practices from:
+The deck is informed by operational prompting and LLM engineering practices from:
 
-- [Prompt Engineering Guide (promptingguide.ai)](https://www.promptingguide.ai/)
+- [Prompt Engineering Guide](https://www.promptingguide.ai/)
 - [OpenAI — Best practices for prompt engineering](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
-- [Engineering Practices for LLM Application Development (martinfowler.com)](https://martinfowler.com/articles/engineering-practices-llm.html)
+- [Engineering Practices for LLM Application Development](https://martinfowler.com/articles/engineering-practices-llm.html)
 
 ---
 
 ## Contributing
 
 Pull requests and issues are welcome at:
+
 👉 [https://github.com/voku/Prompt_Intro](https://github.com/voku/Prompt_Intro)

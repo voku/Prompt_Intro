@@ -1,12 +1,16 @@
-import React, { useMemo, useState } from 'react';
-import { BadgeCheck, Play, RotateCcw, ShieldAlert, Target, TriangleAlert } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BadgeCheck, Gauge, Play, RotateCcw, ShieldAlert, Target, TriangleAlert } from 'lucide-react';
 import { GuideMode, Lang } from '../types';
-import { PromptEvaluation, evaluatePrompt } from '../services/promptEvaluator';
+import { getDefaultPreset, PROMPT_PRESETS } from '../promptPresets';
+import {
+  evaluateTaskFitPrompt,
+  TaskFitPromptEvaluation,
+} from '../services/taskFitEvaluator';
 
 interface RunRecord {
   id: number;
   label: string;
-  evaluation: PromptEvaluation;
+  evaluation: TaskFitPromptEvaluation;
 }
 
 interface InteractivePlaygroundProps {
@@ -14,131 +18,40 @@ interface InteractivePlaygroundProps {
   guideMode: GuideMode;
 }
 
-const CODING_PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
-  en: [
-    {
-      label: 'Weak bug fix',
-      text: 'Please maybe fix the login bug if possible and add some tests.',
-    },
-    {
-      label: 'Bug fix contract',
-      text: 'Goal: Fix the login regression in AuthController.\nContext: Inspect the failing path in src/AuthController.ts and the regression case in tests/auth/login.spec.ts.\nConstraints: Preserve the public API, do not touch unrelated routes, and add exactly one regression test for the broken path.\nValidation: Run npm test and npm run typecheck, then paste raw output.\nOutput format: Bullet list with changed files, root cause, and validation results.\nDone when: The regression test fails before the fix, passes after the fix, and the public API stays unchanged.',
-    },
-    {
-      label: 'Legacy migration slice',
-      text: 'Goal: Migrate one reporting screen from jQuery to React.\nContext: Compare the old screen in legacy/reports.html with the new component in src/features/reports. Include before/after screenshots.\nConstraints: Keep existing behavior stable, migrate only the invoice filter slice, and document every behavior difference.\nValidation: Run the existing UI test, compare screenshots, and list any remaining gaps.\nOutput format: Markdown table with old behavior, new behavior, and evidence.\nDone when: One vertical slice is migrated, screenshots match, and open decisions are documented in implementation notes.',
-    },
-    {
-      label: 'SQL debugging',
-      text: 'Goal: Find the root cause of the failing SQL query.\nContext: Inspect the schema first, then compare the working query with the failing query from the production log.\nConstraints: Produce the minimal fix, do not add indexes without evidence, and do not rewrite unrelated joins.\nValidation: Show the schema evidence, identify the exact mismatch, and provide the corrected query.\nOutput format: Short sections for schema, diff, root cause, and fix.\nDone when: The root cause is named and the minimal corrected query is ready to run.',
-    },
-  ],
-  de: [
-    {
-      label: 'Schwacher Bugfix',
-      text: 'Bitte vielleicht den Login-Bug beheben und wenn möglich ein paar Tests hinzufügen.',
-    },
-    {
-      label: 'Bugfix-Vertrag',
-      text: 'Ziel: Die Login-Regression in AuthController beheben.\nKontext: Den fehlschlagenden Pfad in src/AuthController.ts und den Regressionstest in tests/auth/login.spec.ts prüfen.\nEinschränkungen: Öffentliche API beibehalten, keine nicht betroffenen Routen anfassen und genau einen Regressionstest für den kaputten Pfad ergänzen.\nValidierung: npm test und npm run typecheck ausführen und rohe Ausgabe einfügen.\nAusgabeformat: Bullet-Liste mit geänderten Dateien, Grundursache und Validierungsergebnissen.\nFertig wenn: Der Regressionstest vor dem Fix fehlschlägt, nach dem Fix besteht und die öffentliche API unverändert bleibt.',
-    },
-    {
-      label: 'Legacy-Migration',
-      text: 'Ziel: Einen Reporting-Screen von jQuery nach React migrieren.\nKontext: Den alten Screen in legacy/reports.html mit der neuen Komponente in src/features/reports vergleichen. Vorher/Nachher-Screenshots einbeziehen.\nEinschränkungen: Bestehendes Verhalten stabil halten, nur den Invoice-Filter-Slice migrieren und jede Verhaltensabweichung dokumentieren.\nValidierung: Den vorhandenen UI-Test ausführen, Screenshots vergleichen und verbleibende Lücken auflisten.\nAusgabeformat: Markdown-Tabelle mit altem Verhalten, neuem Verhalten und Beleg.\nFertig wenn: Ein vertikaler Slice migriert ist, die Screenshots passen und offene Entscheidungen in den Implementation Notes stehen.',
-    },
-    {
-      label: 'SQL-Debugging',
-      text: 'Ziel: Die Grundursache der fehlschlagenden SQL-Query finden.\nKontext: Zuerst das Schema prüfen, dann die funktionierende Query mit der fehlschlagenden Query aus dem Produktionslog vergleichen.\nEinschränkungen: Minimalen Fix liefern, keine Indizes ohne Beleg hinzufügen und keine nicht betroffenen Joins umschreiben.\nValidierung: Schema-Belege zeigen, den exakten Mismatch benennen und die korrigierte Query liefern.\nAusgabeformat: Kurze Abschnitte für Schema, Diff, Grundursache und Fix.\nFertig wenn: Die Grundursache benannt ist und die minimal korrigierte Query bereitsteht.',
-    },
-  ],
-};
-
-const SERVICE_OPS_PROMPT_PRESETS: Record<Lang, Array<{ label: string; text: string }>> = {
-  en: [
-    {
-      label: 'Messy ticket cleanup',
-      text: 'Goal: Rewrite the provided ticket text into a clearer ticket update without making it look more approved than it is.\nInput: "Anna needs access to the reporting folder today. Max has it too. Month-end is blocked. Please add urgency and mention that her manager said it is okay."\nConstraints: Do not invent owner approval, group names, access level, or business impact. Do not treat Max having access as approval evidence.\nValidation: Identify facts, assumptions, missing information, risk notes, and questions for the requester.\nOutput format: Clean Ticket Summary, Facts, Assumptions, Missing Information, Risk Notes, Questions for Requester, Suggested Ticket Update.\nDone when: The ticket is clearer while preserving uncertainty and missing approval.'
-    },
-    {
-      label: 'Unsafe action review',
-      text: 'Goal: Review the provided login ticket for unsafe suggested actions and missing information.\nInput: "User cannot log in since this morning. Might be locked. Maybe reset the password or unlock the account. The user needs access urgently because accounting closes today."\nConstraints: Do not recommend password reset, account unlock, group changes, or production changes without provided policy/runbook permission and evidence.\nValidation: Separate facts from assumptions, identify unsafe action risks, and list the minimum information a human operator needs before acting.\nOutput format: Facts, Assumptions, Unsafe Action Risks, Missing Information, Questions for Requester, Operator Checklist, Safe Ticket Reply.\nDone when: A human operator can see what is known, guessed, and still required before any account action.'
-    },
-    {
-      label: 'Policy gap analysis',
-      text: 'Goal: Compare the provided access request against the provided policy excerpt and identify readiness gaps.\nInput ticket: "Anna moved to controlling and needs the same finance access as Max. Her manager approved it. Please process today."\nInput policy: "Finance report folder access requires approval from the resource owner. Access must be granted through the least-privilege AD group matching the requested resource and access level. Access must not be copied from another user as the only evidence."\nConstraints: Do not approve or reject as final authority. Do not invent owner approval, group names, or access levels.\nValidation: Check resource owner approval, least-privilege group, requested resource, access level, and no access-copying as sole evidence.\nOutput format: Policy Requirements, Evidence Present, Evidence Missing, Risk Notes, Questions for Requester, Suggested Ticket Update.\nDone when: A human operator can see whether the request is ready, blocked, or missing information.'
-    },
-    {
-      label: 'Escalation draft',
-      text: 'Goal: Draft an escalation note from the provided weak ticket notes without inventing evidence.\nInput: "The user still cannot access the report. We checked some things. It might be network or permissions. The user is annoyed and wants it fixed today."\nConstraints: Do not invent checks, timestamps, systems, teams, priority, or root cause. Keep missing information visible.\nValidation: Identify whether impact, timeline, attempted steps, evidence, blocker, target team, and requested action are present.\nOutput format: Escalation Draft, Facts Available, Missing Information, Assumptions to Avoid, Questions Before Escalation, Suggested Ticket Update.\nDone when: The draft is useful only with clearly marked gaps resolved.'
-    },
-    {
-      label: 'KB draft from notes',
-      text: 'Goal: Turn the provided closure notes into a draft KB article without overstating certainty.\nInput: "Restarted job queue. Emails went out again. Same as last time. Tell people to restart queue if it happens again."\nConstraints: Do not present restart as an approved standard fix unless the notes prove it. Mark missing evidence and approval gaps.\nValidation: Check symptoms, affected system, detection method, evidence before restart, approved restart condition, post-fix validation, stop condition, and escalation owner.\nOutput format: Symptoms, Confirmed Observations, Missing Evidence, Safe Preconditions, Draft Procedure, Stop Conditions, Validation, Escalation Path, Related Tickets.\nDone when: The KB draft is reviewable without laundering an unverified workaround into policy.'
-    },
-  ],
-  de: [
-    {
-      label: 'Ticket bereinigen',
-      text: 'Ziel: Den bereitgestellten Tickettext klarer umschreiben, ohne ihn genehmigter wirken zu lassen.\nInput: "Anna braucht heute Zugriff auf den Reporting-Ordner. Max hat ihn auch. Monatsabschluss ist blockiert. Bitte Dringlichkeit ergänzen und erwähnen, dass ihr Manager es okay findet."\nEinschränkungen: Keine Owner-Freigabe, Gruppennamen, Zugriffsstufe oder Business Impact erfinden. Max-Zugriff nicht als Genehmigungsbeleg behandeln.\nValidierung: Fakten, Annahmen, fehlende Informationen, Risiken und Fragen an den Requester identifizieren.\nAusgabeformat: Clean Ticket Summary, Facts, Assumptions, Missing Information, Risk Notes, Questions for Requester, Suggested Ticket Update.\nFertig wenn: Das Ticket klarer ist und Unsicherheit sowie fehlende Freigabe sichtbar bleiben.'
-    },
-    {
-      label: 'Unsichere Aktion prüfen',
-      text: 'Ziel: Das bereitgestellte Login-Ticket auf unsichere Aktionsvorschläge und fehlende Informationen prüfen.\nInput: "User kann sich seit heute Morgen nicht anmelden. Vielleicht gesperrt. Vielleicht Passwort zurücksetzen oder Account entsperren. User braucht dringend Zugriff, weil Accounting heute abschließt."\nEinschränkungen: Kein Passwort-Reset, Account-Unlock, Gruppenänderung oder Production Change empfehlen ohne bereitgestellte Policy/Runbook-Erlaubnis und Evidenz.\nValidierung: Fakten von Annahmen trennen, unsichere Aktionen markieren und Mindestinformationen für menschliche Operatoren auflisten.\nAusgabeformat: Facts, Assumptions, Unsafe Action Risks, Missing Information, Questions for Requester, Operator Checklist, Safe Ticket Reply.\nFertig wenn: Ein Operator sieht, was bekannt, geraten und vor jeder Account-Aktion noch nötig ist.'
-    },
-    {
-      label: 'Policy-Lückenanalyse',
-      text: 'Ziel: Den bereitgestellten Access Request gegen den Policy-Auszug vergleichen und Bereitschaftslücken identifizieren.\nInput Ticket: "Anna wechselte zu Controlling und braucht denselben Finance-Zugriff wie Max. Ihr Manager hat genehmigt. Bitte heute bearbeiten."\nInput Policy: "Finance report folder access requires approval from the resource owner. Access must be granted through the least-privilege AD group matching the requested resource and access level. Access must not be copied from another user as the only evidence."\nEinschränkungen: Nicht final genehmigen oder ablehnen. Keine Owner-Freigabe, Gruppennamen oder Zugriffsstufen erfinden.\nValidierung: Resource Owner Approval, Least-Privilege-Gruppe, Ressource, Zugriffsstufe und kein Kopieren als alleiniger Beleg prüfen.\nAusgabeformat: Policy Requirements, Evidence Present, Evidence Missing, Risk Notes, Questions for Requester, Suggested Ticket Update.\nFertig wenn: Ein Operator sieht, ob der Request bereit, blockiert oder unvollständig ist.'
-    },
-    {
-      label: 'Eskalationsentwurf',
-      text: 'Ziel: Aus bereitgestellten schwachen Ticketnotizen eine Eskalationsnotiz entwerfen, ohne Evidenz zu erfinden.\nInput: "User kann weiterhin nicht auf den Report zugreifen. Wir haben ein paar Dinge geprüft. Vielleicht Netzwerk oder Berechtigungen. User ist genervt und will heute eine Lösung."\nEinschränkungen: Keine Checks, Zeiten, Systeme, Teams, Priorität oder Root Cause erfinden. Fehlende Informationen sichtbar lassen.\nValidierung: Prüfen, ob Impact, Timeline, Schritte, Evidenz, Blocker, Zielteam und angeforderte Aktion vorhanden sind.\nAusgabeformat: Escalation Draft, Facts Available, Missing Information, Assumptions to Avoid, Questions Before Escalation, Suggested Ticket Update.\nFertig wenn: Der Entwurf nur mit klar markierten Lücken nutzbar ist.'
-    },
-    {
-      label: 'KB-Entwurf aus Notizen',
-      text: 'Ziel: Aus bereitgestellten Abschlussnotizen einen KB-Entwurf erstellen, ohne Sicherheit vorzutäuschen.\nInput: "Job Queue neu gestartet. E-Mails gingen wieder raus. Wie letztes Mal. Leuten sagen, sie sollen Queue neu starten, wenn es wieder passiert."\nEinschränkungen: Restart nicht als genehmigten Standard-Fix darstellen, wenn die Notizen das nicht belegen. Fehlende Evidenz und Approval-Gaps markieren.\nValidierung: Symptome, betroffenes System, Erkennung, Evidenz vor Restart, genehmigte Restart-Bedingung, Post-Fix-Validierung, Stop Condition und Eskalationsowner prüfen.\nAusgabeformat: Symptoms, Confirmed Observations, Missing Evidence, Safe Preconditions, Draft Procedure, Stop Conditions, Validation, Escalation Path, Related Tickets.\nFertig wenn: Der KB-Entwurf reviewbar ist, ohne einen ungeprüften Workaround zur Policy zu machen.'
-    },
-  ],
-};
-
-const PROMPT_PRESETS: Record<GuideMode, Record<Lang, Array<{ label: string; text: string }>>> = {
-  coding: CODING_PROMPT_PRESETS,
-  serviceOps: SERVICE_OPS_PROMPT_PRESETS,
-};
-
-const getDefaultPreset = (lang: Lang, guideMode: GuideMode) => PROMPT_PRESETS[guideMode][lang][1] ?? PROMPT_PRESETS[guideMode][lang][0];
-
 const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, guideMode }) => {
   const [prompt, setPrompt] = useState(getDefaultPreset(lang, guideMode)?.text ?? '');
-  const [evaluation, setEvaluation] = useState<PromptEvaluation | null>(null);
+  const [evaluation, setEvaluation] = useState<TaskFitPromptEvaluation | null>(null);
   const [runHistory, setRunHistory] = useState<RunRecord[]>([]);
 
   const labels = useMemo(
     () => ({
       badge: lang === 'de' ? 'Lokaler Evaluator · kein Modellaufruf' : 'Local evaluator · no model call',
-      helper:
-        lang === 'de'
-          ? 'Bewertet Prompt-Qualität vor der Agenten-Ausführung: Struktur, Nachweisbarkeit und Risikosignale.'
-          : 'Scores prompt quality before you hand it to an agent: structure, evidence, and risk signals.',
-      placeholder:
-        lang === 'de'
-          ? 'Prompt hier einfügen oder einen Preset laden…'
-          : 'Paste a prompt here or load a preset…',
+      helper: lang === 'de'
+        ? 'Bewertet Aufgabenpassung, Kontrollsignale, Evidenz, Risiken und Fülltext. Prompt-Länge gibt keine Punkte.'
+        : 'Evaluates task fit, control signals, evidence, risks, and filler. Prompt length earns no points.',
+      placeholder: lang === 'de'
+        ? 'Prompt hier einfügen oder einen Preset laden…'
+        : 'Paste a prompt here or load a preset…',
       run: lang === 'de' ? 'Prompt prüfen' : 'Evaluate prompt',
       reset: lang === 'de' ? 'Zurücksetzen' : 'Reset',
-      checks: lang === 'de' ? 'Vertrags-Checks' : 'Contract checks',
-      summary: lang === 'de' ? 'Zusammenfassung' : 'Summary',
+      checks: lang === 'de' ? 'Kontrollsignale' : 'Control signals',
       warnings: lang === 'de' ? 'Warnungen' : 'Warnings',
       hedgeWords: lang === 'de' ? 'Abschwächende Wörter erkannt' : 'Hedge words detected',
       unsafeData: lang === 'de' ? 'Möglicherweise sensible Daten erkannt' : 'Potentially sensitive data detected',
+      verbosity: lang === 'de' ? 'Fülltext oder Wiederholung erkannt' : 'Filler or repetition detected',
       history: lang === 'de' ? 'Letzte Auswertungen' : 'Recent evaluations',
-      score: lang === 'de' ? 'Punktzahl' : 'Score',
+      score: lang === 'de' ? 'Aufgabenpassungs-Score' : 'Task-fit score',
+      words: lang === 'de' ? 'Wörter' : 'words',
+      signals: lang === 'de' ? 'Kontrollsignale' : 'control signals',
+      lengthNote: lang === 'de'
+        ? 'Länge wird nicht direkt bewertet. Nur nutzbare Signale, Risiken und redundante Anweisungen beeinflussen den Score.'
+        : 'Length is not scored directly. Only usable signals, risks, and redundant instructions affect the score.',
       noWarnings: lang === 'de' ? 'Keine Warnungen erkannt.' : 'No warnings detected.',
-      operationalSignals: lang === 'de' ? 'Service-Operations-Signale' : 'Service operations signals',
-      operationalWarnings: lang === 'de' ? 'Service-Operations-Warnungen' : 'Service operations warnings',
-      waiting:
-        lang === 'de'
-          ? 'Wähle einen Preset oder prüfe deinen eigenen Prompt.'
-          : 'Choose a preset or evaluate your own prompt.',
+      operationalSignals: lang === 'de' ? 'ITSM-Signale' : 'ITSM signals',
+      operationalWarnings: lang === 'de' ? 'ITSM-Risikohinweise' : 'ITSM risk signals',
+      waiting: lang === 'de'
+        ? 'Wähle einen Preset oder prüfe deinen eigenen Prompt. Vergleiche besonders „lang, aber vage“ mit dem kleinsten ausreichenden Prompt.'
+        : 'Choose a preset or evaluate your own prompt. Compare “long but vague” with the smallest sufficient prompt.',
       missing: lang === 'de' ? 'Fehlend' : 'Missing',
     }),
     [lang],
@@ -146,13 +59,19 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
 
   const presets = PROMPT_PRESETS[guideMode][lang];
 
-  const handleRun = (labelOverride?: string) => {
+  useEffect(() => {
+    setPrompt(getDefaultPreset(lang, guideMode)?.text ?? '');
+    setEvaluation(null);
+    setRunHistory([]);
+  }, [guideMode, lang]);
+
+  const handleRun = (labelOverride?: string): void => {
     if (!prompt.trim()) {
       return;
     }
 
     const matchingPreset = presets.find((preset) => preset.text === prompt);
-    const nextEvaluation = evaluatePrompt(prompt, guideMode);
+    const nextEvaluation = evaluateTaskFitPrompt(prompt, guideMode);
     setEvaluation(nextEvaluation);
     setRunHistory((previous) => [
       {
@@ -164,14 +83,21 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
     ].slice(0, 4));
   };
 
-  const handleReset = () => {
+  const handleReset = (): void => {
     setPrompt(getDefaultPreset(lang, guideMode)?.text ?? '');
     setEvaluation(null);
     setRunHistory([]);
   };
 
+  const totalWarnings = evaluation
+    ? evaluation.hedgeWords.length
+      + evaluation.unsafeDataMatches.length
+      + evaluation.operationalWarnings.length
+      + evaluation.verbosityWarnings.length
+    : 0;
+
   return (
-    <div className="flex flex-col h-full space-y-4">
+    <div className="flex h-full flex-col space-y-4">
       <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
         <div className="mb-1 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 font-semibold text-blue-700 shadow-sm">
           <BadgeCheck size={14} />
@@ -186,7 +112,11 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
             {presets.map((preset) => (
               <button
                 key={preset.label}
-                onClick={() => setPrompt(preset.text)}
+                type="button"
+                onClick={() => {
+                  setPrompt(preset.text);
+                  setEvaluation(null);
+                }}
                 className="rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200"
               >
                 {preset.label}
@@ -203,6 +133,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
+              type="button"
               onClick={() => handleRun()}
               disabled={!prompt.trim()}
               className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-md transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -214,6 +145,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
             </button>
 
             <button
+              type="button"
               onClick={handleReset}
               className="rounded-lg border border-gray-200 bg-white px-4 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
             >
@@ -229,14 +161,28 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
           <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
             {evaluation ? (
               <>
-                <div className="mb-4 flex items-center justify-between gap-4 border-b border-gray-100 pb-4">
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-gray-500">{labels.score}</div>
-                    <div className="text-4xl font-bold text-gray-900">{evaluation.score}<span className="text-lg text-gray-400">/100</span></div>
+                <div className="mb-4 border-b border-gray-100 pb-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wider text-gray-500">{labels.score}</div>
+                      <div className="text-4xl font-bold text-gray-900">
+                        {evaluation.score}<span className="text-lg text-gray-400">/100</span>
+                      </div>
+                    </div>
+                    <div className="max-w-xs rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">
+                      {evaluation.summary[lang]}
+                    </div>
                   </div>
-                  <div className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white">
-                    {evaluation.summary[lang]}
+
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-gray-700">
+                    <span className="rounded-full bg-gray-100 px-3 py-1">{evaluation.wordCount} {labels.words}</span>
+                    <span className="rounded-full bg-blue-100 px-3 py-1 text-blue-800">{evaluation.controlSignalCount} {labels.signals}</span>
+                    <span className={`rounded-full px-3 py-1 ${totalWarnings > 0 ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}>
+                      {totalWarnings} {labels.warnings.toLocaleLowerCase()}
+                    </span>
                   </div>
+
+                  <p className="mt-3 text-xs text-gray-500">{labels.lengthNote}</p>
                 </div>
 
                 <div className="mb-4">
@@ -245,17 +191,17 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                     {evaluation.checks.map((check) => (
                       <div
                         key={check.key}
-                        className={`rounded-lg border px-3 py-3 ${check.passed ? 'border-green-200 bg-green-50' : 'border-amber-200 bg-amber-50'}`}
+                        className={`rounded-lg border px-3 py-3 ${check.passed ? 'border-blue-200 bg-blue-50' : 'border-amber-200 bg-amber-50'}`}
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <span className={`font-semibold ${check.passed ? 'text-green-800' : 'text-amber-800'}`}>
+                          <span className={`font-semibold ${check.passed ? 'text-blue-900' : 'text-amber-900'}`}>
                             {check.label[lang]}
                           </span>
-                          <span className={`text-xs font-bold uppercase tracking-wider ${check.passed ? 'text-green-700' : 'text-amber-700'}`}>
+                          <span className={`text-xs font-bold uppercase tracking-wider ${check.passed ? 'text-blue-700' : 'text-amber-700'}`}>
                             {check.passed ? 'OK' : labels.missing}
                           </span>
                         </div>
-                        <p className={`mt-1 text-sm ${check.passed ? 'text-green-700' : 'text-amber-700'}`}>{check.detail[lang]}</p>
+                        <p className={`mt-1 text-sm ${check.passed ? 'text-blue-800' : 'text-amber-800'}`}>{check.detail[lang]}</p>
                       </div>
                     ))}
                   </div>
@@ -264,8 +210,18 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                 <div>
                   <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">{labels.warnings}</h3>
                   <div className="space-y-2 text-sm">
+                    {evaluation.verbosityWarnings.map((warning, index) => (
+                      <div key={`${warning.en}-${index}`} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-amber-900">
+                        <div className="mb-1 inline-flex items-center gap-2 font-semibold">
+                          <Gauge size={16} />
+                          {labels.verbosity}
+                        </div>
+                        <div>{warning[lang]}</div>
+                      </div>
+                    ))}
+
                     {evaluation.hedgeWords.length > 0 && (
-                      <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-amber-800">
+                      <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-amber-900">
                         <div className="mb-1 inline-flex items-center gap-2 font-semibold">
                           <TriangleAlert size={16} />
                           {labels.hedgeWords}
@@ -273,8 +229,9 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                         <div>{evaluation.hedgeWords.join(', ')}</div>
                       </div>
                     )}
+
                     {evaluation.unsafeDataMatches.length > 0 && (
-                      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-800">
+                      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-900">
                         <div className="mb-1 inline-flex items-center gap-2 font-semibold">
                           <ShieldAlert size={16} />
                           {labels.unsafeData}
@@ -282,14 +239,16 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                         <div>{evaluation.unsafeDataMatches.join(', ')}</div>
                       </div>
                     )}
+
                     {guideMode === 'serviceOps' && evaluation.operationalSignals.length > 0 && (
-                      <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-3 text-green-800">
+                      <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-3 text-blue-900">
                         <div className="mb-1 font-semibold">{labels.operationalSignals}</div>
                         <div>{evaluation.operationalSignals.join(', ')}</div>
                       </div>
                     )}
+
                     {guideMode === 'serviceOps' && evaluation.operationalWarnings.length > 0 && (
-                      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-800">
+                      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-900">
                         <div className="mb-1 inline-flex items-center gap-2 font-semibold">
                           <ShieldAlert size={16} />
                           {labels.operationalWarnings}
@@ -297,7 +256,8 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                         <div>{evaluation.operationalWarnings.join(', ')}</div>
                       </div>
                     )}
-                    {evaluation.hedgeWords.length === 0 && evaluation.unsafeDataMatches.length === 0 && evaluation.operationalWarnings.length === 0 && (
+
+                    {totalWarnings === 0 && (
                       <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-600">{labels.noWarnings}</div>
                     )}
                   </div>
@@ -317,7 +277,10 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {runHistory.map((run) => {
                   const missingCount = run.evaluation.checks.filter((check) => !check.passed).length;
-                  const warningCount = run.evaluation.hedgeWords.length + run.evaluation.unsafeDataMatches.length + run.evaluation.operationalWarnings.length;
+                  const warningCount = run.evaluation.hedgeWords.length
+                    + run.evaluation.unsafeDataMatches.length
+                    + run.evaluation.operationalWarnings.length
+                    + run.evaluation.verbosityWarnings.length;
 
                   return (
                     <div key={run.id} className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
@@ -326,8 +289,8 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                         <span className="rounded-full bg-slate-900 px-2 py-1 text-xs font-bold text-white">{run.evaluation.score}</span>
                       </div>
                       <div className="space-y-1 text-xs text-gray-500">
-                        <div>{labels.missing}: {missingCount}</div>
-                        <div>{labels.warnings}: {warningCount}</div>
+                        <div>{run.evaluation.wordCount} {labels.words} · {run.evaluation.controlSignalCount} {labels.signals}</div>
+                        <div>{labels.missing}: {missingCount} · {labels.warnings}: {warningCount}</div>
                       </div>
                     </div>
                   );
