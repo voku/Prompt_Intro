@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Maximize, X } from 'lucide-react';
 import SlideLayout from './components/SlideLayout';
-import { GUIDE_SLIDES } from './guideContent';
+import { GUIDE_SLIDES } from './constants';
 import { GuideMode, Lang } from './types';
 import { resolveIcon } from './iconUtils';
 
@@ -13,12 +13,12 @@ interface GuideModeOption {
 
 const getGuideModeOptions = (lang: Lang): GuideModeOption[] => lang === 'de'
   ? [
-      { value: 'coding', label: 'IT Engineering & Delivery', shortLabel: 'Engineering' },
-      { value: 'serviceOps', label: 'IT-Service-Management', shortLabel: 'ITSM' },
+      { value: 'desk', label: 'Büroalltag', shortLabel: 'Alltag' },
+      { value: 'decisions', label: 'Zahlen, Pläne & Übergaben', shortLabel: 'Zahlen' },
     ]
   : [
-      { value: 'coding', label: 'IT Engineering & Delivery', shortLabel: 'Engineering' },
-      { value: 'serviceOps', label: 'IT Service Management', shortLabel: 'ITSM' },
+      { value: 'desk', label: 'Everyday Office Work', shortLabel: 'Everyday' },
+      { value: 'decisions', label: 'Numbers, Plans & Handovers', shortLabel: 'Numbers' },
     ];
 
 const App: React.FC = () => {
@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
-  const [guideMode, setGuideMode] = useState<GuideMode>('coding');
+  const [guideMode, setGuideMode] = useState<GuideMode>('desk');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -157,7 +157,7 @@ const App: React.FC = () => {
   const prevLabel = lang === 'de' ? 'Zurück' : 'Back';
   const nextLabel = lang === 'de' ? 'Weiter' : 'Next';
   const overviewLabel = lang === 'de' ? 'Übersicht' : 'Overview';
-  const deckTitle = guideModeOptions.find((option) => option.value === guideMode)?.label ?? 'Operational Prompting';
+  const deckTitle = guideModeOptions.find((option) => option.value === guideMode)?.label ?? 'Prompting at Work';
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 font-sans text-gray-900 selection:bg-blue-200">

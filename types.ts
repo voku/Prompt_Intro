@@ -1,6 +1,6 @@
 export type Lang = 'en' | 'de';
 
-export type GuideMode = 'coding' | 'serviceOps';
+export type GuideMode = 'desk' | 'decisions';
 
 export enum SlideType {
   TITLE = 'TITLE',

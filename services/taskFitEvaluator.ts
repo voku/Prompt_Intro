@@ -13,24 +13,45 @@ export interface TaskFitPromptEvaluation extends BasePromptEvaluation {
 
 const fillerPatterns: Array<{ pattern: RegExp; label: Record<Lang, string> }> = [
   {
-    pattern: /\b(?:very|extremely)\s+(?:detailed|comprehensive|thorough|professional)\b/giu,
+    pattern: /\b(?:very|extremely)\s+(?:detailed|comprehensive|thorough|professional|careful)\b/giu,
     label: {
-      en: 'Generic intensity words do not define better behavior.',
-      de: 'Generische Verstärker definieren kein besseres Verhalten.',
+      en: 'Generic intensity words do not describe better work.',
+      de: 'Generische Verstärker beschreiben keine bessere Arbeit.',
     },
   },
   {
-    pattern: /\b(?:cover everything|do not miss anything|best possible answer|everything (?:else )?that might be useful)\b/giu,
+    pattern: /\b(?:sehr|besonders|äußerst)\s+(?:detailliert\w*|umfassend\w*|gründlich\w*|professionell\w*|sorgfältig\w*)/giu,
+    label: {
+      en: 'Generic intensity words do not describe better work.',
+      de: 'Generische Verstärker beschreiben keine bessere Arbeit.',
+    },
+  },
+  {
+    pattern: /\b(?:cover everything|do not miss anything|best possible answer|everything (?:else )?that might be (?:useful|relevant))\b/giu,
     label: {
       en: 'Unlimited scope replaces a usable boundary with wishful thinking.',
-      de: 'Unbegrenzter Scope ersetzt eine nutzbare Grenze durch Wunschdenken.',
+      de: 'Unbegrenzter Umfang ersetzt eine nutzbare Grenze durch Wunschdenken.',
     },
   },
   {
-    pattern: /\b(?:think (?:carefully|deeply|step by step)|be thorough|be professional)\b/giu,
+    pattern: /(?:decke alles ab|vergiss nichts|übersehe nichts|bestmögliche antwort|alles,? was (?:wichtig|nützlich|relevant) sein könnte|gehe auf alles ein)/giu,
     label: {
-      en: 'Process theatre adds words without adding evidence, constraints, or validation.',
-      de: 'Prozess-Theater ergänzt Wörter, aber keine Evidenz, Grenzen oder Validierung.',
+      en: 'Unlimited scope replaces a usable boundary with wishful thinking.',
+      de: 'Unbegrenzter Umfang ersetzt eine nutzbare Grenze durch Wunschdenken.',
+    },
+  },
+  {
+    pattern: /\b(?:think (?:carefully|deeply|step by step)|be thorough|be professional|take your time)\b/giu,
+    label: {
+      en: 'Process theatre adds words but no material, limits, or evidence.',
+      de: 'Prozess-Theater ergänzt Wörter, aber kein Material, keine Grenzen, keine Belege.',
+    },
+  },
+  {
+    pattern: /(?:denke? (?:sorgfältig|gründlich|schritt für schritt)|sei (?:gründlich|professionell)|lass dir zeit)/giu,
+    label: {
+      en: 'Process theatre adds words but no material, limits, or evidence.',
+      de: 'Prozess-Theater ergänzt Wörter, aber kein Material, keine Grenzen, keine Belege.',
     },
   },
 ];
@@ -82,7 +103,7 @@ const collectVerbosityWarnings = (prompt: string): Array<Record<Lang, string>> =
 
 export const evaluateTaskFitPrompt = (
   prompt: string,
-  guideMode: GuideMode = 'coding',
+  guideMode: GuideMode = 'desk',
 ): TaskFitPromptEvaluation => {
   const baseEvaluation = evaluateBasePrompt(prompt, guideMode);
   const wordCount = countWords(prompt);
@@ -95,8 +116,8 @@ export const evaluateTaskFitPrompt = (
   if (wordCount >= 140 && controlSignalCount <= 2) {
     score -= 12;
     verbosityWarnings.push({
-      en: 'The prompt is long but still provides few usable control signals.',
-      de: 'Der Prompt ist lang, enthält aber weiterhin nur wenige nutzbare Kontrollsignale.',
+      en: 'Long prompt, few usable instructions. The words are not the missing part.',
+      de: 'Langer Prompt, wenige nutzbare Anweisungen. An den Wörtern liegt es nicht.',
     });
   }
 
@@ -104,17 +125,17 @@ export const evaluateTaskFitPrompt = (
 
   const summary: Record<Lang, string> = score >= 85 && verbosityWarnings.length === 0
     ? {
-        en: 'Task-fit prompt: the useful control signals are present without obvious filler.',
-        de: 'Aufgabenpassender Prompt: Die nötigen Kontrollsignale sind ohne offensichtlichen Fülltext vorhanden.',
+        en: 'Fits the task: the useful instructions are there, without filler.',
+        de: 'Passt zur Aufgabe: Die nützlichen Anweisungen sind da, ohne Fülltext.',
       }
     : score >= 60
       ? {
-          en: 'Usable draft: improve missing control signals or remove instructions that do not change the task.',
-          de: 'Brauchbarer Entwurf: Fehlende Kontrollsignale ergänzen oder Anweisungen entfernen, die die Aufgabe nicht verändern.',
+          en: 'Usable draft: add the missing lines, or delete the ones that change nothing.',
+          de: 'Brauchbarer Entwurf: Ergänze die fehlenden Zeilen oder streich die, die nichts verändern.',
         }
       : {
-          en: 'Weak task contract: more words will not fix missing evidence, boundaries, validation, or a clear outcome.',
-          de: 'Schwacher Aufgabenvertrag: Mehr Wörter ersetzen keine Evidenz, Grenzen, Validierung oder ein klares Ergebnis.',
+          en: 'Weak instruction: more words will not replace material, limits, or a source.',
+          de: 'Schwache Anweisung: Mehr Wörter ersetzen kein Material, keine Grenzen und keine Quelle.',
         };
 
   return {

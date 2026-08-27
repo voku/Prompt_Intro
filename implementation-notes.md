@@ -1,99 +1,71 @@
 # Implementation notes
 
+## What changed and why
+
+The previous content had drifted into abstract IT and ITSM vocabulary — engineering delivery, service maps, change readiness, capacity headroom. The examples were also strawmen: the "bad" prompt was almost always an inflated filler monster nobody actually writes, which makes the comparison feel staged and lets every viewer off the hook. The decks are now about **office work**, and the weak side of each comparison is what people really type ("Fasse das Meeting zusammen.", "Reicht unser Budget bis Jahresende?").
+
+The one deliberately inflated prompt is kept as a playground preset ("Long but empty" / "Lang, aber leer"), because the thesis "length is not quality" needs a counter-example somewhere. It is no longer the shape of every slide.
+
 ## Decisions made because the spec was incomplete
 
-- Added a **GuideMode** deck switch with the internal keys `coding` and `serviceOps`, defaulting to `coding`, so the original coding narrative remains the default while service operations becomes a parallel deck rather than a diluted set of examples.
-- Kept slide content in `constants.ts` instead of splitting into `constants/codingSlides.ts` and `constants/serviceOpsSlides.ts` because the repository already used a single constants module and the resulting `GUIDE_SLIDES` map remains readable.
-- Used **Uncontrolled Request** / **Operational Request** labels for service-operations comparisons because those requests can be long and detailed; the teaching point is missing control, not missing words.
-- Made the playground mode-aware so service-operations examples and scoring signals reward evidence, approvals, safe next actions, ticket update text, rollback, post-change checks, runbooks, and knowledge-base write-back rather than prompt length.
-- Reframed the Service Operations examples around **LLM-suitable support work**: structuring provided ticket text, reviewing supplied evidence, identifying gaps, drafting handoffs, preparing checklists, and creating KB/runbook drafts instead of implying hidden live access to AD, mailboxes, monitoring, or production systems.
+- **Kept two decks instead of collapsing to one.** The deck switch is an existing feature, so both modes were re-themed to office work rather than removed: `desk` (everyday desk work) and `decisions` (numbers, plans, handovers). The internal `GuideMode` keys were renamed accordingly.
+- **Collapsed `guideContent.ts` into `constants.ts`.** The override layer existed only because content had been patched on top of older content. Since all content was rewritten, a single source is simpler and there is nothing left to override.
+- **Split the six lines across the two decks.** The everyday deck teaches five (job, material, limits, form, done-when); the numbers deck adds the sixth (evidence) with the *backed / assumed / unknown* labels, because that is where it earns its cost.
+- **Kept the optional expanded panel** on the customer-mail slide as the one place where the fully spelled-out five-line shape is visible, without making every slide that dense.
+- **German is not a translation afterthought.** The filler detector previously matched English phrases only, so the German "long but empty" preset produced no warnings at all. German patterns were added for intensity words, unlimited scope and process theatre.
 
-- Chose **Option B** for the playground and implemented a local prompt-quality evaluator instead of a fake model response, because it keeps the feature honest and requires no backend service.
-- Kept the deck as **14 slides** so the narrative stays focused while still covering all required examples, the playground, and the final control loop.
-- Reframed chain-of-thought material into **named passes, assumptions, validation, and concise reasoning summaries** instead of exposing hidden reasoning.
+## Method sources
 
-## Stale documentation found
+The prompt shape is the office translation of `voku/agent-recall-compiler` and `voku/agent-loop`:
 
-- `README.md` described the deck as **10 slides** while the actual slide data already contained more slides.
-- The old README and metadata positioned the project as a general prompt-engineering deck, which no longer matched the stronger operational-prompting content in the repository.
-- The previous playground service simulated a model response, latency, and token counts even though no real model call was happening.
+- *Goal / Context / Constraints / Verification / Done When* becomes *Auftrag / Material / Grenzen / Form / Fertig-wenn*, with verification kept separate from the stopping condition.
+- Evidence states (`VERIFIED` / `UNKNOWN` / `BLOCKED`) become *belegt / angenommen / unbekannt*.
+- `adversarial-review` (first-draft lens, no manufactured findings) becomes the "have it attack the draft" slide, including the explicit permission to return "no objections".
+- `plan-as-draft` becomes the "plan somebody made real quick" slide, including the permission to answer "the plan holds".
+- `continue-until-done` becomes 60 responses in blocks of 10 with a count and a stop after each block.
+- `production-ready-handoff` / `todo-card-handoff` becomes the holiday handover for a colleague who was in no meeting and cannot read the chat.
+- `evidence-report` becomes the status report where nothing is green without the rule that made it green.
+- `missingness-audit` becomes the gap check that hunts the missing owner rather than style.
+- `retry-stop` becomes "same wrong result twice means material is missing, not wording".
+- `deletion-first` becomes the cutting slide.
 
-## Content trade-offs
+Engineering vocabulary was dropped; the mechanics were not.
 
-- Reduced generic prompt-engineering coverage and centered the deck on developer workflows: bug fixing, legacy migration, SQL debugging, PR review, structured output, tests, and repo state updates.
-- Kept bilingual EN/DE support directly in slide data rather than splitting translations into separate files to preserve the existing repository pattern.
-- Kept the optional expanded `vokuprompt` comparison panel because it helps show a stronger operational version without increasing the default visual density of every slide.
+## Evaluator changes
 
-## Technical trade-offs
+- The six checks now look for the **instruction**, not for a keyword ritual: `max. 120 Wörter`, `Form:`, `pro Vorgang:` and `Tabelle mit Spalten` all count, in both languages.
+- Risk signals replaced the ITSM-specific lists: asking the model to **act** (send, book, approve, sign) rather than prepare, and asking it to **guess**.
+- Negation is handled in both directions, before and after the match, so `nicht schätzen`, `do not invent` and `Erfinde keine Kritik` are no longer reported as requests for a guess. This was the single biggest false-positive source while rebuilding the examples.
+- Sensitive-data detection was moved from credentials to what actually appears in an office prompt: salary, payroll, sick notes, applications, dates of birth, IBAN, personnel numbers — with the credential patterns kept.
+- Pasted material is masked before risk detection, so the customer's own wording in a quoted mail does not produce warnings.
+- Scoring was recalibrated so a deliberately small prompt is not punished: `passed × 14`, plus 10 when the job has both a goal and a limit, plus 8 when the result is checkable. A three-line prompt lands at "usable draft", not at "weak".
+- In the numbers deck, figures without a visible calculation or a source produce a warning of their own.
+- Risk warnings are now bilingual objects instead of English-only strings.
 
-- Added a dedicated `PLAYGROUND` slide type instead of overloading `CONTENT`, which keeps rendering logic explicit and avoids brittle per-slide conditionals.
-- Added a lightweight local evaluator service instead of introducing backend calls or new heavy dependencies.
-- Tightened TypeScript settings conservatively (`strict`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`) and removed `any` usage in icon lookup paths.
+## Bug found and fixed on the way
+
+`iconUtils.resolveIcon` guarded with `typeof candidate === 'function'`. Lucide icons are `forwardRef` **objects**, so the guard rejected every icon and the app rendered `HelpCircle` on every single slide. The guard now also accepts React element types.
 
 ## Intentionally unchanged behavior
 
-- Kept the GitHub Pages deployment workflow and the `/Prompt_Intro/` base path unchanged.
-- Kept EN/DE language support, keyboard navigation, swipe navigation, slide overview, timer, and responsive layout.
-- Kept the app as a static React + TypeScript + Vite presentation without adding a backend or larger framework.
+- The deck switch, EN/DE toggle, keyboard and swipe navigation, overview grid, timer and responsive layout.
+- 14 slides per deck, the `PLAYGROUND` slide type, and the local-only evaluator with no backend and no model call.
+- The GitHub Pages deployment workflow and the `/Prompt_Intro/` base path.
 
 ## Validation log
 
-### Baseline before changes
-
-```text
-$ npm install
-added 69 packages, and audited 70 packages in 3s
-
-9 packages are looking for funding
-  run `npm fund` for details
-
-found 0 vulnerabilities
-
-$ npm run build
-> prompt-engineering-guide@0.0.0 build
-> vite build
-
-vite v6.4.2 building for production...
-transforming...
-✓ 1746 modules transformed.
-rendering chunks...
-computing gzip size...
-dist/assets/favicon-C5OxlRER.svg      0.69 kB │ gzip:   0.28 kB
-dist/index.html                       2.37 kB │ gzip:   0.91 kB
-dist/assets/index-DYCVjhde.js     1,146.04 kB │ gzip: 244.96 kB
-
-(!) Some chunks are larger than 500 kB after minification. Consider:
-- Using dynamic import() to code-split the application
-- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
-- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.02s
-
-$ npx tsc --noEmit
 ```
-
-### Final validation after changes
-
-```text
 $ npm run typecheck
-> prompt-engineering-guide@0.0.0 typecheck
 > tsc --noEmit
+(no output, exit code 0)
 
 $ npm run build
-> prompt-engineering-guide@0.0.0 build
-> vite build
-
-vite v6.4.2 building for production...
-transforming...
-✓ 1749 modules transformed.
-rendering chunks...
-computing gzip size...
+vite v6.4.3 building for production...
+✓ 1751 modules transformed.
 dist/assets/favicon-C5OxlRER.svg      0.69 kB │ gzip:   0.28 kB
-dist/index.html                       2.42 kB │ gzip:   0.88 kB
-dist/assets/index-C8N9b3Du.js     1,150.35 kB │ gzip: 244.65 kB
-
-(!) Some chunks are larger than 500 kB after minification. Consider:
-- Using dynamic import() to code-split the application
-- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
-- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.05s
+dist/index.html                       2.38 kB │ gzip:   0.95 kB
+dist/assets/index-CzWUuj0-.js     1,177.99 kB │ gzip: 258.27 kB
+✓ built in 3.19s
 ```
+
+Both decks were additionally run through the evaluator with a throwaway script: every "what makes it usable" version scores higher than the "what people actually type" version it sits next to, in both languages, and no false risk warning survives on the good side.

@@ -27,31 +27,31 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
     () => ({
       badge: lang === 'de' ? 'Lokaler Evaluator · kein Modellaufruf' : 'Local evaluator · no model call',
       helper: lang === 'de'
-        ? 'Bewertet Aufgabenpassung, Kontrollsignale, Evidenz, Risiken und Fülltext. Prompt-Länge gibt keine Punkte.'
-        : 'Evaluates task fit, control signals, evidence, risks, and filler. Prompt length earns no points.',
+        ? 'Sucht nach Auftrag, Material, Grenzen, Form, Endpunkt und Nachweis – und nach Fülltext. Länge gibt keine Punkte.'
+        : 'Looks for job, material, limits, form, stopping point and evidence — and for filler. Length earns no points.',
       placeholder: lang === 'de'
         ? 'Prompt hier einfügen oder einen Preset laden…'
         : 'Paste a prompt here or load a preset…',
-      run: lang === 'de' ? 'Prompt prüfen' : 'Evaluate prompt',
+      run: lang === 'de' ? 'Prompt prüfen' : 'Check the prompt',
       reset: lang === 'de' ? 'Zurücksetzen' : 'Reset',
-      checks: lang === 'de' ? 'Kontrollsignale' : 'Control signals',
+      checks: lang === 'de' ? 'Die sechs Zeilen' : 'The six lines',
       warnings: lang === 'de' ? 'Warnungen' : 'Warnings',
-      hedgeWords: lang === 'de' ? 'Abschwächende Wörter erkannt' : 'Hedge words detected',
-      unsafeData: lang === 'de' ? 'Möglicherweise sensible Daten erkannt' : 'Potentially sensitive data detected',
+      hedgeWords: lang === 'de' ? 'Weichmacher erkannt' : 'Hedge words detected',
+      unsafeData: lang === 'de' ? 'Sieht nach schützenswerten Daten aus' : 'Looks like data that needs protection',
       verbosity: lang === 'de' ? 'Fülltext oder Wiederholung erkannt' : 'Filler or repetition detected',
       history: lang === 'de' ? 'Letzte Auswertungen' : 'Recent evaluations',
-      score: lang === 'de' ? 'Aufgabenpassungs-Score' : 'Task-fit score',
+      score: lang === 'de' ? 'Brauchbarkeit' : 'Usability score',
       words: lang === 'de' ? 'Wörter' : 'words',
-      signals: lang === 'de' ? 'Kontrollsignale' : 'control signals',
+      signals: lang === 'de' ? 'von 6 Zeilen' : 'of 6 lines',
       lengthNote: lang === 'de'
-        ? 'Länge wird nicht direkt bewertet. Nur nutzbare Signale, Risiken und redundante Anweisungen beeinflussen den Score.'
-        : 'Length is not scored directly. Only usable signals, risks, and redundant instructions affect the score.',
+        ? 'Länge zählt nicht. Gewertet werden nutzbare Anweisungen, Risiken und Wiederholungen – ein Einzeiler kann voll punkten.'
+        : 'Length does not count. Usable instructions, risks and repetition do — a one-liner can score full marks.',
       noWarnings: lang === 'de' ? 'Keine Warnungen erkannt.' : 'No warnings detected.',
-      operationalSignals: lang === 'de' ? 'ITSM-Signale' : 'ITSM signals',
-      operationalWarnings: lang === 'de' ? 'ITSM-Risikohinweise' : 'ITSM risk signals',
+      evidenceSignals: lang === 'de' ? 'Belege verlangt' : 'Evidence requested',
+      riskWarnings: lang === 'de' ? 'Risikohinweise' : 'Risk signals',
       waiting: lang === 'de'
-        ? 'Wähle einen Preset oder prüfe deinen eigenen Prompt. Vergleiche besonders „lang, aber vage“ mit dem kleinsten ausreichenden Prompt.'
-        : 'Choose a preset or evaluate your own prompt. Compare “long but vague” with the smallest sufficient prompt.',
+        ? 'Nimm ein Beispiel oder füg deinen eigenen Prompt ein. Vergleich vor allem „lang, aber leer“ mit „klein und ausreichend“.'
+        : 'Pick an example or paste your own prompt. Compare “long but empty” with “small and sufficient”.',
       missing: lang === 'de' ? 'Fehlend' : 'Missing',
     }),
     [lang],
@@ -92,7 +92,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
   const totalWarnings = evaluation
     ? evaluation.hedgeWords.length
       + evaluation.unsafeDataMatches.length
-      + evaluation.operationalWarnings.length
+      + evaluation.riskWarnings.length
       + evaluation.verbosityWarnings.length
     : 0;
 
@@ -240,20 +240,24 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                       </div>
                     )}
 
-                    {guideMode === 'serviceOps' && evaluation.operationalSignals.length > 0 && (
+                    {guideMode === 'decisions' && evaluation.evidenceSignals.length > 0 && (
                       <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-3 text-blue-900">
-                        <div className="mb-1 font-semibold">{labels.operationalSignals}</div>
-                        <div>{evaluation.operationalSignals.join(', ')}</div>
+                        <div className="mb-1 font-semibold">{labels.evidenceSignals}</div>
+                        <div>{evaluation.evidenceSignals.join(', ')}</div>
                       </div>
                     )}
 
-                    {guideMode === 'serviceOps' && evaluation.operationalWarnings.length > 0 && (
+                    {evaluation.riskWarnings.length > 0 && (
                       <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-900">
                         <div className="mb-1 inline-flex items-center gap-2 font-semibold">
                           <ShieldAlert size={16} />
-                          {labels.operationalWarnings}
+                          {labels.riskWarnings}
                         </div>
-                        <div>{evaluation.operationalWarnings.join(', ')}</div>
+                        <div className="space-y-1">
+                          {evaluation.riskWarnings.map((warning, index) => (
+                            <div key={`${warning.en}-${index}`}>{warning[lang]}</div>
+                          ))}
+                        </div>
                       </div>
                     )}
 
@@ -279,7 +283,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang, gui
                   const missingCount = run.evaluation.checks.filter((check) => !check.passed).length;
                   const warningCount = run.evaluation.hedgeWords.length
                     + run.evaluation.unsafeDataMatches.length
-                    + run.evaluation.operationalWarnings.length
+                    + run.evaluation.riskWarnings.length
                     + run.evaluation.verbosityWarnings.length;
 
                   return (

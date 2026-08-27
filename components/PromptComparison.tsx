@@ -29,28 +29,28 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
 
   const labels = {
     techniquePrefix: lang === 'de' ? 'Technik' : 'Technique',
-    standardLabel: lang === 'de' ? 'Nicht aufgabenpassend' : 'Not task-fit',
-    optimizedLabel: lang === 'de' ? 'Aufgabenpassend' : 'Task-fit',
+    standardLabel: lang === 'de' ? 'So tippt man es wirklich' : 'What people actually type',
+    optimizedLabel: lang === 'de' ? 'So wird es brauchbar' : 'What makes it usable',
     wordCount: lang === 'de' ? 'Wörter' : 'words',
-    footer: guideMode === 'serviceOps'
+    footer: guideMode === 'decisions'
       ? (lang === 'de'
-          ? 'Die bessere Version steuert ein Service-Ergebnis mit relevanter Evidenz und Grenzen. Länge ist weder Ziel noch Qualitätsmerkmal.'
-          : 'The better version controls a service outcome with relevant evidence and boundaries. Length is neither the goal nor a quality signal.')
+          ? 'Die bessere Version nennt Material, Grenzen und Quelle. Länge ist kein Qualitätsmerkmal, eine fehlende Zahl bleibt eine fehlende Zahl.'
+          : 'The better version names material, limits and source. Length is not a quality signal, and a missing figure stays missing.')
       : (lang === 'de'
-          ? 'Der bessere Prompt enthält nur die Kontrolle, die diese Aufgabe braucht. Er darf kürzer oder länger sein.'
-          : 'The better prompt contains only the control this task needs. It may be shorter or longer.'),
+          ? 'Die bessere Version enthält nur, was diese Aufgabe braucht. Sie darf kürzer oder länger sein.'
+          : 'The better version contains only what this task needs. It may be shorter or longer.'),
     showVokuprompt: lang === 'de'
-      ? 'Explizitere Variante anzeigen'
-      : 'Show more explicit variant',
+      ? 'Ausführliche Variante anzeigen'
+      : 'Show the spelled-out variant',
     hideVokuprompt: lang === 'de'
-      ? 'Explizitere Variante ausblenden'
-      : 'Hide more explicit variant',
+      ? 'Ausführliche Variante ausblenden'
+      : 'Hide the spelled-out variant',
     vokupromptLabel: lang === 'de'
-      ? 'Variante für höheren Kontrollbedarf'
-      : 'Variant for higher control needs',
+      ? 'Variante mit allen fünf Zeilen'
+      : 'Variant with all five lines',
     vokupromptNote: lang === 'de'
-      ? 'Nur verwenden, wenn Risiko, Dauer oder Übergabe zusätzliche Prüfschritte rechtfertigen. Länger ist nicht automatisch besser.'
-      : 'Use only when risk, duration, or handoff justifies additional checks. Longer is not automatically better.',
+      ? 'Lohnt sich, wenn es teuer wird, lange dauert oder jemand anderes damit weiterarbeitet. Sonst ist die kurze Version die richtige.'
+      : 'Worth it when the task is expensive, long-running, or handed to somebody else. Otherwise the short version is the right one.',
   };
 
   return (

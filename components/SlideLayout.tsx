@@ -47,8 +47,8 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
   const technique = t(data.technique, data.techniqueDE);
 
   const thanksLabel = lang === 'de' ? 'Danke für Ihre Aufmerksamkeit!' : 'Thank you for your attention!';
-  const trainingLabel = lang === 'de' ? 'Operatives Prompting für echte IT-Arbeit' : 'Operational Prompting for Real IT Work';
-  const guideSwitchLabel = lang === 'de' ? 'Guide auswählen' : 'Choose guide';
+  const trainingLabel = lang === 'de' ? 'Prompting im Büroalltag' : 'Prompting at Work';
+  const guideSwitchLabel = lang === 'de' ? 'Deck auswählen' : 'Choose deck';
 
   const renderContent = () => {
     switch (data.type) {
@@ -133,7 +133,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
               <PromptComparison
                 standard={(lang === 'de' && data.codeStandardDE ? data.codeStandardDE : data.codeStandard) ?? ''}
                 optimized={(lang === 'de' && data.codeOptimizedDE ? data.codeOptimizedDE : data.codeOptimized) ?? ''}
-                technique={technique ?? (lang === 'de' ? 'Operativer Prompt' : 'Operational Prompt')}
+                technique={technique ?? (lang === 'de' ? 'Beispiel' : 'Example')}
                 description={typeof content === 'string' ? content : ''}
                 lang={lang}
                 guideMode={guideMode}
