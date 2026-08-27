@@ -10,7 +10,7 @@ export interface MethodCheck {
 export interface PromptEvaluation {
   score: number;
   checks: MethodCheck[];
-  /** Anything that ties the text to one case and will expire with it. */
+  /** Anything in the instruction layer that ties the method to one case. */
   caseBoundTokens: string[];
   fillerWarnings: Array<Record<Lang, string>>;
   riskWarnings: Array<Record<Lang, string>>;
@@ -28,10 +28,10 @@ export interface PromptEvaluation {
 const methodChecks: Array<Pick<MethodCheck, 'key' | 'label' | 'detail'> & { patterns: RegExp[] }> = [
   {
     key: 'twoPass',
-    label: { en: 'Two passes', de: 'Zwei Durchgänge' },
+    label: { en: 'Construction pass first', de: 'Erst der Konstruktionsdurchgang' },
     detail: {
-      en: 'Build the work order first, then stop and let a human read it before any work happens.',
-      de: 'Erst den Arbeitsauftrag bauen, dann stoppen und lesen lassen, bevor gearbeitet wird.',
+      en: 'For a reusable method, build the work order first and stop before execution.',
+      de: 'Für eine wiederverwendbare Methode erst den Arbeitsauftrag bauen und vor der Ausführung stoppen.',
     },
     patterns: [
       /\b(?:pass|step)\s*1\b/i,
@@ -46,8 +46,8 @@ const methodChecks: Array<Pick<MethodCheck, 'key' | 'label' | 'detail'> & { patt
     key: 'derivedFromMaterial',
     label: { en: 'Derived from the material', de: 'Aus dem Material abgeleitet' },
     detail: {
-      en: 'The specifics come out of what is attached today, not out of the method text.',
-      de: 'Das Konkrete kommt aus dem, was heute beiliegt – nicht aus dem Methodentext.',
+      en: 'The case-specific facts come out of today’s material, not out of the reusable method text.',
+      de: 'Die Fakten des Einzelfalls kommen aus dem heutigen Material, nicht aus dem wiederverwendbaren Methodentext.',
     },
     patterns: [
       /\bderive .{0,40}\bfrom\b/i,
@@ -76,14 +76,14 @@ const methodChecks: Array<Pick<MethodCheck, 'key' | 'label' | 'detail'> & { patt
   },
   {
     key: 'unknownAllowed',
-    label: { en: 'Missing stays missing', de: 'Fehlendes bleibt fehlend' },
+    label: { en: 'Missing or blocked stays visible', de: 'Fehlendes oder Blockiertes bleibt sichtbar' },
     detail: {
-      en: 'Name UNKNOWN, "not regulated" or "not checkable" as valid results instead of a plausible filler.',
-      de: 'UNBEKANNT, „nicht geregelt“ oder „nicht prüfbar“ als gültiges Ergebnis zulassen statt plausibel zu füllen.',
+      en: 'UNKNOWN means the material does not say. BLOCKED means required evidence or authority cannot currently be obtained. Neither is filled with plausible prose.',
+      de: 'UNBEKANNT heißt: Das Material sagt es nicht. BLOCKIERT heißt: Benötigter Beleg oder nötige Befugnis ist aktuell nicht erreichbar. Beides wird nicht plausibel aufgefüllt.',
     },
     patterns: [
       /\b(?:unknown|not stated|not regulated|not checkable|blocked)\b/i,
-      /(?:unbekannt|nicht geregelt|nicht angegeben|nicht prüfbar|nicht verwendbar|als frage zurück)/i,
+      /(?:unbekannt|blockiert|nicht geregelt|nicht angegeben|nicht prüfbar|nicht verwendbar|als frage zurück)/i,
     ],
   },
   {
@@ -119,7 +119,7 @@ const methodChecks: Array<Pick<MethodCheck, 'key' | 'label' | 'detail'> & { patt
   },
 ];
 
-/** What ties a text to one case: it will be wrong or stale the next time. */
+/** What ties instruction text to one case and is likely to go stale next time. */
 const caseBoundPatterns: Array<{ pattern: RegExp; label: Record<Lang, string> }> = [
   {
     pattern: /\b\d{1,2}\.\d{1,2}\.(?:\d{2,4})?\b|\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b|\b\d{1,2}\.\s?(?:Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\b/g,
@@ -192,7 +192,7 @@ const fillerPatterns: Array<{ pattern: RegExp; label: Record<Lang, string> }> = 
   },
 ];
 
-/** The model prepares work. These ask it to perform the work instead. */
+/** Accountable actions should not be hidden inside a text-generation request. */
 const actsForYouPatterns = [
   /\bsend (?:the|this|it)\s?(?:mail|email|message|invitation)?\b/gi,
   /\b(?:verschick|versende|sende) (?:die|das|den) (?:mail|e-mail|einladung|nachricht)/gi,
@@ -202,7 +202,7 @@ const actsForYouPatterns = [
   /\b(?:genehmige|unterschreibe?|bestelle|storniere) (?:die|das|den) (?:rechnung|vertrag|bestellung|angebot|buchung)/gi,
 ];
 
-/** Asking for a guess is asking for something that will read like a fact. */
+/** Asking for a guess is asking for something that can later read like a fact. */
 const inventionPatterns = [
   /\b(?:estimate|guess|make (?:it|something) up|fill in the (?:gaps|blanks)|invent)\b/gi,
   /\b(?:schätz\w*|rate mal|denk dir|erfinde|ergänze plausibel|füll die lücken)/gi,
@@ -224,6 +224,33 @@ const unsafeDataPatterns = [
 /** "do not estimate" is the good instruction, not a request for a guess. */
 const negationBefore = /(?:\b(?:do not|don't|does not|must not|never|not|no|without)\b|\b(?:nicht|kein|keine|keinen|niemals|ohne)\b)[^.;\n]{0,24}$/i;
 const negationAfter = /^[^.;\n]{0,14}\b(?:kein|keine|keinen|nicht|nichts|nothing|no)\b/i;
+
+/**
+ * Material can contain words that look exactly like instructions. Mask only
+ * explicit source containers; ordinary short quotes remain visible because a
+ * method may legitimately require literal output such as "UNKNOWN".
+ */
+const materialBlockPatterns: RegExp[] = [
+  /```[\s\S]*?```/g,
+  /"""[\s\S]*?"""/g,
+  /'''[\s\S]*?'''/g,
+  /(?:^|\n)\s*>\s?.*(?:\n\s*>\s?.*)*/g,
+  /"(?:[^"\\]|\\.){80,}"/gs,
+  /“[^”\n]{80,}”/g,
+];
+
+const labeledMaterialSectionPattern = /(?:^|\n)\s*(?:source text|quoted material|input text|document text|email text|ticket text|source excerpt|quelltext|zitatmaterial|eingabetext|dokumenttext|mailtext|tickettext|quellenauszug)\s*:\s*[\s\S]*?(?=\n\s*(?:(?:pass|step|durchgang)\s*\d+|goal|ziel|limits?|grenzen|constraints?|check|prüfung|done[- ]when|fertig[- ]wenn|rules?|regeln|output|ausgabe)\s*:|$)/gim;
+
+const buildInstructionLayer = (input: string): string => {
+  let instructionLayer = input.replace(labeledMaterialSectionPattern, '\n[source material omitted]\n');
+
+  for (const pattern of materialBlockPatterns) {
+    pattern.lastIndex = 0;
+    instructionLayer = instructionLayer.replace(pattern, '[source material omitted]');
+  }
+
+  return instructionLayer;
+};
 
 const matchesIgnoringNegation = (input: string, patterns: RegExp[]): string[] => {
   const matches = new Set<string>();
@@ -253,6 +280,7 @@ const allMatches = (input: string, patterns: RegExp[]): string[] => {
   const matches = new Set<string>();
 
   for (const pattern of patterns) {
+    pattern.lastIndex = 0;
     input.match(pattern)?.forEach((match) => matches.add(match.trim()));
   }
 
@@ -271,7 +299,7 @@ const findRepeatedLines = (prompt: string): string[] => {
       .replace(/^[\-*\d.)\s]+/u, '')
       .replace(/\s+/gu, ' ');
 
-    if (normalized.length < 18) {
+    if (normalized.length < 18 || normalized === '[source material omitted]') {
       continue;
     }
 
@@ -283,12 +311,12 @@ const findRepeatedLines = (prompt: string): string[] => {
     .map(([line]) => line);
 };
 
-const collectCaseBoundTokens = (prompt: string): string[] => {
+const collectCaseBoundTokens = (instructionLayer: string): string[] => {
   const found: string[] = [];
 
   for (const { pattern, label } of caseBoundPatterns) {
     pattern.lastIndex = 0;
-    const hits = prompt.match(pattern);
+    const hits = instructionLayer.match(pattern);
     if (hits && hits.length > 0) {
       found.push(`${label.en}|${label.de}|${hits[0].trim()}`);
     }
@@ -303,26 +331,30 @@ export const describeCaseBoundToken = (token: string, lang: Lang): string => {
 };
 
 export const evaluatePrompt = (prompt: string): PromptEvaluation => {
+  const instructionLayer = buildInstructionLayer(prompt);
   const checks: MethodCheck[] = methodChecks.map(({ key, label, detail, patterns }) => ({
     key,
     label,
     detail,
-    passed: patterns.some((pattern) => pattern.test(prompt)),
+    passed: patterns.some((pattern) => {
+      pattern.lastIndex = 0;
+      return pattern.test(instructionLayer);
+    }),
   }));
 
   const wordCount = countWords(prompt);
   const methodSignalCount = checks.filter((check) => check.passed).length;
-  const caseBoundTokens = collectCaseBoundTokens(prompt);
+  const caseBoundTokens = collectCaseBoundTokens(instructionLayer);
 
   const fillerWarnings: Array<Record<Lang, string>> = [];
   for (const { pattern, label } of fillerPatterns) {
     pattern.lastIndex = 0;
-    if (pattern.test(prompt)) {
+    if (pattern.test(instructionLayer)) {
       fillerWarnings.push(label);
     }
   }
 
-  const repeatedLines = findRepeatedLines(prompt);
+  const repeatedLines = findRepeatedLines(instructionLayer);
   if (repeatedLines.length > 0) {
     fillerWarnings.push({
       en: `Repeated instruction lines: ${repeatedLines.slice(0, 2).join(' | ')}`,
@@ -331,14 +363,15 @@ export const evaluatePrompt = (prompt: string): PromptEvaluation => {
   }
 
   const riskWarnings: Array<Record<Lang, string>> = [
-    ...matchesIgnoringNegation(prompt, actsForYouPatterns).map((match) => ({
-      en: `Asks the model to act instead of prepare: “${match}”`,
-      de: `Verlangt Handeln statt Vorbereiten: „${match}“`,
+    ...matchesIgnoringNegation(instructionLayer, actsForYouPatterns).map((match) => ({
+      en: `Requests an accountable action; keep explicit human or approved-tool authority: “${match}”`,
+      de: `Fordert eine verantwortliche Aktion; menschliche oder freigegebene Tool-Befugnis explizit halten: „${match}“`,
     })),
-    ...matchesIgnoringNegation(prompt, inventionPatterns).map((match) => ({
-      en: `Asks for a guess that will read like a fact: “${match}”`,
-      de: `Fordert eine Vermutung, die wie ein Fakt aussieht: „${match}“`,
+    ...matchesIgnoringNegation(instructionLayer, inventionPatterns).map((match) => ({
+      en: `Asks for a guess that can later read like a fact: “${match}”`,
+      de: `Fordert eine Vermutung, die später wie ein Fakt aussehen kann: „${match}“`,
     })),
+    // Sensitive source data matters even when it is correctly quoted as material.
     ...allMatches(prompt, unsafeDataPatterns).map((match) => ({
       en: `Looks like data that needs protection: “${match}”`,
       de: `Sieht nach schützenswerten Daten aus: „${match}“`,
@@ -346,41 +379,49 @@ export const evaluatePrompt = (prompt: string): PromptEvaluation => {
   ];
 
   let score = methodSignalCount * 15;
-  if (checks[0].passed && checks[1].passed) {
-    // The two passes only mean something when the specifics come from today's material.
+  const hasConstructionBoundary = checks[0].passed && checks[1].passed;
+  if (hasConstructionBoundary) {
     score += 10;
+  } else {
+    // Rule lists can contain useful mechanics, but without construction from
+    // current material they are not a reusable L2-style method.
+    score = Math.min(score, 69);
   }
+
   score -= Math.min(24, caseBoundTokens.length * 8);
   score -= Math.min(18, fillerWarnings.length * 6);
   score -= Math.min(20, riskWarnings.length * 7);
   score = Math.max(0, Math.min(100, score));
 
-  const verdict: Record<Lang, string> = methodSignalCount >= 4 && caseBoundTokens.length === 0
+  const reusableMethod = hasConstructionBoundary && methodSignalCount >= 4 && caseBoundTokens.length === 0;
+  const caseBoundMethod = hasConstructionBoundary && methodSignalCount >= 4 && caseBoundTokens.length > 0;
+
+  const verdict: Record<Lang, string> = reusableMethod
     ? { en: 'Method — reusable', de: 'Methode – wiederverwendbar' }
-    : methodSignalCount >= 4
+    : caseBoundMethod
       ? { en: 'Method, tied to one case', de: 'Methode, an einen Fall gebunden' }
       : methodSignalCount >= 2
-        ? { en: 'Half method, half prompt', de: 'Halb Methode, halb Prompt' }
-        : { en: 'Prompt for one case', de: 'Prompt für einen Fall' };
+        ? { en: 'Reusable mechanics, not yet a method', de: 'Wiederverwendbare Regeln, noch keine Methode' }
+        : { en: 'Direct prompt for one case', de: 'Direkter Prompt für einen Fall' };
 
-  const summary: Record<Lang, string> = methodSignalCount >= 4 && caseBoundTokens.length === 0
+  const summary: Record<Lang, string> = reusableMethod
     ? {
-        en: 'This survives the next case: it builds the work order from whatever material arrives.',
-        de: 'Das übersteht den nächsten Fall: Es baut den Arbeitsauftrag aus dem Material, das gerade ankommt.',
+        en: 'This can survive the next case: it constructs the work order from the material that arrives.',
+        de: 'Das kann den nächsten Fall überstehen: Es konstruiert den Arbeitsauftrag aus dem Material, das gerade ankommt.',
       }
-    : caseBoundTokens.length > 0 && methodSignalCount >= 4
+    : caseBoundMethod
       ? {
-          en: 'The mechanics are right, but the named specifics will expire. Move them into the material you attach.',
-          de: 'Der Ablauf stimmt, aber das Konkrete darin läuft ab. Verschieb es in das Material, das du beilegst.',
+          en: 'The construction mechanics are right, but named case details remain in the method. Move them into the material.',
+          de: 'Die Konstruktionsmechanik stimmt, aber Details des Einzelfalls stehen noch in der Methode. Verschieb sie ins Material.',
         }
       : methodSignalCount >= 2
         ? {
-            en: 'Some of the method is here. Missing: the pass that builds the work order and stops before the work.',
-            de: 'Ein Teil der Methode steht. Es fehlt: der Durchgang, der den Auftrag baut und vor der Arbeit stoppt.',
+            en: 'Useful reusable rules are present. If this should become a method, add a construction pass that derives the case-specific work order and stops before execution.',
+            de: 'Nützliche wiederverwendbare Regeln sind vorhanden. Soll daraus eine Methode werden, ergänze einen Konstruktionsdurchgang, der den konkreten Arbeitsauftrag ableitet und vor der Ausführung stoppt.',
           }
         : {
-            en: 'Usable today, worthless next week. Nothing here tells the model how to build the work order itself.',
-            de: 'Heute brauchbar, nächste Woche wertlos. Nichts hier sagt dem Modell, wie es den Auftrag selbst baut.',
+            en: 'This is a direct case prompt. That can be exactly right for one-off work; it is simply not a reusable method.',
+            de: 'Das ist ein direkter Einzelfall-Prompt. Für einmalige Arbeit kann das genau richtig sein; es ist nur keine wiederverwendbare Methode.',
           };
 
   return {
