@@ -1,5 +1,5 @@
 {
-  "name": "Methods Instead of Prompts",
-  "description": "A bilingual interactive presentation about office work: write a reusable method instead of a new prompt per case, let it build the work order from today's material, and read that before any work happens.",
+  "name": "From Prompts to Methods",
+  "description": "A bilingual Part 2 presentation about making recurring or consequential LLM-assisted work reusable, reviewable, and evidence-based while keeping direct prompts valid for simple one-off tasks.",
   "requestFramePermissions": []
 }
