@@ -1,6 +1,8 @@
-# Methods Instead of Prompts
+# From Prompts to Methods
 
-An interactive React + TypeScript + Vite presentation about office work, built on one idea: **stop writing a new prompt for every case. Write the method once, and let it build the work order for this case out of the material you attach.**
+An interactive React + TypeScript + Vite presentation about making recurring LLM-assisted work reusable, reviewable, and evidence-based.
+
+It is designed as a practical **Part 2** to [`voku/LLM`](https://github.com/voku/LLM): the earlier deck explains what LLMs are and what they can do; this deck starts where that one stops and asks how useful work becomes repeatable without turning every request into a giant prompt.
 
 🔗 **Live Demo:** [https://voku.github.io/Prompt_Intro/](https://voku.github.io/Prompt_Intro/)
 
@@ -8,82 +10,110 @@ An interactive React + TypeScript + Vite presentation about office work, built o
 
 ## The idea
 
-A prompt is a filled-in instruction. It contains this supplier, this date, this file, page 3, 4,200 euro. It works once. Next week you rewrite 80 % of it and lose the 20 % that was actually your quality bar.
+A direct prompt is not bad. For a small one-off task it may be exactly the right tool.
 
-A method is the instruction that writes the instruction. You hand over the method plus today's material, and its **first** job is not to do the work:
+The problem starts when the same kind of work comes back: a supplier comparison, a sign-off check, a projection, a handover, a review. The prompt then contains two different things mixed together:
+
+- the **case**: this supplier, this date, this file, page 3, 4,200 euro;
+- the **quality bar**: how facts are derived, what may not be changed, how results are checked, and when the work is actually done.
+
+For recurring or consequential work, keep the quality bar as a reusable **method** and derive the case-specific work order from the material that arrives today:
 
 ```text
-Pass 1   method + today's material  →  the work order for this case  →  STOP
-                                        (you read half a page and correct it)
-Pass 2   your go-ahead              →  it executes the work order it built
+Pass 1   reusable method + today's material  →  work order for this case  →  STOP
+                                                  (human reads/corrects it)
+Pass 2   explicit go-ahead                   →  execute that work order
 ```
 
-Why that is worth the extra pass:
+That extra construction pass is not a ritual for every tiny task. It is useful when reuse, reviewability, handoff, or risk justifies separating **construction** from **execution**.
 
-- **The method survives.** It names no supplier, no date, no page number, so it still works when the names change. The specifics get re-derived from whatever arrives today.
-- **Missing material surfaces before the work.** Everything the attachments do not contain shows up in the work order as UNKNOWN — not buried inside a finished document you have to unpick.
-- **You review a work order, not an output.** Half a page instead of four.
-- **Check and done-when stay separate.** How the result gets measured is one contract; which measured result is enough to stop is another. Merging them is how "looks fine" becomes "done".
+Why it helps:
+
+- **The quality bar survives.** Supplier, date and page number stay in the material rather than leaking into the reusable method.
+- **Missing material surfaces before execution.** `UNKNOWN` means the material does not contain the answer. `BLOCKED` means required evidence, access, or authority cannot currently be obtained.
+- **You review the work order before the output exists.** Correct half a page instead of unpicking four finished pages.
+- **Check and done-when stay separate.** How reality is measured and which observed result is good enough are different contracts.
 
 ---
 
 ## What the deck teaches
 
-14 slides, one story, English and German throughout.
+14 slides, one story, English and German throughout. German is the default language for presentation use.
 
 | # | Slide | The move it teaches |
 |---|---|---|
-| 2 | Yesterday's prompt is already waste | Everything specific in a prompt expires; the method never got written down |
-| 3 | Two passes, and the first one is the whole trick | Build the work order, stop, let a human read it |
-| 4 | What has to be in the work order | Goal · Material · Limits · Check · Done-when — filled in *by* the method, not by you |
-| 5 | One prompt for one tender — or one method for all | The same job as a case prompt and as a method, plus the work order pass 1 produces |
-| 6 | How you measure it is not when it is good enough | Check ≠ done-when |
-| 7 | A checklist in the prompt is not a checklist that was met | Criteria are the requirement, never evidence that it is satisfied |
-| 8 | Attaching a file is not permission to change it | Every attachment gets a role; roles are never upgraded |
-| 9 | Five words that make an answer checkable | backed · derived · assumed · unknown · contradiction |
-| 10 | Where a figure came from is half the answer | Provenance per figure; never average two sources that disagree |
-| 11 | Playground | Is that a prompt or a method? |
-| 12 | A floor is a floor, a quota produces fiction | Three *attempts*, not three findings — "no objections" is a valid result |
-| 13 | Confidence is not proof | Not certainty, not earlier reasoning, not a step that was described but never done |
-| 14 | The method is the deliverable | Build a small library; record whether each method actually helped |
+| 1 | From prompts to methods | Continuation from basic LLM usage to repeatable work |
+| 2 | Case-specific prompts expire | Separate changing case facts from the reusable quality bar |
+| 3 | Two passes for reusable methods | Direct prompts remain valid; reusable methods separate construction from execution |
+| 4 | What has to be in the work order | Goal · Material · Limits · Check · Done-when |
+| 5 | One prompt for one tender — or one method for all | Same job as a case prompt and as a reusable method, plus the generated work order |
+| 6 | How you measure it is not when it is good enough | Check ≠ done-when; unavailable verification becomes `BLOCKED` |
+| 7 | A checklist in the prompt is not a checklist that was met | Criteria are requirements, never proof that they are satisfied |
+| 8 | Attaching a file is not permission to change it | Every attachment has a role; context does not silently grant edit permission |
+| 9 | Six evidence states | verified · inferred · assumed · unknown · blocked · contradicted |
+| 10 | Where a figure came from is half the answer | Provenance per figure; never average disagreeing sources into a third invented number |
+| 11 | Playground | Distinguish a direct prompt, reusable rules, and a real method |
+| 12 | A floor is a floor, a quota produces fiction | Three attempts, not three mandatory findings |
+| 13 | Confidence is not proof | Confidence, earlier reasoning, consensus and unexecuted checks are not verification |
+| 14 | The reusable method is the deliverable | Build a small library only where repeated work earns it |
 
-Every comparison slide shows the same job twice: the **prompt for this one case** on the left, the **method that builds the work order** on the right. The left one is not a strawman — it is a good prompt with a shelf life of one week. Slide 5 expands to show what pass 1 actually produces from the method plus three attached offers.
+Every comparison slide shows the same job twice: the **prompt for this one case** on the left, the **method that constructs the work order** on the right. The left side is deliberately not a strawman. It can be a perfectly good one-off prompt.
 
 ---
 
 ## Where this comes from
 
-The mechanics are the office translation of the operating-prompt work in two sibling repositories:
+The mechanics are an office-friendly translation of the operating-prompt work in two sibling repositories:
 
-- [`voku/agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) — the L1/L2 distinction this whole deck rests on. An **L2 recipe** is a reusable construction method and quality bar; an **L1 contract** is the concrete executable instruction (*Goal / Context / Constraints / Verification / Done When*) that the L2 pass builds from current evidence. Also: verification kept separate from the stopping condition, acceptance criteria as required outcomes rather than proof of satisfaction, context that is not edit permission, evidence states instead of confident prose, numeric floors that must not be weakened to manufacture success, and "a system that cannot represent uncertainty will eventually manufacture certainty".
-- [`voku/agent-loop`](https://github.com/voku/agent-loop) — the workflow around it: bounded slices with a checkpoint after each, handoffs written for a worker with no access to the current chat, persisted evidence beating conversational memory.
+- [`voku/agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) — distinguishes an **L2 recipe** (reusable construction method and quality bar) from an **L1 contract** (concrete executable instruction for the current task). Direct L1 contracts remain valid; L2 is an optional construction layer for reusable task-specific contracts.
+- [`voku/agent-loop`](https://github.com/voku/agent-loop) — contributes the workflow ideas around bounded work, checkpoints, evidence, handoff, retries and explicit authority.
 
-Individual slides map to individual recipes: `adversarial-review` (slide 12), `discovery-first` (slide 9), `missingness-audit` and the L2 construction contract (slides 3–5), `evidence-report` (slide 13), `retry-stop` (slide 13). The engineering vocabulary is left behind; the mechanics are not.
+The deck keeps the important distinctions from those sources:
+
+- verification is not done-when;
+- acceptance criteria are requirements, not evidence of success;
+- context is not edit permission;
+- `UNKNOWN` and `BLOCKED` are different states;
+- confidence and previous reasoning are not verification;
+- numeric floors must not become finding quotas;
+- using a method does not prove that the method was useful.
 
 ---
 
 ## The playground
 
-The check on slide 11 answers one question: **is this a prompt or a method?** It looks for six traits and reports what it finds:
+Slide 11 asks a deliberately narrower question than a generic "prompt score": **is this direct case text, reusable rules, or a reusable construction method?**
 
-1. **Two passes** — build the work order first, then stop
-2. **Derived from the material** — the specifics come out of what is attached today
-3. **Check and done-when kept apart**
-4. **Missing stays missing** — UNKNOWN / "not regulated" / "not checkable" allowed as results
-5. **No quota, no softening** — a clean result is valid; the bar is never lowered
-6. **Material has a role** — what may be edited, what is read-only
+It looks for six method traits:
 
-It separately lists everything that **binds the text to one case** — a date, an amount, a file name, a page number, a person, a company — because that is exactly what will expire. It also flags filler in English and German, repeated instruction lines, requests for the model to *act* rather than prepare, requests for a guess (correctly ignoring the negated form, so "nicht schätzen" is treated as the good instruction it is), and data that probably should not be pasted into an unapproved tool.
+1. **Construction pass first** — for a reusable method, build the case-specific work order and stop before execution.
+2. **Derived from the material** — case facts come from current material rather than being baked into the reusable method.
+3. **Check and done-when kept apart.**
+4. **Missing or blocked stays visible** — `UNKNOWN` and `BLOCKED` are valid outcomes rather than invitations to invent prose.
+5. **No quota, no softening** — a clean result is valid; requirements are not weakened to manufacture success.
+6. **Material has a role** — read-only context and editable targets remain distinguishable.
 
-**Length is not scored.** The check runs locally with no backend and no model call, and it remains a heuristic — not a substitute for looking at the actual result.
+It separately lists case-bound tokens such as dates, amounts, file names, page numbers, people and companies.
+
+### Instruction layer vs. source material
+
+The evaluator does **not** treat explicitly quoted or fenced source material as instructions. A pasted email can contain the words "Pass 1", a company name and a date without magically turning the surrounding prompt into a reusable method. Filler, action and invention checks use the instruction layer; sensitive-data warnings still inspect the full pasted text because sensitive data remains sensitive even when correctly quoted.
+
+A dedicated adversarial preset demonstrates this boundary.
+
+**Length is not scored.** The playground is a local heuristic with no backend and no model call. It is a teaching instrument, not proof that a method is actually useful.
 
 ---
 
 ## Presentation usage
 
-- **15 minutes:** slides 1–5, then 14
-- **30 minutes:** slides 1–10, then 13 and 14
-- **45 minutes:** the full deck including the playground
+For a Teams presentation to colleagues who already saw the earlier `voku/LLM` deck:
+
+- **15 minutes:** slides 1–5, then 9, 13 and 14.
+- **25–30 minutes:** slides 1–10, then 13 and 14.
+- **45 minutes:** full deck including the playground and discussion.
+
+The first sentence can be simple: *"Letztes Mal ging es darum, was LLMs können. Heute geht es nicht um ein neues Modell, sondern darum, wie aus einzelnen guten Chats wiederholbare Arbeit wird."*
 
 ---
 
@@ -100,14 +130,14 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Validation scripts
+## Validation
 
 ```bash
 npm run typecheck
 npm run build
 ```
 
-The production build writes static output to `dist/` and keeps the public GitHub Pages base path at `/Prompt_Intro/`.
+Pull requests run both checks through `.github/workflows/ci.yml`. Pushes to `main` build and publish the static site through `.github/workflows/deploy.yml`.
 
 ---
 
@@ -115,23 +145,18 @@ The production build writes static output to `dist/` and keeps the public GitHub
 
 | File / Directory | Purpose |
 |---|---|
-| `App.tsx` | App shell, navigation, language toggle, overview grid, timer |
+| `App.tsx` | App shell, German default, navigation, language toggle, overview grid, timer |
 | `constants.ts` | All 14 slides, English and German |
-| `promptPresets.ts` | Playground examples, from one-off prompt to full method |
+| `promptPresets.ts` | Playground examples including an adversarial quoted-source case |
 | `types.ts` | Shared TypeScript types |
 | `iconUtils.ts` | Slide icon lookup with a fallback |
 | `components/SlideLayout.tsx` | Slide renderer |
 | `components/PromptComparison.tsx` | Case prompt vs. method, with the pass-1 work order panel |
 | `components/InteractivePlayground.tsx` | Prompt-or-method check UI |
-| `services/promptEvaluator.ts` | The six method traits, case-bound tokens, filler and risk signals |
+| `services/promptEvaluator.ts` | Instruction-layer evaluator, six method traits, case-bound tokens, filler and risk signals |
 | `implementation-notes.md` | Decisions, trade-offs and validation log |
-| `.github/workflows/deploy.yml` | GitHub Pages workflow |
-
----
-
-## Deploy to GitHub Pages
-
-Every push to `main` triggers the GitHub Actions workflow, installs dependencies, builds the app, and publishes the result to GitHub Pages.
+| `.github/workflows/ci.yml` | Pull-request typecheck + build |
+| `.github/workflows/deploy.yml` | GitHub Pages deployment |
 
 ---
 
