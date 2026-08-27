@@ -9,7 +9,7 @@ const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [lang, setLang] = useState<Lang>('en');
+  const [lang, setLang] = useState<Lang>('de');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
 
