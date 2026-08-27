@@ -1,99 +1,89 @@
 # Implementation notes
 
+## What this revision changed and why
+
+The previous revision taught a five-field prompt template that a person fills in by hand: job, material, limits, form, done-when. That is an **L1 contract** — a filled-in instruction for one case. It is the older, weaker artifact, and building a deck around it teaches people to keep writing disposable prompts slightly better.
+
+The power in `voku/agent-recall-compiler` is at **L2**: a reusable construction method that tells the agent how to build the project-specific L1 contract from current evidence, and to stop there. The deck now teaches that instead:
+
+```text
+Pass 1   method + today's material  →  the work order for this case  →  STOP
+Pass 2   your go-ahead              →  execute the work order it built
+```
+
+The reusable part is the method and the quality bar. The specifics — supplier, date, file, page — are re-derived from whatever material arrives, so the method never goes stale.
+
 ## Decisions made because the spec was incomplete
 
-- Added a **GuideMode** deck switch with the internal keys `coding` and `serviceOps`, defaulting to `coding`, so the original coding narrative remains the default while service operations becomes a parallel deck rather than a diluted set of examples.
-- Kept slide content in `constants.ts` instead of splitting into `constants/codingSlides.ts` and `constants/serviceOpsSlides.ts` because the repository already used a single constants module and the resulting `GUIDE_SLIDES` map remains readable.
-- Used **Uncontrolled Request** / **Operational Request** labels for service-operations comparisons because those requests can be long and detailed; the teaching point is missing control, not missing words.
-- Made the playground mode-aware so service-operations examples and scoring signals reward evidence, approvals, safe next actions, ticket update text, rollback, post-change checks, runbooks, and knowledge-base write-back rather than prompt length.
-- Reframed the Service Operations examples around **LLM-suitable support work**: structuring provided ticket text, reviewing supplied evidence, identifying gaps, drafting handoffs, preparing checklists, and creating KB/runbook drafts instead of implying hidden live access to AD, mailboxes, monitoring, or production systems.
+- **Collapsed the two decks into one.** The previous revision kept the deck switch and re-themed both modes, which meant the presentation still told two stories. "No switch to another story" was read as: one deck, one thread. `GuideMode` is gone from types, app shell, components, presets and evaluator, and the title-slide deck picker with it. If the switch is wanted back, it is a small addition — the content no longer needs it.
+- **Merged `taskFitEvaluator.ts` into `promptEvaluator.ts`.** The wrapper-over-base split mirrored an override pattern that had no reason to exist once both files were rewritten.
+- **Renamed `codeVokuprompt` to `codeWorkOrder`.** The expandable panel now shows what pass 1 actually produces from the method plus three attached offers, which is the single most convincing thing in the deck.
+- **The left column is not a strawman.** It is a good, complete, well-structured prompt for one tender — with a shelf life of one week. Making it bad would have proved nothing about L2.
+- **English content uses English field names** (Goal / Material / Limits / Check / Done-when), German content uses German ones. The first draft leaked `Prüfung` and `Fertig-wenn` into the English slides.
 
-- Chose **Option B** for the playground and implemented a local prompt-quality evaluator instead of a fake model response, because it keeps the feature honest and requires no backend service.
-- Kept the deck as **14 slides** so the narrative stays focused while still covering all required examples, the playground, and the final control loop.
-- Reframed chain-of-thought material into **named passes, assumptions, validation, and concise reasoning summaries** instead of exposing hidden reasoning.
+## Mapping to the source repositories
 
-## Stale documentation found
+Each principle in the deck traces to a specific mechanism, not to a general vibe:
 
-- `README.md` described the deck as **10 slides** while the actual slide data already contained more slides.
-- The old README and metadata positioned the project as a general prompt-engineering deck, which no longer matched the stronger operational-prompting content in the repository.
-- The previous playground service simulated a model response, latency, and token counts even though no real model call was happening.
+| Slide | Source |
+|---|---|
+| Two passes; the L2 pass ends at the L1 prompt | `OperatingPromptRenderer` L2 construction contract: "The L2 pass ends after producing the project-specific L1 prompt. Do not implement the task during prompt construction." |
+| Check ≠ done-when | "Keep Verification and Done When distinct: Verification names how reality is measured; Done When names the acceptable observed result." |
+| A checklist in the prompt is not a met checklist | "Preserve task acceptance criteria as required outcomes, never as evidence that they are satisfied." |
+| Attaching a file is not permission to change it | Design principle 4, "Context is not edit permission", plus the target-aware role semantics (`dependency` → `context_only_do_not_edit_from_selection_alone`) |
+| Five evidence words | Design principle 5, `VERIFIED / INFERRED / ASSUMED / BLOCKED / CONTRADICTED`, and "a system that cannot represent uncertainty will eventually manufacture certainty" |
+| Provenance per figure | `context-explain`: WHAT / WHY / HOW / AUTHORITY / USE / STATE, and the deliberate separation of HOW from AUTHORITY |
+| A floor is a floor, a quota produces fiction | `adversarial-review` and `regression-hunt`: "Do not manufacture defects merely to satisfy the numeric floor; CLEAN remains valid" |
+| Confidence is not proof | "Never treat prior model reasoning, model confidence, reviewer consensus, prompt construction, or an unexecuted command as verification" |
+| Stop retrying without new evidence | `retry-stop` |
+| Record whether a method helped | Design principle 9, "Selection is not usefulness", and the operating-prompt outcome events |
 
-## Content trade-offs
+## The playground is a different instrument now
 
-- Reduced generic prompt-engineering coverage and centered the deck on developer workflows: bug fixing, legacy migration, SQL debugging, PR review, structured output, tests, and repo state updates.
-- Kept bilingual EN/DE support directly in slide data rather than splitting translations into separate files to preserve the existing repository pattern.
-- Kept the optional expanded `vokuprompt` comparison panel because it helps show a stronger operational version without increasing the default visual density of every slide.
+It no longer counts contract fields. It answers "is this a prompt or a method?" by looking for six traits — two passes, derived from the material, check/done-when kept apart, missing stays missing, no quota and no softening, material has a role — and separately lists everything that binds the text to one case: a date, an amount, a file name, a page number, a person, a company.
 
-## Technical trade-offs
+That second list is the honest half. A text can have all six traits and still expire, because someone left "the Solvent GmbH comparison of 14 Mar" inside the method. The preset "method with a leftover case" exists to demonstrate exactly that, and scores in the seventies rather than at 100.
 
-- Added a dedicated `PLAYGROUND` slide type instead of overloading `CONTENT`, which keeps rendering logic explicit and avoids brittle per-slide conditionals.
-- Added a lightweight local evaluator service instead of introducing backend calls or new heavy dependencies.
-- Tightened TypeScript settings conservatively (`strict`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`) and removed `any` usage in icon lookup paths.
+## The evaluator found a real defect in the deck
+
+On the first run, four of the twelve methods on the right-hand side scored 15–45 out of 100: the sign-off check, the attachment roles, the provenance rules and the second-pair-of-eyes review were written as **rule lists**, not as two-pass methods. By the deck's own definition they were not methods at all.
+
+That was a content bug, not a detector bug, and the content was fixed: each of those four now derives its work order from the attached material, stops before the work, and keeps check and done-when apart. All twelve now score 93–100 with all six traits present, in both languages.
+
+Two genuine detector gaps were fixed alongside it: bare `not` was missing from the negation list, so "not into the figure as an estimate" was reported as a request for a guess; and the German "nur zu lesen" did not match the read-only pattern that "nur lesen" did.
+
+## Bug found in the previous revision
+
+`iconUtils.resolveIcon` guarded with `typeof candidate === 'function'`. Lucide icons are `forwardRef` **objects**, so the guard rejected every icon and the app rendered `HelpCircle` on every slide. Fixed there, kept here.
 
 ## Intentionally unchanged behavior
 
-- Kept the GitHub Pages deployment workflow and the `/Prompt_Intro/` base path unchanged.
-- Kept EN/DE language support, keyboard navigation, swipe navigation, slide overview, timer, and responsive layout.
-- Kept the app as a static React + TypeScript + Vite presentation without adding a backend or larger framework.
+- EN/DE toggle, keyboard and swipe navigation, overview grid, timer, responsive layout.
+- 14 slides, the `PLAYGROUND` slide type, and the local-only check with no backend and no model call.
+- The GitHub Pages deployment workflow and the `/Prompt_Intro/` base path.
 
 ## Validation log
 
-### Baseline before changes
-
-```text
-$ npm install
-added 69 packages, and audited 70 packages in 3s
-
-9 packages are looking for funding
-  run `npm fund` for details
-
-found 0 vulnerabilities
+```
+$ npm run typecheck
+> tsc --noEmit
+(no output, exit code 0)
 
 $ npm run build
-> prompt-engineering-guide@0.0.0 build
-> vite build
-
-vite v6.4.2 building for production...
-transforming...
-✓ 1746 modules transformed.
-rendering chunks...
-computing gzip size...
-dist/assets/favicon-C5OxlRER.svg      0.69 kB │ gzip:   0.28 kB
-dist/index.html                       2.37 kB │ gzip:   0.91 kB
-dist/assets/index-DYCVjhde.js     1,146.04 kB │ gzip: 244.96 kB
-
-(!) Some chunks are larger than 500 kB after minification. Consider:
-- Using dynamic import() to code-split the application
-- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
-- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.02s
-
-$ npx tsc --noEmit
+vite v6.4.3 building for production...
+✓ 1751 modules transformed.
+✓ built in 4.15s
 ```
 
-### Final validation after changes
+Browser run against the dev server: no page errors, icons render, the pass-1 work order panel opens, the playground returns a verdict.
 
-```text
-$ npm run typecheck
-> prompt-engineering-guide@0.0.0 typecheck
-> tsc --noEmit
+Throwaway script over all twelve comparisons and all ten presets, in both languages:
 
-$ npm run build
-> prompt-engineering-guide@0.0.0 build
-> vite build
-
-vite v6.4.2 building for production...
-transforming...
-✓ 1749 modules transformed.
-rendering chunks...
-computing gzip size...
-dist/assets/favicon-C5OxlRER.svg      0.69 kB │ gzip:   0.28 kB
-dist/index.html                       2.42 kB │ gzip:   0.88 kB
-dist/assets/index-C8N9b3Du.js     1,150.35 kB │ gzip: 244.65 kB
-
-(!) Some chunks are larger than 500 kB after minification. Consider:
-- Using dynamic import() to code-split the application
-- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
-- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.05s
+```
+methods (slides)              93–100   6/6 traits, 0 case-bound tokens
+"the same as a method"           100   6/6 traits
+"method with a leftover case"  69–77   5/6 traits, 2 case-bound tokens
+"prompt for one case"          14–22   2/6 traits, 1–2 case-bound tokens
+"rules, but no two passes"        30   2/6 traits
+"long but empty"                   0   0/6 traits, 2–3 filler warnings
 ```

@@ -1,97 +1,119 @@
-# Operational Prompting for Real IT Work
+# From Prompts to Methods
 
-An interactive React + TypeScript + Vite presentation about **task-fit operational prompting** across IT engineering, architecture, data, operations, support, and IT service management.
+An interactive React + TypeScript + Vite presentation about making recurring LLM-assisted work reusable, reviewable, and evidence-based.
 
-The central lesson is deliberately not “write a bigger prompt.” A good prompt is the **smallest sufficient operational contract** for the task. Simple work may need one sentence. Risky, ambiguous, long-running, or handoff-heavy work needs more explicit context, boundaries, evidence, validation, and stopping conditions.
+It is designed as a practical **Part 2** to [`voku/LLM`](https://github.com/voku/LLM): the earlier deck explains what LLMs are and what they can do; this deck starts where that one stops and asks how useful work becomes repeatable without turning every request into a giant prompt.
 
 🔗 **Live Demo:** [https://voku.github.io/Prompt_Intro/](https://voku.github.io/Prompt_Intro/)
 
 ---
 
-## Core thesis
+## The idea
 
-- Prompt quality is **task fit**, not length.
-- More words do not compensate for missing evidence, scope, validation, or a clear outcome.
-- IT is more than code: the examples include engineering, architecture, infrastructure, data, identity, capacity, operations, documentation, governance, and technical decisions.
-- ITSM is more than tickets: the examples include incident, request, problem, change, knowledge, configuration, capacity, availability, supplier, measurement, and continual-improvement work.
-- LLMs may prepare analysis, decisions, handoffs, checklists, and write-back. Accountable people and approved systems still authorize and perform operational work.
+A direct prompt is not bad. For a small one-off task it may be exactly the right tool.
 
----
+The problem starts when the same kind of work comes back: a supplier comparison, a sign-off check, a projection, a handover, a review. The prompt then contains two different things mixed together:
 
-## Target audience
+- the **case**: this supplier, this date, this file, page 3, 4,200 euro;
+- the **quality bar**: how facts are derived, what may not be changed, how results are checked, and when the work is actually done.
 
-- Developers, system engineers, architects, administrators, and platform teams
-- Service desk, operations, IAM, infrastructure, and IT service management teams
-- Engineering and service owners
-- Technical and business stakeholders working with LLM-assisted delivery
-- Anyone who should understand that good prompts are operational contracts, not magic sentences or token-heavy rituals
+For recurring or consequential work, keep the quality bar as a reusable **method** and derive the case-specific work order from the material that arrives today:
 
----
+```text
+Pass 1   reusable method + today's material  →  work order for this case  →  STOP
+                                                  (human reads/corrects it)
+Pass 2   explicit go-ahead                   →  execute that work order
+```
 
-## Features
+That extra construction pass is not a ritual for every tiny task. It is useful when reuse, reviewability, handoff, or risk justifies separating **construction** from **execution**.
 
-- 📊 **Two bilingual 14-slide decks**:
-  - **IT Engineering & Delivery**
-  - **IT Service Management**
-- ⚖️ Side-by-side comparisons for **not task-fit vs. task-fit** prompts
-- 🔢 Visible word counts to show that the better prompt may be shorter or longer
-- 🧪 **Mode-aware local task-fit evaluator** with no backend and no model call
-- 🚫 Filler and repetition warnings for phrases such as “be extremely thorough” or unlimited-scope requests
-- 🌐 English and German content throughout
-- ⌨️ Keyboard and swipe navigation
-- 🗂️ Slide overview grid
-- ⏱️ Session timer
-- 📱 Responsive design
-- 🚀 GitHub Pages deployment with the `/Prompt_Intro/` base path preserved
+Why it helps:
+
+- **The quality bar survives.** Supplier, date and page number stay in the material rather than leaking into the reusable method.
+- **Missing material surfaces before execution.** `UNKNOWN` means the material does not contain the answer. `BLOCKED` means required evidence, access, or authority cannot currently be obtained.
+- **You review the work order before the output exists.** Correct half a page instead of unpicking four finished pages.
+- **Check and done-when stay separate.** How reality is measured and which observed result is good enough are different contracts.
 
 ---
 
-## Guide modes
+## What the deck teaches
 
-### IT Engineering & Delivery
+14 slides, one story, English and German throughout. German is the default language for presentation use.
 
-The engineering deck covers operational prompting across broader IT work, not only code generation:
+| # | Slide | The move it teaches |
+|---|---|---|
+| 1 | From prompts to methods | Continuation from basic LLM usage to repeatable work |
+| 2 | Case-specific prompts expire | Separate changing case facts from the reusable quality bar |
+| 3 | Two passes for reusable methods | Direct prompts remain valid; reusable methods separate construction from execution |
+| 4 | What has to be in the work order | Goal · Material · Limits · Check · Done-when |
+| 5 | One prompt for one tender — or one method for all | Same job as a case prompt and as a reusable method, plus the generated work order |
+| 6 | How you measure it is not when it is good enough | Check ≠ done-when; unavailable verification becomes `BLOCKED` |
+| 7 | A checklist in the prompt is not a checklist that was met | Criteria are requirements, never proof that they are satisfied |
+| 8 | Attaching a file is not permission to change it | Every attachment has a role; context does not silently grant edit permission |
+| 9 | Six evidence states | verified · inferred · assumed · unknown · blocked · contradicted |
+| 10 | Where a figure came from is half the answer | Provenance per figure; never average disagreeing sources into a third invented number |
+| 11 | Playground | Distinguish a direct prompt, reusable rules, and a real method |
+| 12 | A floor is a floor, a quota produces fiction | Three attempts, not three mandatory findings |
+| 13 | Confidence is not proof | Confidence, earlier reasoning, consensus and unexecuted checks are not verification |
+| 14 | The reusable method is the deliverable | Build a small library only where repeated work earns it |
 
-- selecting the smallest sufficient prompt
-- scope and decision boundaries
-- evidence retrieval from files, systems, logs, diagrams, policies, and current state
-- architecture and migration decisions
-- capacity and repeatable calculations through tools
-- structured and verifiable output
-- validation that challenges assumptions
-- write-back into repositories, tests, runbooks, service maps, architecture records, and operating procedures
-
-### IT Service Management
-
-The ITSM deck treats tickets as one operational record among many. It covers:
-
-- service outcomes rather than document volume
-- incident evidence and safe investigation support
-- request and approval boundaries
-- recurring-problem analysis
-- change readiness and rollback evidence
-- service maps, configuration data, expected state, and ownership
-- capacity and availability analysis
-- service-aware handoffs
-- knowledge, known errors, monitoring, policy, and continual-improvement write-back
-
-The model is not framed as a hidden operator with invisible access to AD, mailboxes, monitoring, production systems, or approval authority.
+Every comparison slide shows the same job twice: the **prompt for this one case** on the left, the **method that constructs the work order** on the right. The left side is deliberately not a strawman. It can be a perfectly good one-off prompt.
 
 ---
 
-## Evaluator behavior
+## Where this comes from
 
-The playground evaluator checks for usable control signals such as goal, context, constraints, validation, output format, and stopping conditions. It also detects operational risks, possible sensitive data, hedge words, generic intensity language, unlimited scope, and repeated instructions.
+The mechanics are an office-friendly translation of the operating-prompt work in two sibling repositories:
 
-**Prompt length is not scored directly.** A long prompt with few useful signals can score worse than a concise prompt with clear evidence, boundaries, and output requirements. The evaluator remains a local heuristic, not a model or a substitute for testing the real result.
+- [`voku/agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) — distinguishes an **L2 recipe** (reusable construction method and quality bar) from an **L1 contract** (concrete executable instruction for the current task). Direct L1 contracts remain valid; L2 is an optional construction layer for reusable task-specific contracts.
+- [`voku/agent-loop`](https://github.com/voku/agent-loop) — contributes the workflow ideas around bounded work, checkpoints, evidence, handoff, retries and explicit authority.
+
+The deck keeps the important distinctions from those sources:
+
+- verification is not done-when;
+- acceptance criteria are requirements, not evidence of success;
+- context is not edit permission;
+- `UNKNOWN` and `BLOCKED` are different states;
+- confidence and previous reasoning are not verification;
+- numeric floors must not become finding quotas;
+- using a method does not prove that the method was useful.
+
+---
+
+## The playground
+
+Slide 11 asks a deliberately narrower question than a generic "prompt score": **is this direct case text, reusable rules, or a reusable construction method?**
+
+It looks for six method traits:
+
+1. **Construction pass first** — for a reusable method, build the case-specific work order and stop before execution.
+2. **Derived from the material** — case facts come from current material rather than being baked into the reusable method.
+3. **Check and done-when kept apart.**
+4. **Missing or blocked stays visible** — `UNKNOWN` and `BLOCKED` are valid outcomes rather than invitations to invent prose.
+5. **No quota, no softening** — a clean result is valid; requirements are not weakened to manufacture success.
+6. **Material has a role** — read-only context and editable targets remain distinguishable.
+
+It separately lists case-bound tokens such as dates, amounts, file names, page numbers, people and companies.
+
+### Instruction layer vs. source material
+
+The evaluator does **not** treat explicitly quoted or fenced source material as instructions. A pasted email can contain the words "Pass 1", a company name and a date without magically turning the surrounding prompt into a reusable method. Filler, action and invention checks use the instruction layer; sensitive-data warnings still inspect the full pasted text because sensitive data remains sensitive even when correctly quoted.
+
+A dedicated adversarial preset demonstrates this boundary.
+
+**Length is not scored.** The playground is a local heuristic with no backend and no model call. It is a teaching instrument, not proof that a method is actually useful.
 
 ---
 
 ## Presentation usage
 
-- **15-minute version:** Slides 1, 2, 3, 4, 7, 11, 13, and 14
-- **30-minute version:** Slides 1–10, then 13 and 14
-- **45-minute version:** Full deck including the playground and discussion about durable write-back
+For a Teams presentation to colleagues who already saw the earlier `voku/LLM` deck:
+
+- **15 minutes:** slides 1–5, then 9, 13 and 14.
+- **25–30 minutes:** slides 1–10, then 13 and 14.
+- **45 minutes:** full deck including the playground and discussion.
+
+The first sentence can be simple: *"Letztes Mal ging es darum, was LLMs können. Heute geht es nicht um ein neues Modell, sondern darum, wie aus einzelnen guten Chats wiederholbare Arbeit wird."*
 
 ---
 
@@ -108,14 +130,14 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Validation scripts
+## Validation
 
 ```bash
 npm run typecheck
 npm run build
 ```
 
-The production build writes static output to `dist/` and keeps the public GitHub Pages base path at `/Prompt_Intro/`.
+Pull requests run both checks through `.github/workflows/ci.yml`. Pushes to `main` build and publish the static site through `.github/workflows/deploy.yml`.
 
 ---
 
@@ -123,34 +145,18 @@ The production build writes static output to `dist/` and keeps the public GitHub
 
 | File / Directory | Purpose |
 |---|---|
-| `App.tsx` | App shell, navigation, localized guide labels, language toggle, overview, and timer |
-| `constants.ts` | Original slide content |
-| `guideContent.ts` | Typed English/German task-fit and broader-IT content overrides |
-| `promptPresets.ts` | Engineering and ITSM playground presets |
+| `App.tsx` | App shell, German default, navigation, language toggle, overview grid, timer |
+| `constants.ts` | All 14 slides, English and German |
+| `promptPresets.ts` | Playground examples including an adversarial quoted-source case |
 | `types.ts` | Shared TypeScript types |
+| `iconUtils.ts` | Slide icon lookup with a fallback |
 | `components/SlideLayout.tsx` | Slide renderer |
-| `components/PromptComparison.tsx` | Neutral task-fit comparison with word counts |
-| `components/InteractivePlayground.tsx` | Local evaluator UI |
-| `services/promptEvaluator.ts` | Existing contract and operational checks |
-| `services/taskFitEvaluator.ts` | Task-fit wrapper with filler and repetition detection |
-| `implementation-notes.md` | Decisions, trade-offs, stale docs, and validation logs |
-| `.github/workflows/deploy.yml` | GitHub Pages workflow |
-
----
-
-## Deploy to GitHub Pages
-
-Every push to `main` triggers the GitHub Actions workflow, installs dependencies, builds the app, and publishes the result to GitHub Pages.
-
----
-
-## References
-
-The deck is informed by operational prompting and LLM engineering practices from:
-
-- [Prompt Engineering Guide](https://www.promptingguide.ai/)
-- [OpenAI — Best practices for prompt engineering](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
-- [Engineering Practices for LLM Application Development](https://martinfowler.com/articles/engineering-practices-llm.html)
+| `components/PromptComparison.tsx` | Case prompt vs. method, with the pass-1 work order panel |
+| `components/InteractivePlayground.tsx` | Prompt-or-method check UI |
+| `services/promptEvaluator.ts` | Instruction-layer evaluator, six method traits, case-bound tokens, filler and risk signals |
+| `implementation-notes.md` | Decisions, trade-offs and validation log |
+| `.github/workflows/ci.yml` | Pull-request typecheck + build |
+| `.github/workflows/deploy.yml` | GitHub Pages deployment |
 
 ---
 

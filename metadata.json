@@ -1,5 +1,5 @@
 {
-  "name": "Operational Prompting for Real IT Work",
-  "description": "A bilingual interactive presentation about task-fit prompting across IT engineering, architecture, operations, and IT service management.",
+  "name": "Methods Instead of Prompts",
+  "description": "A bilingual interactive presentation about office work: write a reusable method instead of a new prompt per case, let it build the work order from today's material, and read that before any work happens.",
   "requestFramePermissions": []
 }

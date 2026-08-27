@@ -1,7 +1,5 @@
 export type Lang = 'en' | 'de';
 
-export type GuideMode = 'coding' | 'serviceOps';
-
 export enum SlideType {
   TITLE = 'TITLE',
   CONTENT = 'CONTENT',
@@ -24,10 +22,13 @@ export interface SlideData {
   subtitleDE?: string;
   contentDE?: string | string[];
   techniqueDE?: string;
+  /** The one-off prompt written for exactly this case. */
   codeStandard?: string;
+  /** The reusable method that builds the work order for any case like it. */
   codeOptimized?: string;
   codeStandardDE?: string;
   codeOptimizedDE?: string;
-  codeVokuprompt?: string;
-  codeVokupromptDE?: string;
+  /** What pass 1 produces from the method plus the current material. */
+  codeWorkOrder?: string;
+  codeWorkOrderDE?: string;
 }
