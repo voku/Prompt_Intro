@@ -1,5 +1,5 @@
 {
-  "name": "Prompting at Work",
-  "description": "A bilingual interactive presentation about prompting for everyday office work: mails, minutes, long documents, figures, plans and handovers.",
+  "name": "Methods Instead of Prompts",
+  "description": "A bilingual interactive presentation about office work: write a reusable method instead of a new prompt per case, let it build the work order from today's material, and read that before any work happens.",
   "requestFramePermissions": []
 }

@@ -1,114 +1,87 @@
-# Prompting at Work
+# Methods Instead of Prompts
 
-An interactive React + TypeScript + Vite presentation about **prompting for everyday office work** — mails, meeting minutes, long documents, figures, lists, plans and handovers.
-
-The point is not "write a bigger prompt". A good prompt is a **short, honest work instruction**: say what should exist at the end, hand over the material, name the red line, describe the form, and allow "I don't know". Some tasks need one sentence. A figure that ends up in a budget meeting needs a visible calculation and a source.
+An interactive React + TypeScript + Vite presentation about office work, built on one idea: **stop writing a new prompt for every case. Write the method once, and let it build the work order for this case out of the material you attach.**
 
 🔗 **Live Demo:** [https://voku.github.io/Prompt_Intro/](https://voku.github.io/Prompt_Intro/)
 
 ---
 
-## Core thesis
+## The idea
 
-- The model is fast and fluent, has never seen your files, does not really calculate, and almost never says "no idea".
-- Quality is fit, not length. A one-liner can score full marks; a 200-word wish list can be worthless.
-- The examples are the ones people actually recognise: the Friday-afternoon customer mail, the 43-page PDF that arrived at 17:55, the list three people maintained, the handover before your holiday.
-- The "bad" side of every comparison is what people really type, not a strawman.
-- The model prepares work. Sending, booking, approving and signing stay with a human who has a name.
+A prompt is a filled-in instruction. It contains this supplier, this date, this file, page 3, 4,200 euro. It works once. Next week you rewrite 80 % of it and lose the 20 % that was actually your quality bar.
 
----
+A method is the instruction that writes the instruction. You hand over the method plus today's material, and its **first** job is not to do the work:
 
-## Target audience
+```text
+Pass 1   method + today's material  →  the work order for this case  →  STOP
+                                        (you read half a page and correct it)
+Pass 2   your go-ahead              →  it executes the work order it built
+```
 
-- Anyone who works with mails, documents, minutes, lists, figures and deadlines
-- Assistants, project and office coordination, purchasing, finance, HR administration, team leads
-- People who have to hand work over to somebody who was in none of the meetings
-- Anyone who should understand that a good prompt is a work instruction, not a magic sentence
+Why that is worth the extra pass:
 
-Explicitly **not** a developer or IT-service-management deck. There is no code, no ticket workflow, and no toolchain in the examples.
-
----
-
-## Features
-
-- 📊 **Two bilingual 14-slide decks**:
-  - **Everyday Office Work** — mails, minutes, long documents, tone, tables, cutting, second-pair-of-eyes
-  - **Numbers, Plans & Handovers** — offers, data cleaning, projections, plan review, series work, handovers, status reports, gap checks
-- ⚖️ Side-by-side comparisons: *what people actually type* vs. *what makes it usable*
-- 🔢 Visible word counts, because the better version is sometimes the shorter one
-- 🧪 **Mode-aware local prompt check** with no backend and no model call
-- 🚫 Filler detection in English **and** German ("sei besonders gründlich", "vergiss nichts Wichtiges")
-- 🛡️ Warnings for data that needs protection, for asking the model to act instead of prepare, and for asking it to guess
-- 🌐 English and German content throughout
-- ⌨️ Keyboard and swipe navigation, slide overview grid, session timer, responsive layout
-- 🚀 GitHub Pages deployment with the `/Prompt_Intro/` base path preserved
+- **The method survives.** It names no supplier, no date, no page number, so it still works when the names change. The specifics get re-derived from whatever arrives today.
+- **Missing material surfaces before the work.** Everything the attachments do not contain shows up in the work order as UNKNOWN — not buried inside a finished document you have to unpick.
+- **You review a work order, not an output.** Half a page instead of four.
+- **Check and done-when stay separate.** How the result gets measured is one contract; which measured result is enough to stop is another. Merging them is how "looks fine" becomes "done".
 
 ---
 
-## The two decks
+## What the deck teaches
 
-### Everyday Office Work (`desk`)
+14 slides, one story, English and German throughout.
 
-The five lines that rescue almost any prompt — **job, material, limits, form, done-when** — taught through the situations they belong to:
+| # | Slide | The move it teaches |
+|---|---|---|
+| 2 | Yesterday's prompt is already waste | Everything specific in a prompt expires; the method never got written down |
+| 3 | Two passes, and the first one is the whole trick | Build the work order, stop, let a human read it |
+| 4 | What has to be in the work order | Goal · Material · Limits · Check · Done-when — filled in *by* the method, not by you |
+| 5 | One prompt for one tender — or one method for all | The same job as a case prompt and as a method, plus the work order pass 1 produces |
+| 6 | How you measure it is not when it is good enough | Check ≠ done-when |
+| 7 | A checklist in the prompt is not a checklist that was met | Criteria are the requirement, never evidence that it is satisfied |
+| 8 | Attaching a file is not permission to change it | Every attachment gets a role; roles are never upgraded |
+| 9 | Five words that make an answer checkable | backed · derived · assumed · unknown · contradiction |
+| 10 | Where a figure came from is half the answer | Provenance per figure; never average two sources that disagree |
+| 11 | Playground | Is that a prompt or a method? |
+| 12 | A floor is a floor, a quota produces fiction | Three *attempts*, not three findings — "no objections" is a valid result |
+| 13 | Confidence is not proof | Not certainty, not earlier reasoning, not a step that was described but never done |
+| 14 | The method is the deliverable | Build a small library; record whether each method actually helped |
 
-- the customer mail written at 16:40 on a Friday, where the model invents a reason for the delay
-- minutes that answer "who does what by when" instead of producing a summary
-- four questions with a quote each, instead of a summary of 43 pages
-- a table with a visible calculation, because the model writes numbers rather than calculating them
-- tone as a list of what may and may not be said
-- a table you can paste into Excel, with "leave the cell empty" as the anti-invention rule
-- a review that has to quote the sentence it criticises and is allowed to find nothing
-- cutting, where "make it better" reliably makes it longer
-
-### Numbers, Plans & Handovers (`decisions`)
-
-The sixth line — **evidence** — and the three labels **backed / assumed / unknown**:
-
-- comparing three offers against your criteria instead of asking which is "best"
-- cleaning a list by explicit rules, with a count of what was changed
-- a projection with named assumptions, three scenarios, and the figure that is still missing
-- a plan treated as a draft floor, with permission to answer "the plan holds"
-- 60 responses in blocks of 10, with a count and a stop after each block
-- a handover written for somebody who was in none of the meetings and cannot read the chat
-- a status report where nothing is green without the rule that made it green
-- a gap check that looks for the missing owner, not for style
-
-Both decks end on the same boundary: the model prepares, a human decides.
+Every comparison slide shows the same job twice: the **prompt for this one case** on the left, the **method that builds the work order** on the right. The left one is not a strawman — it is a good prompt with a shelf life of one week. Slide 5 expands to show what pass 1 actually produces from the method plus three attached offers.
 
 ---
 
-## Where the method comes from
+## Where this comes from
 
-The prompt shape used throughout is the office translation of the operating-prompt work in two sibling repositories:
+The mechanics are the office translation of the operating-prompt work in two sibling repositories:
 
-- [`voku/agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) — the *Goal / Context / Constraints / Verification / Done When* contract, the separation of verification from the stopping condition, evidence states instead of confident prose, the first-draft falsification lens, and recipes such as `plan-as-draft`, `continue-until-done`, `evidence-report`, `missingness-audit`, `retry-stop` and `production-ready-handoff`.
-- [`voku/agent-loop`](https://github.com/voku/agent-loop) — the workflow skills around it: bounded slices with a checkpoint after each one, handoffs written for a worker with no access to the current chat, and the rule that persisted evidence beats conversational memory.
+- [`voku/agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) — the L1/L2 distinction this whole deck rests on. An **L2 recipe** is a reusable construction method and quality bar; an **L1 contract** is the concrete executable instruction (*Goal / Context / Constraints / Verification / Done When*) that the L2 pass builds from current evidence. Also: verification kept separate from the stopping condition, acceptance criteria as required outcomes rather than proof of satisfaction, context that is not edit permission, evidence states instead of confident prose, numeric floors that must not be weakened to manufacture success, and "a system that cannot represent uncertainty will eventually manufacture certainty".
+- [`voku/agent-loop`](https://github.com/voku/agent-loop) — the workflow around it: bounded slices with a checkpoint after each, handoffs written for a worker with no access to the current chat, persisted evidence beating conversational memory.
 
-The engineering vocabulary is deliberately left behind; the mechanics are not.
+Individual slides map to individual recipes: `adversarial-review` (slide 12), `discovery-first` (slide 9), `missingness-audit` and the L2 construction contract (slides 3–5), `evidence-report` (slide 13), `retry-stop` (slide 13). The engineering vocabulary is left behind; the mechanics are not.
 
 ---
 
-## The prompt check
+## The playground
 
-The playground checks a prompt for six lines — **job, material, limits, form, stopping point, evidence** — and looks for the instruction rather than a keyword ritual: `max. 120 Wörter` counts as a form instruction even when nobody wrote "format" above it.
+The check on slide 11 answers one question: **is this a prompt or a method?** It looks for six traits and reports what it finds:
 
-It also flags:
+1. **Two passes** — build the work order first, then stop
+2. **Derived from the material** — the specifics come out of what is attached today
+3. **Check and done-when kept apart**
+4. **Missing stays missing** — UNKNOWN / "not regulated" / "not checkable" allowed as results
+5. **No quota, no softening** — a clean result is valid; the bar is never lowered
+6. **Material has a role** — what may be edited, what is read-only
 
-- filler and process theatre in both languages ("think step by step", "sei besonders gründlich")
-- repeated instruction lines
-- hedge words
-- data that probably should not be pasted into an unapproved tool
-- prompts that ask the model to **act** (send, book, approve, sign) rather than prepare
-- prompts that ask for a guess — while correctly ignoring the negated form, so "nicht schätzen" is treated as the good instruction it is
-- in the numbers deck: figures without a visible calculation or a source
+It separately lists everything that **binds the text to one case** — a date, an amount, a file name, a page number, a person, a company — because that is exactly what will expire. It also flags filler in English and German, repeated instruction lines, requests for the model to *act* rather than prepare, requests for a guess (correctly ignoring the negated form, so "nicht schätzen" is treated as the good instruction it is), and data that probably should not be pasted into an unapproved tool.
 
-**Length is not scored.** Pasted material inside quotes is treated as data, not as instruction, so the customer's own wording does not trigger warnings. It stays a local heuristic, not a model and not a substitute for looking at the actual result.
+**Length is not scored.** The check runs locally with no backend and no model call, and it remains a heuristic — not a substitute for looking at the actual result.
 
 ---
 
 ## Presentation usage
 
-- **15 minutes:** slides 1, 2, 3, 4, 7 and 14
+- **15 minutes:** slides 1–5, then 14
 - **30 minutes:** slides 1–10, then 13 and 14
 - **45 minutes:** the full deck including the playground
 
@@ -142,16 +115,15 @@ The production build writes static output to `dist/` and keeps the public GitHub
 
 | File / Directory | Purpose |
 |---|---|
-| `App.tsx` | App shell, navigation, deck switch, language toggle, overview, timer |
-| `constants.ts` | All slide content for both decks, EN and DE |
-| `promptPresets.ts` | Playground examples per deck and language |
+| `App.tsx` | App shell, navigation, language toggle, overview grid, timer |
+| `constants.ts` | All 14 slides, English and German |
+| `promptPresets.ts` | Playground examples, from one-off prompt to full method |
 | `types.ts` | Shared TypeScript types |
 | `iconUtils.ts` | Slide icon lookup with a fallback |
 | `components/SlideLayout.tsx` | Slide renderer |
-| `components/PromptComparison.tsx` | Side-by-side comparison with word counts |
-| `components/InteractivePlayground.tsx` | Local prompt-check UI |
-| `services/promptEvaluator.ts` | The six line checks, risk and data signals |
-| `services/taskFitEvaluator.ts` | Filler and repetition detection on top |
+| `components/PromptComparison.tsx` | Case prompt vs. method, with the pass-1 work order panel |
+| `components/InteractivePlayground.tsx` | Prompt-or-method check UI |
+| `services/promptEvaluator.ts` | The six method traits, case-bound tokens, filler and risk signals |
 | `implementation-notes.md` | Decisions, trade-offs and validation log |
 | `.github/workflows/deploy.yml` | GitHub Pages workflow |
 

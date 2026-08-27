@@ -1,47 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Maximize, X } from 'lucide-react';
 import SlideLayout from './components/SlideLayout';
-import { GUIDE_SLIDES } from './constants';
-import { GuideMode, Lang } from './types';
+import { SLIDES } from './constants';
+import { Lang } from './types';
 import { resolveIcon } from './iconUtils';
-
-interface GuideModeOption {
-  value: GuideMode;
-  label: string;
-  shortLabel: string;
-}
-
-const getGuideModeOptions = (lang: Lang): GuideModeOption[] => lang === 'de'
-  ? [
-      { value: 'desk', label: 'Büroalltag', shortLabel: 'Alltag' },
-      { value: 'decisions', label: 'Zahlen, Pläne & Übergaben', shortLabel: 'Zahlen' },
-    ]
-  : [
-      { value: 'desk', label: 'Everyday Office Work', shortLabel: 'Everyday' },
-      { value: 'decisions', label: 'Numbers, Plans & Handovers', shortLabel: 'Numbers' },
-    ];
 
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
-  const [guideMode, setGuideMode] = useState<GuideMode>('desk');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
 
-  const slides = GUIDE_SLIDES[guideMode] ?? [];
-  const guideModeOptions = getGuideModeOptions(lang);
+  const slides = SLIDES;
   const safeSlideCount = Math.max(slides.length, 1);
   const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
   const currentSlide = slides[safeCurrentSlideIndex];
   const progress = slides.length > 0 ? ((safeCurrentSlideIndex + 1) / slides.length) * 100 : 0;
-
-  const handleGuideModeChange = (nextGuideMode: GuideMode): void => {
-    setGuideMode(nextGuideMode);
-    setCurrentSlideIndex(0);
-    setIsGridOpen(false);
-  };
 
   const nextSlide = (): void => {
     if (safeCurrentSlideIndex < slides.length - 1) {
@@ -146,7 +122,7 @@ const App: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlideIndex, guideMode, isGridOpen, slides.length]);
+  }, [currentSlideIndex, isGridOpen, slides.length]);
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -157,7 +133,7 @@ const App: React.FC = () => {
   const prevLabel = lang === 'de' ? 'Zurück' : 'Back';
   const nextLabel = lang === 'de' ? 'Weiter' : 'Next';
   const overviewLabel = lang === 'de' ? 'Übersicht' : 'Overview';
-  const deckTitle = guideModeOptions.find((option) => option.value === guideMode)?.label ?? 'Prompting at Work';
+  const deckTitle = lang === 'de' ? 'Methoden statt Prompts' : 'Methods Instead of Prompts';
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 font-sans text-gray-900 selection:bg-blue-200">
@@ -170,20 +146,6 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="hidden rounded-xl border border-gray-200 bg-gray-100 p-1 text-xs font-semibold sm:flex">
-            {guideModeOptions.map((mode) => (
-              <button
-                key={mode.value}
-                type="button"
-                onClick={() => handleGuideModeChange(mode.value)}
-                className={`rounded-lg px-3 py-1 transition-colors ${guideMode === mode.value ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-white'}`}
-                aria-pressed={guideMode === mode.value}
-              >
-                {mode.label}
-              </button>
-            ))}
-          </div>
-
           <div className="mr-2 hidden items-center border-r border-gray-200 pr-4 font-mono text-xs text-gray-400 md:flex">
             <Clock size={14} className="mr-2" />
             {formatTime(elapsedSeconds)}
@@ -243,13 +205,10 @@ const App: React.FC = () => {
         <div className={`flex h-full w-full justify-center transition-opacity duration-300 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
           {currentSlide && (
             <SlideLayout
-              key={`${guideMode}-${safeCurrentSlideIndex}`}
+              key={safeCurrentSlideIndex}
               data={currentSlide}
               isActive={!isGridOpen}
               lang={lang}
-              guideMode={guideMode}
-              guideModeOptions={guideModeOptions}
-              onGuideModeChange={handleGuideModeChange}
             />
           )}
         </div>

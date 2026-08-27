@@ -2,31 +2,15 @@ import React from 'react';
 import PromptComparison from './PromptComparison';
 import InteractivePlayground from './InteractivePlayground';
 import { resolveIcon } from '../iconUtils';
-import { GuideMode, Lang, SlideData, SlideType } from '../types';
-
-interface GuideModeOption {
-  value: GuideMode;
-  label: string;
-  shortLabel: string;
-}
+import { Lang, SlideData, SlideType } from '../types';
 
 interface SlideLayoutProps {
   data: SlideData;
   isActive: boolean;
   lang: Lang;
-  guideMode: GuideMode;
-  guideModeOptions: GuideModeOption[];
-  onGuideModeChange: (nextGuideMode: GuideMode) => void;
 }
 
-const SlideLayout: React.FC<SlideLayoutProps> = ({
-  data,
-  isActive,
-  lang,
-  guideMode,
-  guideModeOptions,
-  onGuideModeChange,
-}) => {
+const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const IconComponent = resolveIcon(data.icon);
 
   if (!isActive) {
@@ -47,8 +31,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
   const technique = t(data.technique, data.techniqueDE);
 
   const thanksLabel = lang === 'de' ? 'Danke für Ihre Aufmerksamkeit!' : 'Thank you for your attention!';
-  const trainingLabel = lang === 'de' ? 'Prompting im Büroalltag' : 'Prompting at Work';
-  const guideSwitchLabel = lang === 'de' ? 'Deck auswählen' : 'Choose deck';
+  const trainingLabel = lang === 'de' ? 'Methoden statt Prompts · Büroalltag' : 'Methods instead of prompts · office work';
 
   const renderContent = () => {
     switch (data.type) {
@@ -58,29 +41,8 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
             <div className="mb-6 rounded-full bg-blue-600 p-8 shadow-2xl">
               <IconComponent size={80} className="text-white" />
             </div>
-            <h1 className="text-5xl font-bold tracking-tight text-gray-900 md:text-6xl">{title}</h1>
+            <h1 className="max-w-4xl text-5xl font-bold tracking-tight text-gray-900 md:text-6xl">{title}</h1>
             <h2 className="max-w-3xl text-xl font-light text-gray-600 md:text-2xl">{subtitle}</h2>
-            <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-gray-50 p-2 shadow-inner" role="group" aria-label={guideSwitchLabel}>
-              <div className="grid grid-cols-2 gap-2">
-                {guideModeOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => onGuideModeChange(option.value)}
-                    aria-pressed={guideMode === option.value}
-                    aria-label={option.label}
-                    className={`rounded-xl px-4 py-3 text-sm font-bold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                      guideMode === option.value
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-white text-gray-700 shadow-sm hover:bg-blue-50 hover:text-blue-700'
-                    }`}
-                  >
-                    <span className="sm:hidden">{option.shortLabel}</span>
-                    <span className="hidden sm:inline">{option.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
             <div className="mt-4 text-sm uppercase tracking-widest text-gray-400">{trainingLabel}</div>
           </div>
         );
@@ -136,8 +98,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
                 technique={technique ?? (lang === 'de' ? 'Beispiel' : 'Example')}
                 description={typeof content === 'string' ? content : ''}
                 lang={lang}
-                guideMode={guideMode}
-                codeVokuprompt={lang === 'de' && data.codeVokupromptDE ? data.codeVokupromptDE : data.codeVokuprompt}
+                workOrder={lang === 'de' && data.codeWorkOrderDE ? data.codeWorkOrderDE : data.codeWorkOrder}
               />
             </div>
           </div>
@@ -153,7 +114,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({
               <h2 className="text-3xl font-bold text-gray-800">{title}</h2>
             </div>
             {subtitle && <p className="mb-6 text-lg text-gray-500">{subtitle}</p>}
-            <InteractivePlayground lang={lang} guideMode={guideMode} />
+            <InteractivePlayground lang={lang} />
           </div>
         );
 

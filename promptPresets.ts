@@ -1,108 +1,56 @@
-import { GuideMode, Lang } from './types';
+import { Lang } from './types';
 
 export interface PromptPreset {
   label: string;
   text: string;
 }
 
-const DESK_PRESETS: Record<Lang, PromptPreset[]> = {
+export const PROMPT_PRESETS: Record<Lang, PromptPreset[]> = {
   en: [
     {
-      label: 'Short and lazy',
-      text: 'Write a friendly mail to the customer saying the delivery will be late.',
+      label: 'Prompt for one case',
+      text: 'Goal: compare the three offers for the new multifunction printers.\nMaterial: Meier office systems (12 Mar), Krause copiers (14 Mar), Solvent GmbH (14 Mar).\nCriteria: total cost over 3 years, delivery date, support response time, notice period.\nLimits: figure plus page in every cell. If it is not stated, write “not stated”, do not estimate.\nCheck: every figure against the page named.\nDone when: the table is complete and the open question before signing is named.',
     },
     {
       label: 'Long but empty',
-      text: 'Please write a very detailed, comprehensive and professionally formulated mail to our customer. Think carefully and step by step, cover everything that might be relevant, be extremely thorough and friendly, do not miss anything important, and provide the best possible answer for the customer and for us.',
+      text: 'Please compare our offers very carefully and in a comprehensive, professional way. Think step by step, cover everything that might be relevant, do not miss anything important, and give me the best possible answer so I can take a good decision.',
     },
     {
-      label: 'Small and sufficient',
-      text: 'Mail to Ms Berger (purchasing, long-standing customer, prefers short mails). Facts: delivery moves from 12 Sept to 26 Sept, cause is a supply shortage on the housing, a partial delivery of 40 units is possible on 12 Sept. Do not offer a discount, express shipping or any date before 26 Sept. Form: max. 120 words, one concrete offer at the end. Anything I did not tell you, do not invent — write [CHECK] instead.',
+      label: 'The same as a method',
+      text: 'Comparing offers — method.\n\nPass 1: build the work order for this comparison out of the attached offers. Then stop.\n- Derive the criteria from my question and from the offers, not from general knowledge. A criterion only one supplier mentions gets its own row and stays out of the ranking.\n- For each criterion name where it is stated in each offer, or “not regulated in offer X”.\n- Keep the check (how I can recheck every figure) separate from done-when (which result is enough to sign).\n- Every number I set stays a hard floor. Do not soften it so an offer fits.\n- The attached offers are material and are read only. Do not rewrite them and do not make them comparable by filling in what is missing.\n\nPass 2, only after my go-ahead: execute the work order you built.',
     },
     {
-      label: 'Meeting minutes',
-      text: 'Three blocks from the attached transcript. Decided: the decision and who said it. Open: task, name, by when — only names that appear in the transcript. Not decided: points that were postponed. No date in the text: write “no date given”, do not estimate. Output format: three lists, no intro and no closing summary.',
+      label: 'Method with a leftover case',
+      text: 'Comparing offers — method.\n\nPass 1: build the work order out of the attached offers, then stop. Derive the criteria from the offers, not from general knowledge. Keep the check separate from done-when. Anything an offer does not state stays “not regulated”; do not estimate. The offers are read only.\n\nUse the same criteria as in the Solvent GmbH comparison of 14 Mar: total cost over 3 years, delivery date, support response time. Budget ceiling 4,200 €.\n\nPass 2, only after my go-ahead.',
     },
     {
-      label: 'Long document',
-      text: 'Goal: answer four questions about the attached contract — term and renewal, notice period and form, when the price may rise, who is liable and up to what amount. Context: use only the attached document. Constraints: for each answer quote the sentence plus clause or page; if something is not in there write “not regulated” and do not add what would be customary. Done when: all four questions have an answer or an explicit “not regulated”.',
+      label: 'Rules, but no two passes',
+      text: 'Second pair of eyes — method.\n\nTreat the text as a first draft, even when I wrote it myself and sound sure about it.\n\nAt least three serious attempts to disprove it — three attempts, not a quota of three findings.\nFor each attempt: the passage quoted, what could be wrong with it, what would have to be true for the objection to hold, and whether the material at hand backs that: backed or not checkable.\n\nAn objection the material disproves is a successful attempt, not a finding.\nIf nothing survives three serious attempts: “no objections”. That is a valid result.\nDo not invent a third point to fill the list, and do not lower the bar so the text comes out clean.',
     },
   ],
   de: [
     {
-      label: 'Kurz und faul',
-      text: 'Schreib eine freundliche Mail an den Kunden, dass die Lieferung später kommt.',
+      label: 'Prompt für einen Fall',
+      text: 'Ziel: Die drei Angebote für die neuen Multifunktionsdrucker vergleichen.\nMaterial: Bürotechnik Meier (12.03.), Kopiersysteme Krause (14.03.), Solvent GmbH (14.03.).\nKriterien: Gesamtkosten 3 Jahre, Liefertermin, Reaktionszeit Support, Kündigungsfrist.\nGrenzen: Pro Zelle Zahl plus Seite. Fehlt die Angabe: „nicht angegeben“, nicht schätzen.\nPrüfung: Jede Zahl gegen die genannte Seite.\nFertig wenn: Die Tabelle steht und die offene Frage vor der Unterschrift ist benannt.',
     },
     {
       label: 'Lang, aber leer',
-      text: 'Bitte schreib eine sehr detaillierte, umfassende und professionell formulierte Mail an unseren Kunden. Denke sorgfältig und Schritt für Schritt, gehe auf alles ein, was wichtig sein könnte, sei besonders gründlich und freundlich, vergiss nichts Wichtiges und liefere die bestmögliche Antwort für den Kunden und für uns.',
+      text: 'Bitte vergleiche unsere Angebote sehr sorgfältig, umfassend und professionell. Denke Schritt für Schritt, gehe auf alles ein, was wichtig sein könnte, vergiss nichts Wichtiges und gib mir die bestmögliche Antwort, damit ich gut entscheiden kann.',
     },
     {
-      label: 'Klein und ausreichend',
-      text: 'Mail an Frau Berger (Einkauf, langjährige Kundin, mag kurze Mails). Fakten: Liefertermin rutscht vom 12.09. auf den 26.09., Grund ist ein Lieferengpass beim Gehäuse, eine Teillieferung von 40 Stück ist am 12.09. möglich. Nicht anbieten: Preisnachlass, Expressversand, Termin vor dem 26.09. Form: max. 120 Wörter, am Schluss ein konkretes Angebot. Was ich dir nicht gesagt habe, erfindest du nicht – schreib [KLÄREN] hin.',
+      label: 'Dasselbe als Methode',
+      text: 'Angebotsvergleich – Methode.\n\nDurchgang 1: Bau aus den beigefügten Angeboten den Arbeitsauftrag für diesen Vergleich. Dann stopp.\n- Leite die Kriterien aus meiner Frage und aus den Angeboten ab, nicht aus allgemeinem Wissen. Ein Kriterium, das nur ein Anbieter nennt, bekommt eine eigene Zeile und bleibt aus der Wertung.\n- Nenn zu jedem Kriterium die Fundstelle in jedem Angebot oder „in Angebot X nicht geregelt“.\n- Halt Prüfung (woran ich jede Zahl nachrechnen kann) und Fertig-wenn (welches Ergebnis zum Unterschreiben reicht) getrennt.\n- Jede Zahl, die ich vorgebe, bleibt harte Untergrenze. Nicht aufweichen, damit ein Angebot passt.\n- Die beigefügten Angebote sind Material und nur zu lesen. Nicht umformulieren und nicht durch Ergänzen vergleichbar machen.\n\nDurchgang 2, erst nach meinem OK: Führ den Auftrag aus, den du gebaut hast.',
     },
     {
-      label: 'Protokoll',
-      text: 'Aus dem angehängten Transkript drei Blöcke. Entschieden: der Beschluss und wer ihn gesagt hat. Offen: Aufgabe, Name, bis wann – nur Namen, die im Transkript vorkommen. Nicht entschieden: die vertagten Punkte. Steht kein Datum im Text: „kein Termin genannt“, nicht schätzen. Ausgabeformat: drei Listen, keine Einleitung und kein Fazit.',
+      label: 'Methode mit Fall-Rest',
+      text: 'Angebotsvergleich – Methode.\n\nDurchgang 1: Bau den Arbeitsauftrag aus den beigefügten Angeboten, dann stopp. Leite die Kriterien aus den Angeboten ab, nicht aus allgemeinem Wissen. Halt Prüfung und Fertig-wenn getrennt. Was ein Angebot nicht hergibt, bleibt „nicht geregelt“, nicht schätzen. Die Angebote sind nur zu lesen.\n\nNimm dieselben Kriterien wie beim Vergleich mit Solvent GmbH vom 14.03.: Gesamtkosten 3 Jahre, Liefertermin, Reaktionszeit Support. Budgetgrenze 4.200 €.\n\nDurchgang 2, erst nach meinem OK.',
     },
     {
-      label: 'Langes Dokument',
-      text: 'Ziel: vier Fragen zum angehängten Vertrag beantworten – Laufzeit und Verlängerung, Kündigungsfrist und Form, wann der Preis steigen darf, wer bis zu welcher Summe haftet. Kontext: nur das angehängte Dokument verwenden. Einschränkungen: pro Antwort den Satz plus Paragraf oder Seite zitieren; steht etwas nicht drin, „nicht geregelt“ schreiben und nicht ergänzen, was üblich wäre. Fertig wenn: alle vier Fragen eine Antwort oder ein ausdrückliches „nicht geregelt“ haben.',
+      label: 'Regeln, aber ohne Durchgänge',
+      text: 'Gegenlesen – Methode.\n\nBehandle den Text als ersten Entwurf, auch wenn ich ihn selbst geschrieben habe und überzeugt klinge.\n\nMindestens drei ernsthafte Versuche, ihn zu widerlegen – drei Versuche, kein Soll von drei Funden.\nPro Versuch: die Stelle zitiert, was daran nicht stimmen könnte, was wahr sein müsste, damit der Einwand trägt, und ob das vorliegende Material das hergibt: belegt oder nicht prüfbar.\n\nEin Einwand, den das Material widerlegt, ist ein erfolgreicher Versuch, kein Fund.\nBleibt nach drei ernsthaften Versuchen nichts übrig: „keine Einwände“. Das ist ein gültiges Ergebnis.\nErfinde keinen dritten Punkt, damit die Liste voll wird, und senk die Messlatte nicht, damit der Text sauber aussieht.',
     },
   ],
 };
 
-const DECISION_PRESETS: Record<Lang, PromptPreset[]> = {
-  en: [
-    {
-      label: 'No source at all',
-      text: 'Will our budget last until the end of the year?',
-    },
-    {
-      label: 'Projection with assumptions',
-      text: 'Projection from the attached cost export for January to August. Calculate it so I can follow it: monthly average, projection to December, difference to budget. List your assumptions one by one. Three scenarios: as before, +10 %, −10 %. And say which figure you are missing to turn this into a decision paper.',
-    },
-    {
-      label: 'Comparing offers',
-      text: 'Goal: compare the three attached offers so we can sign one. Context: use only the offers. Criteria in this order: total cost over 3 years, delivery date, support hours, notice period. Constraints: in each cell the figure plus where it says so; if the offer does not say, write “not stated” and do not estimate. Output format: one table plus a recommendation in two sentences. Done when: the recommendation names the one question that has to be settled before we sign.',
-    },
-    {
-      label: 'Handover',
-      text: 'Handover for a colleague who was in none of the meetings and cannot see this chat. From my notes, per item: status today, next step, by when, who decides, where the file is, what must not be promised. Anything you cannot back up from my notes goes at the end as a question to me, not as an assumption in the text. Order: whatever is due in the first three days first.',
-    },
-    {
-      label: 'Series work in blocks',
-      text: 'Work through the 60 responses in blocks of 10. Same structure per entry: name, agrees yes/no/unclear, note in max. 10 words. After each block an interim status with the counts, then stop and wait for “continue”. Entries that do not fit the scheme go on a “to clarify” pile — do not make them fit.',
-    },
-  ],
-  de: [
-    {
-      label: 'Ganz ohne Quelle',
-      text: 'Reicht unser Budget bis Jahresende?',
-    },
-    {
-      label: 'Hochrechnung mit Annahmen',
-      text: 'Hochrechnung aus dem angehängten Kostenexport Januar bis August. Rechne nachvollziehbar: Monatsschnitt, Hochrechnung bis Dezember, Differenz zum Budget. Nenn deine Annahmen einzeln. Drei Szenarien: wie gehabt, +10 %, −10 %. Und sag, welche Zahl dir fehlt, um daraus eine Entscheidungsvorlage zu machen.',
-    },
-    {
-      label: 'Angebotsvergleich',
-      text: 'Ziel: die drei angehängten Angebote so vergleichen, dass wir eines unterschreiben können. Kontext: nur die Angebote verwenden. Kriterien in dieser Reihenfolge: Gesamtkosten über 3 Jahre, Liefertermin, Support-Zeiten, Kündigungsfrist. Einschränkungen: pro Zelle die Zahl plus Fundstelle; fehlt die Angabe, „nicht angegeben“ schreiben und nicht schätzen. Ausgabeformat: eine Tabelle plus Empfehlung in zwei Sätzen. Fertig wenn: die Empfehlung die eine Frage nennt, die vor der Unterschrift geklärt sein muss.',
-    },
-    {
-      label: 'Übergabe',
-      text: 'Übergabe für eine Kollegin, die in keinem der Termine war und diesen Chat nicht sehen kann. Aus meinen Notizen, pro Vorgang: Stand heute, nächster Schritt, bis wann, wer entscheidet, wo die Datei liegt, was nicht zugesagt werden darf. Was du aus meinen Notizen nicht belegen kannst, kommt ans Ende als Frage an mich, nicht als Annahme im Text. Reihenfolge: was in den ersten drei Tagen ansteht, zuerst.',
-    },
-    {
-      label: 'Serienarbeit in Blöcken',
-      text: 'Arbeite die 60 Rückläufer in Blöcken zu 10 ab. Pro Eintrag dieselbe Struktur: Name, Zustimmung ja/nein/unklar, Anmerkung in max. 10 Wörtern. Nach jedem Block ein Zwischenstand mit Zählung, dann stopp und warte auf „weiter“. Einträge, die nicht ins Schema passen, kommen auf einen Stapel „Klärfall“ – nicht passend machen.',
-    },
-  ],
-};
-
-export const PROMPT_PRESETS: Record<GuideMode, Record<Lang, PromptPreset[]>> = {
-  desk: DESK_PRESETS,
-  decisions: DECISION_PRESETS,
-};
-
-export const getDefaultPreset = (lang: Lang, guideMode: GuideMode): PromptPreset | undefined =>
-  PROMPT_PRESETS[guideMode][lang][1] ?? PROMPT_PRESETS[guideMode][lang][0];
+export const getDefaultPreset = (lang: Lang): PromptPreset | undefined =>
+  PROMPT_PRESETS[lang][0];

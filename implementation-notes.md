@@ -1,55 +1,65 @@
 # Implementation notes
 
-## What changed and why
+## What this revision changed and why
 
-The previous content had drifted into abstract IT and ITSM vocabulary — engineering delivery, service maps, change readiness, capacity headroom. The examples were also strawmen: the "bad" prompt was almost always an inflated filler monster nobody actually writes, which makes the comparison feel staged and lets every viewer off the hook. The decks are now about **office work**, and the weak side of each comparison is what people really type ("Fasse das Meeting zusammen.", "Reicht unser Budget bis Jahresende?").
+The previous revision taught a five-field prompt template that a person fills in by hand: job, material, limits, form, done-when. That is an **L1 contract** — a filled-in instruction for one case. It is the older, weaker artifact, and building a deck around it teaches people to keep writing disposable prompts slightly better.
 
-The one deliberately inflated prompt is kept as a playground preset ("Long but empty" / "Lang, aber leer"), because the thesis "length is not quality" needs a counter-example somewhere. It is no longer the shape of every slide.
+The power in `voku/agent-recall-compiler` is at **L2**: a reusable construction method that tells the agent how to build the project-specific L1 contract from current evidence, and to stop there. The deck now teaches that instead:
+
+```text
+Pass 1   method + today's material  →  the work order for this case  →  STOP
+Pass 2   your go-ahead              →  execute the work order it built
+```
+
+The reusable part is the method and the quality bar. The specifics — supplier, date, file, page — are re-derived from whatever material arrives, so the method never goes stale.
 
 ## Decisions made because the spec was incomplete
 
-- **Kept two decks instead of collapsing to one.** The deck switch is an existing feature, so both modes were re-themed to office work rather than removed: `desk` (everyday desk work) and `decisions` (numbers, plans, handovers). The internal `GuideMode` keys were renamed accordingly.
-- **Collapsed `guideContent.ts` into `constants.ts`.** The override layer existed only because content had been patched on top of older content. Since all content was rewritten, a single source is simpler and there is nothing left to override.
-- **Split the six lines across the two decks.** The everyday deck teaches five (job, material, limits, form, done-when); the numbers deck adds the sixth (evidence) with the *backed / assumed / unknown* labels, because that is where it earns its cost.
-- **Kept the optional expanded panel** on the customer-mail slide as the one place where the fully spelled-out five-line shape is visible, without making every slide that dense.
-- **German is not a translation afterthought.** The filler detector previously matched English phrases only, so the German "long but empty" preset produced no warnings at all. German patterns were added for intensity words, unlimited scope and process theatre.
+- **Collapsed the two decks into one.** The previous revision kept the deck switch and re-themed both modes, which meant the presentation still told two stories. "No switch to another story" was read as: one deck, one thread. `GuideMode` is gone from types, app shell, components, presets and evaluator, and the title-slide deck picker with it. If the switch is wanted back, it is a small addition — the content no longer needs it.
+- **Merged `taskFitEvaluator.ts` into `promptEvaluator.ts`.** The wrapper-over-base split mirrored an override pattern that had no reason to exist once both files were rewritten.
+- **Renamed `codeVokuprompt` to `codeWorkOrder`.** The expandable panel now shows what pass 1 actually produces from the method plus three attached offers, which is the single most convincing thing in the deck.
+- **The left column is not a strawman.** It is a good, complete, well-structured prompt for one tender — with a shelf life of one week. Making it bad would have proved nothing about L2.
+- **English content uses English field names** (Goal / Material / Limits / Check / Done-when), German content uses German ones. The first draft leaked `Prüfung` and `Fertig-wenn` into the English slides.
 
-## Method sources
+## Mapping to the source repositories
 
-The prompt shape is the office translation of `voku/agent-recall-compiler` and `voku/agent-loop`:
+Each principle in the deck traces to a specific mechanism, not to a general vibe:
 
-- *Goal / Context / Constraints / Verification / Done When* becomes *Auftrag / Material / Grenzen / Form / Fertig-wenn*, with verification kept separate from the stopping condition.
-- Evidence states (`VERIFIED` / `UNKNOWN` / `BLOCKED`) become *belegt / angenommen / unbekannt*.
-- `adversarial-review` (first-draft lens, no manufactured findings) becomes the "have it attack the draft" slide, including the explicit permission to return "no objections".
-- `plan-as-draft` becomes the "plan somebody made real quick" slide, including the permission to answer "the plan holds".
-- `continue-until-done` becomes 60 responses in blocks of 10 with a count and a stop after each block.
-- `production-ready-handoff` / `todo-card-handoff` becomes the holiday handover for a colleague who was in no meeting and cannot read the chat.
-- `evidence-report` becomes the status report where nothing is green without the rule that made it green.
-- `missingness-audit` becomes the gap check that hunts the missing owner rather than style.
-- `retry-stop` becomes "same wrong result twice means material is missing, not wording".
-- `deletion-first` becomes the cutting slide.
+| Slide | Source |
+|---|---|
+| Two passes; the L2 pass ends at the L1 prompt | `OperatingPromptRenderer` L2 construction contract: "The L2 pass ends after producing the project-specific L1 prompt. Do not implement the task during prompt construction." |
+| Check ≠ done-when | "Keep Verification and Done When distinct: Verification names how reality is measured; Done When names the acceptable observed result." |
+| A checklist in the prompt is not a met checklist | "Preserve task acceptance criteria as required outcomes, never as evidence that they are satisfied." |
+| Attaching a file is not permission to change it | Design principle 4, "Context is not edit permission", plus the target-aware role semantics (`dependency` → `context_only_do_not_edit_from_selection_alone`) |
+| Five evidence words | Design principle 5, `VERIFIED / INFERRED / ASSUMED / BLOCKED / CONTRADICTED`, and "a system that cannot represent uncertainty will eventually manufacture certainty" |
+| Provenance per figure | `context-explain`: WHAT / WHY / HOW / AUTHORITY / USE / STATE, and the deliberate separation of HOW from AUTHORITY |
+| A floor is a floor, a quota produces fiction | `adversarial-review` and `regression-hunt`: "Do not manufacture defects merely to satisfy the numeric floor; CLEAN remains valid" |
+| Confidence is not proof | "Never treat prior model reasoning, model confidence, reviewer consensus, prompt construction, or an unexecuted command as verification" |
+| Stop retrying without new evidence | `retry-stop` |
+| Record whether a method helped | Design principle 9, "Selection is not usefulness", and the operating-prompt outcome events |
 
-Engineering vocabulary was dropped; the mechanics were not.
+## The playground is a different instrument now
 
-## Evaluator changes
+It no longer counts contract fields. It answers "is this a prompt or a method?" by looking for six traits — two passes, derived from the material, check/done-when kept apart, missing stays missing, no quota and no softening, material has a role — and separately lists everything that binds the text to one case: a date, an amount, a file name, a page number, a person, a company.
 
-- The six checks now look for the **instruction**, not for a keyword ritual: `max. 120 Wörter`, `Form:`, `pro Vorgang:` and `Tabelle mit Spalten` all count, in both languages.
-- Risk signals replaced the ITSM-specific lists: asking the model to **act** (send, book, approve, sign) rather than prepare, and asking it to **guess**.
-- Negation is handled in both directions, before and after the match, so `nicht schätzen`, `do not invent` and `Erfinde keine Kritik` are no longer reported as requests for a guess. This was the single biggest false-positive source while rebuilding the examples.
-- Sensitive-data detection was moved from credentials to what actually appears in an office prompt: salary, payroll, sick notes, applications, dates of birth, IBAN, personnel numbers — with the credential patterns kept.
-- Pasted material is masked before risk detection, so the customer's own wording in a quoted mail does not produce warnings.
-- Scoring was recalibrated so a deliberately small prompt is not punished: `passed × 14`, plus 10 when the job has both a goal and a limit, plus 8 when the result is checkable. A three-line prompt lands at "usable draft", not at "weak".
-- In the numbers deck, figures without a visible calculation or a source produce a warning of their own.
-- Risk warnings are now bilingual objects instead of English-only strings.
+That second list is the honest half. A text can have all six traits and still expire, because someone left "the Solvent GmbH comparison of 14 Mar" inside the method. The preset "method with a leftover case" exists to demonstrate exactly that, and scores in the seventies rather than at 100.
 
-## Bug found and fixed on the way
+## The evaluator found a real defect in the deck
 
-`iconUtils.resolveIcon` guarded with `typeof candidate === 'function'`. Lucide icons are `forwardRef` **objects**, so the guard rejected every icon and the app rendered `HelpCircle` on every single slide. The guard now also accepts React element types.
+On the first run, four of the twelve methods on the right-hand side scored 15–45 out of 100: the sign-off check, the attachment roles, the provenance rules and the second-pair-of-eyes review were written as **rule lists**, not as two-pass methods. By the deck's own definition they were not methods at all.
+
+That was a content bug, not a detector bug, and the content was fixed: each of those four now derives its work order from the attached material, stops before the work, and keeps check and done-when apart. All twelve now score 93–100 with all six traits present, in both languages.
+
+Two genuine detector gaps were fixed alongside it: bare `not` was missing from the negation list, so "not into the figure as an estimate" was reported as a request for a guess; and the German "nur zu lesen" did not match the read-only pattern that "nur lesen" did.
+
+## Bug found in the previous revision
+
+`iconUtils.resolveIcon` guarded with `typeof candidate === 'function'`. Lucide icons are `forwardRef` **objects**, so the guard rejected every icon and the app rendered `HelpCircle` on every slide. Fixed there, kept here.
 
 ## Intentionally unchanged behavior
 
-- The deck switch, EN/DE toggle, keyboard and swipe navigation, overview grid, timer and responsive layout.
-- 14 slides per deck, the `PLAYGROUND` slide type, and the local-only evaluator with no backend and no model call.
+- EN/DE toggle, keyboard and swipe navigation, overview grid, timer, responsive layout.
+- 14 slides, the `PLAYGROUND` slide type, and the local-only check with no backend and no model call.
 - The GitHub Pages deployment workflow and the `/Prompt_Intro/` base path.
 
 ## Validation log
@@ -62,10 +72,18 @@ $ npm run typecheck
 $ npm run build
 vite v6.4.3 building for production...
 ✓ 1751 modules transformed.
-dist/assets/favicon-C5OxlRER.svg      0.69 kB │ gzip:   0.28 kB
-dist/index.html                       2.38 kB │ gzip:   0.95 kB
-dist/assets/index-CzWUuj0-.js     1,177.99 kB │ gzip: 258.27 kB
-✓ built in 3.19s
+✓ built in 4.15s
 ```
 
-Both decks were additionally run through the evaluator with a throwaway script: every "what makes it usable" version scores higher than the "what people actually type" version it sits next to, in both languages, and no false risk warning survives on the good side.
+Browser run against the dev server: no page errors, icons render, the pass-1 work order panel opens, the playground returns a verdict.
+
+Throwaway script over all twelve comparisons and all ten presets, in both languages:
+
+```
+methods (slides)              93–100   6/6 traits, 0 case-bound tokens
+"the same as a method"           100   6/6 traits
+"method with a leftover case"  69–77   5/6 traits, 2 case-bound tokens
+"prompt for one case"          14–22   2/6 traits, 1–2 case-bound tokens
+"rules, but no two passes"        30   2/6 traits
+"long but empty"                   0   0/6 traits, 2–3 filler warnings
+```
