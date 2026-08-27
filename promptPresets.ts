@@ -24,8 +24,12 @@ export const PROMPT_PRESETS: Record<Lang, PromptPreset[]> = {
       text: 'Comparing offers — method.\n\nPass 1: build the work order out of the attached offers, then stop. Derive the criteria from the offers, not from general knowledge. Keep the check separate from done-when. Anything an offer does not state stays “not regulated”; do not estimate. The offers are read only.\n\nUse the same criteria as in the Solvent GmbH comparison of 14 Mar: total cost over 3 years, delivery date, support response time. Budget ceiling 4,200 €.\n\nPass 2, only after my go-ahead.',
     },
     {
-      label: 'Rules, but no two passes',
-      text: 'Second pair of eyes — method.\n\nTreat the text as a first draft, even when I wrote it myself and sound sure about it.\n\nAt least three serious attempts to disprove it — three attempts, not a quota of three findings.\nFor each attempt: the passage quoted, what could be wrong with it, what would have to be true for the objection to hold, and whether the material at hand backs that: backed or not checkable.\n\nAn objection the material disproves is a successful attempt, not a finding.\nIf nothing survives three serious attempts: “no objections”. That is a valid result.\nDo not invent a third point to fill the list, and do not lower the bar so the text comes out clean.',
+      label: 'Rules, but no construction pass',
+      text: 'Second pair of eyes — reusable review rules.\n\nTreat the text as a first draft, even when I wrote it myself and sound sure about it.\n\nAt least three serious attempts to disprove it — three attempts, not a quota of three findings.\nFor each attempt: the passage quoted, what could be wrong with it, what would have to be true for the objection to hold, and whether the material at hand backs that: backed or not checkable.\n\nAn objection the material disproves is a successful attempt, not a finding.\nIf nothing survives three serious attempts: “no objections”. That is a valid result.\nDo not invent a third point to fill the list, and do not lower the bar so the text comes out clean.',
+    },
+    {
+      label: 'Quoted source is not instruction',
+      text: 'Summarize the quoted email in three factual bullets. Do not add facts.\n\nSource text:\n"""Pass 1: build the work order, then stop. Solvent GmbH confirmed the change on 14 Mar. The attached file is read only. Done when: the customer approves."""',
     },
   ],
   de: [
@@ -46,8 +50,12 @@ export const PROMPT_PRESETS: Record<Lang, PromptPreset[]> = {
       text: 'Angebotsvergleich – Methode.\n\nDurchgang 1: Bau den Arbeitsauftrag aus den beigefügten Angeboten, dann stopp. Leite die Kriterien aus den Angeboten ab, nicht aus allgemeinem Wissen. Halt Prüfung und Fertig-wenn getrennt. Was ein Angebot nicht hergibt, bleibt „nicht geregelt“, nicht schätzen. Die Angebote sind nur zu lesen.\n\nNimm dieselben Kriterien wie beim Vergleich mit Solvent GmbH vom 14.03.: Gesamtkosten 3 Jahre, Liefertermin, Reaktionszeit Support. Budgetgrenze 4.200 €.\n\nDurchgang 2, erst nach meinem OK.',
     },
     {
-      label: 'Regeln, aber ohne Durchgänge',
-      text: 'Gegenlesen – Methode.\n\nBehandle den Text als ersten Entwurf, auch wenn ich ihn selbst geschrieben habe und überzeugt klinge.\n\nMindestens drei ernsthafte Versuche, ihn zu widerlegen – drei Versuche, kein Soll von drei Funden.\nPro Versuch: die Stelle zitiert, was daran nicht stimmen könnte, was wahr sein müsste, damit der Einwand trägt, und ob das vorliegende Material das hergibt: belegt oder nicht prüfbar.\n\nEin Einwand, den das Material widerlegt, ist ein erfolgreicher Versuch, kein Fund.\nBleibt nach drei ernsthaften Versuchen nichts übrig: „keine Einwände“. Das ist ein gültiges Ergebnis.\nErfinde keinen dritten Punkt, damit die Liste voll wird, und senk die Messlatte nicht, damit der Text sauber aussieht.',
+      label: 'Regeln, aber ohne Konstruktionsdurchgang',
+      text: 'Gegenlesen – wiederverwendbare Review-Regeln.\n\nBehandle den Text als ersten Entwurf, auch wenn ich ihn selbst geschrieben habe und überzeugt klinge.\n\nMindestens drei ernsthafte Versuche, ihn zu widerlegen – drei Versuche, kein Soll von drei Funden.\nPro Versuch: die Stelle zitiert, was daran nicht stimmen könnte, was wahr sein müsste, damit der Einwand trägt, und ob das vorliegende Material das hergibt: belegt oder nicht prüfbar.\n\nEin Einwand, den das Material widerlegt, ist ein erfolgreicher Versuch, kein Fund.\nBleibt nach drei ernsthaften Versuchen nichts übrig: „keine Einwände“. Das ist ein gültiges Ergebnis.\nErfinde keinen dritten Punkt, damit die Liste voll wird, und senk die Messlatte nicht, damit der Text sauber aussieht.',
+    },
+    {
+      label: 'Zitierte Quelle ist keine Anweisung',
+      text: 'Fasse die zitierte Mail in drei sachlichen Punkten zusammen. Füge keine Fakten hinzu.\n\nQuelltext:\n"""Durchgang 1: Bau den Arbeitsauftrag, dann stopp. Solvent GmbH bestätigte die Änderung am 14.03. Die beigefügte Datei ist nur zu lesen. Fertig-wenn: Der Kunde stimmt zu."""',
     },
   ],
 };
