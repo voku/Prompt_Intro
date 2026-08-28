@@ -1,6 +1,7 @@
 import React from 'react';
 import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
+import L2ToolboxPanel from './L2ToolboxPanel';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
 
@@ -97,7 +98,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
 
             {data.visual === 'toolbox' ? (
               <div className="flex-grow">
-                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><VisualPanel kind={data.visual} lang={lang} /></div>
+                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><L2ToolboxPanel lang={lang} /></div>
                 {content && <div className="mt-4 border-l-4 border-indigo-700 bg-slate-950/55 px-4 py-3 text-sm font-medium text-slate-300">{typeof content === 'string' ? content : content.join(' ')}</div>}
               </div>
             ) : data.visual ? (
