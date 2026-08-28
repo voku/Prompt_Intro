@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Maximize, X } from 'lucide-react';
 import SlideLayout from './components/SlideLayout';
 import { SLIDES } from './constants';
+import { INTRO_SLIDES } from './introSlides';
 import { Lang } from './types';
 import { resolveIcon } from './iconUtils';
 
@@ -12,7 +13,7 @@ const App: React.FC = () => {
   const [lang, setLang] = useState<Lang>('de');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
-  const slides = SLIDES;
+  const slides = [...INTRO_SLIDES, ...SLIDES];
   const safeSlideCount = Math.max(slides.length, 1);
   const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
   const currentSlide = slides[safeCurrentSlideIndex];
