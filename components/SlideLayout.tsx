@@ -17,8 +17,13 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const content = tArr(data.content, data.contentDE);
   const technique = t(data.technique, data.techniqueDE);
   const thanksLabel = lang === 'de' ? 'ENDE // FRAGEN SIND JETZT ERLAUBT' : 'END // QUESTIONS NOW ALLOWED';
-  const trainingLabel = lang === 'de' ? 'TEIL 2 · PROMPT-TECHNIK FÜR ECHTE IT-ARBEIT' : 'PART 2 · PROMPT TECHNIQUES FOR REAL IT WORK';
-  const contentLabel = lang === 'de' ? 'MISSION // IDEE' : 'MISSION // IDEA';
+  const trainingLabel = lang === 'de' ? 'TEIL 2 · WARUM LLMs SO ARBEITEN + WIE WIR DAS NUTZEN' : 'PART 2 · WHY LLMS BEHAVE THIS WAY + HOW TO USE THAT';
+  const mentalModelVisuals = ['carwash', 'noise-hallucination', 'tokens', 'next-token'];
+  const contentLabel = data.visual && mentalModelVisuals.includes(data.visual)
+    ? (lang === 'de' ? 'LLM // MENTAL MODEL' : 'LLM // MENTAL MODEL')
+    : data.visual === 'toolbox'
+      ? (lang === 'de' ? 'METHODEN // L2' : 'METHODS // L2')
+      : (lang === 'de' ? 'MISSION // IDEE' : 'MISSION // IDEA');
   const compareLabel = lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER';
   const readyLabel = lang === 'de' ? 'BEREIT' : 'READY';
 
@@ -50,13 +55,13 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               <div className="my-8 h-1 w-48 bg-gradient-to-r from-fuchsia-500 via-amber-400 to-cyan-400" />
               <h2 className="max-w-3xl text-xl font-semibold leading-relaxed text-cyan-100 md:text-2xl">{subtitle}</h2>
               <div className="mt-10 flex flex-wrap gap-3 font-mono text-sm">
-                <span className="border-2 border-slate-700 bg-slate-950 px-4 py-2 text-slate-300">PROMPT</span>
+                <span className="border-2 border-slate-700 bg-slate-950 px-4 py-2 text-slate-300">LLM</span>
                 <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-fuchsia-700 bg-fuchsia-950/30 px-4 py-2 text-fuchsia-200">L2</span>
-                <span className="self-center text-fuchsia-400">+</span>
-                <span className="border-2 border-cyan-700 bg-cyan-950/30 px-4 py-2 text-cyan-200">KONTEXT</span>
+                <span className="border-2 border-amber-700 bg-amber-950/30 px-4 py-2 text-amber-200">PLAUSIBLE</span>
+                <span className="self-center text-fuchsia-400">≠</span>
+                <span className="border-2 border-emerald-700 bg-emerald-950/30 px-4 py-2 text-emerald-200">VERIFIED</span>
                 <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-emerald-700 bg-emerald-950/30 px-4 py-2 text-emerald-200">L1</span>
+                <span className="border-2 border-cyan-700 bg-cyan-950/30 px-4 py-2 text-cyan-200">METHOD</span>
               </div>
             </div>
 
@@ -88,10 +93,15 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               </div>
             </div>
 
-            {subtitle && <p className="mb-6 max-w-5xl text-lg font-semibold leading-relaxed text-cyan-100 md:text-xl">{subtitle}</p>}
+            {subtitle && <p className="mb-6 max-w-6xl text-lg font-semibold leading-relaxed text-cyan-100 md:text-xl">{subtitle}</p>}
 
-            {data.visual ? (
-              <div className="grid flex-grow gap-6 lg:grid-cols-[1.45fr_.8fr] lg:items-center">
+            {data.visual === 'toolbox' ? (
+              <div className="flex-grow">
+                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><VisualPanel kind={data.visual} lang={lang} /></div>
+                {content && <div className="mt-4 border-l-4 border-indigo-700 bg-slate-950/55 px-4 py-3 text-sm font-medium text-slate-300">{typeof content === 'string' ? content : content.join(' ')}</div>}
+              </div>
+            ) : data.visual ? (
+              <div className="grid flex-grow gap-6 lg:grid-cols-[1.55fr_.72fr] lg:items-center">
                 <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><VisualPanel kind={data.visual} lang={lang} /></div>
                 <div>{renderTextBlock()}</div>
               </div>
