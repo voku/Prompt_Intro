@@ -1,100 +1,216 @@
-# Präsentationsnotizen – Von Prompts zu belastbaren Methoden
+# Präsentationsnotizen – Von plausiblen Antworten zu belastbarer Arbeit
 
 ## Ziel
 
-Keine Prompt-Theorie-Vorlesung. Jede Folie soll eine Idee in wenigen Sekunden verständlich machen und dann an einem echten IT-Fall zeigen, warum sie nützlich ist.
+Die Kollegen sollen zuerst verstehen, **warum** LLMs bestimmte Fehler machen. Danach wirken Prompt-Techniken, Evidenzregeln und L2 nicht wie Sonderregeln, sondern wie direkte Konsequenzen aus dem Werkzeug.
+
+Nicht die Botschaft „LLMs sind dumm“ vermitteln. Die interessantere Aussage ist:
+
+> LLMs sind extrem gut darin, plausible Fortsetzungen und Muster zu erzeugen. Genau deshalb können falsche Antworten so überzeugend aussehen.
 
 ## Ablauf
 
-### 1 – Von Prompts zu belastbaren Methoden
+### 1 – Von plausiblen Antworten zu belastbarer Arbeit
 
-> Letztes Mal ging es darum, was LLMs können. Heute geht es darum, wie wir sie für echte Arbeit einsetzen, ohne bei jedem Ticket wieder bei null anzufangen.
+> Letztes Mal ging es darum, was LLMs können. Heute schauen wir zuerst kurz darauf, warum sie manchmal komplett logisch klingenden Unsinn produzieren – und was wir daraus für unsere Arbeit ableiten.
 
-### 2 – Der Fall veraltet. Die Methode nicht.
+### 2 – 50 Meter? Laufen klingt super. Falsche Aufgabe.
 
-Auf die zwei Karten zeigen.
+Prompt vorlesen:
 
-> Ticket-ID, Datei und Zielsystem ändern sich. Die Regeln für Evidenz, Scope und Prüfung sollten das nicht.
+> Ich will mein Auto waschen. Die Waschanlage ist 50 Meter entfernt. Laufen oder fahren?
 
-### 3 – L2 ist ein Prompt-Compiler
+Dann auf die beiden Karten zeigen.
 
-Nur das Bild erklären:
+> „50 Meter“ aktiviert ein sehr starkes Muster: kurze Strecke, also laufen. Aber unser eigentliches Ziel enthält eine implizite Bedingung: Das Auto muss zur Waschanlage.
+
+Nicht behaupten, dass jedes Modell immer so antwortet. Die Pointe ist, dass die explizite Formulierung stärker wirken **kann** als die unausgesprochene Absicht.
+
+**Brücke:**
+
+> Genau deshalb sollten wichtige Ziele und Randbedingungen nicht nur in unserem Kopf existieren.
+
+### 3 – Da war nichts. Beide Modelle fanden trotzdem etwas.
+
+Das Rauschbild zuerst wirken lassen.
+
+Dann die beiden Antworten zeigen:
+
+- GPT-5.6 Sol: `I love you.`
+- Claude Fable 5: imaginierte Prompt-Injection / Rose
+
+Dann Ground Truth:
+
+> Da war gar keine versteckte Nachricht.
+
+**Merksatz:**
+
+> Eine überzeugende Beschreibung ist noch keine Beobachtung.
+
+Das ist später die direkte Brücke zu `UNKNOWN`, `VERIFIED` und echter Evidenz.
+
+### 4 – Buchstaben, Wörter, Tokens
+
+Auf `strawberry` zeigen und die drei `r` markieren.
+
+> Wir sehen hier zehn Zeichen und können die drei r direkt zählen. Das Modell arbeitet intern aber nicht automatisch mit genau dieser Zeichenliste, sondern mit modellabhängigen Tokens.
+
+Wichtig: Nicht behaupten, dass LLMs deshalb grundsätzlich keine Buchstaben zählen können. Moderne Modelle können das oft korrekt lösen, besonders mit Reasoning oder Tools.
+
+**Punkt:**
+
+> Wenn exakte String-Arbeit zählt, gebe ich einem Sprachmodell lieber ein deterministisches Tool, statt darauf zu hoffen, dass Sprachrepräsentation zufällig exakt genug ist.
+
+### 5 – Plausible Fortsetzung ist keine Wahrheitsdatenbank
+
+Die Balken ausdrücklich als **schematisch** bezeichnen.
+
+> Sprachmodelle generieren passende Fortsetzungen. „Passt gut in den Kontext“ und „ist nachweislich wahr“ sind zwei unterschiedliche Fragen.
+
+Dann:
+
+> Eine erfundene Person kann deshalb eine fantastisch glaubwürdige Biografie bekommen. Sprachlich passt alles. Nur die Realität fehlt.
+
+**Brücke:**
+
+> Jetzt ergibt der ganze Evidenz-Kram plötzlich Sinn.
+
+### 6 – Darum bauen wir einen Auftrag, keinen Zauberspruch
+
+Das Bild erklären:
 
 ```text
-L2 + aktueller Kontext → L1
+L2 + aktueller Kontext/Evidenz → L1
 ```
 
-> L2 kennt nicht das Ticket von heute. L2 kennt die Regeln, nach denen aus dem Ticket von heute ein guter Auftrag entsteht.
+Darunter die fünf L1-Bestandteile:
 
-### 4 – L1: fünf Dinge, kein Ritual
+- Ziel
+- Kontext
+- Grenzen
+- Prüfung
+- Fertig, wenn
 
-Die fünf Zeilen einmal durchgehen. Nicht länger.
+> L2 ist die wiederverwendbare Bauanleitung. Der Fall von heute kommt aus dem aktuellen Kontext. Das Ergebnis ist der konkrete Auftrag, den man gegenlesen und prüfen kann.
 
-> Wichtig ist nicht, fünf Überschriften abzutippen. Wichtig ist, dass Ziel, Kontext, Grenzen, Prüfung und Fertig-wenn im konkreten Auftrag geklärt sind.
+> Und der L2-Durchgang macht noch nichts kaputt. Er baut erstmal nur den Auftrag.
 
-### 5 – Freitag, 16:47 Uhr. 742 Benutzer. Ein kaputtes Mapping.
+### 7 – Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.
 
-Das ist das Hauptbeispiel.
+Hauptbeispiel.
 
-Links: guter Einzelfall-Prompt.
+Links: konkreter Prompt für `SD-18427`.
 
-Rechts: wiederverwendbare L2-Methode.
+Rechts: Methode ohne die Falldaten.
 
-Dann den erzeugten L1-Auftrag öffnen.
+Dann **„Daraus erzeugten L1-Auftrag zeigen“** öffnen.
 
-> Links ist nichts „schlecht“. Es ist nur genau für diesen Fall geschrieben. Rechts bleibt der Qualitätsmaßstab übrig und der konkrete Fall wird jedes Mal neu eingesetzt.
+> Links ist nichts schlecht. Für genau diesen Import ist das ein brauchbarer Prompt. Rechts steckt nur das drin, was auch beim nächsten Import noch gelten soll.
 
-### 6 – „VPN geht“ ist kein Nachweis
+Das neue `cost_center → department`-Mapping als Beispiel für `UNKNOWN/BLOCKED` verwenden:
 
-> Die Checkliste sagt, was stimmen muss. Der Test sagt, ob es stimmt.
+> Wenn wir den Beleg nicht haben, wird das Mapping nicht kreativ vervollständigt. Es bleibt sichtbar offen.
 
-`UNKNOWN` und `BLOCKED` nur kurz unterscheiden, wenn es in der Runde passt.
+### 8 – Benutzer sagt: „VPN geht wieder.“ Ticket zu?
 
-### 7 – Kontext ist keine Erlaubnis
+> Die Aussage des Benutzers ist echte Information und kann wertvolle Evidenz sein. Sie ersetzt aber nicht automatisch alle Abnahmekriterien.
+
+Die drei Ebenen unterscheiden:
+
+1. was das Ticket fordert,
+2. was der Benutzer berichtet,
+3. was wir tatsächlich geprüft/beobachtet haben.
+
+### 9 – Kontext ist keine Erlaubnis
 
 Auf Ticket / Logs / Config / Deploy-Skript zeigen.
 
-> Nur weil ich eine Datei zum Verstehen brauche, darf ich sie noch lange nicht ändern.
+> Ein Agent darf eine Datei brauchen, um die Ursache zu verstehen, ohne sie deshalb ändern zu dürfen.
 
-### 8 – Unsicherheit braucht einen Namen
+**Merksatz:**
 
-Nicht jede Box ausführlich definieren.
+> Relevanz ist keine Schreibfreigabe.
 
-> Der wichtigste Effekt ist: Eine Lücke darf eine Lücke bleiben. Sonst wird aus „wahrscheinlich“ sehr schnell ein angeblicher Fakt.
+### 10 – Unsicherheit braucht einen Namen
 
-### 9 – Bestell keine drei Fehler
+Die Zustände nicht akademisch durchdefinieren.
 
-Links einmal vorlesen, dann rechts.
+Die drei wichtigsten für den Vortrag:
 
-> Drei Funde sind eine Quote. Drei ernsthafte Versuche, den Plan zu widerlegen, sind Review-Arbeit.
+- `VERIFIED` – belegt
+- `UNKNOWN` – Beleg fehlt
+- `BLOCKED` – wir wissen, was fehlt, kommen aber gerade nicht daran / dürfen es nicht
 
-### 10 – Auto-Agent ohne Selbstfreigabe
+Die anderen Boxen nur kurz erwähnen.
 
-> Innerhalb der bestehenden Freigabe darf der Agent weiterarbeiten. Eine neue Owner-, Security- oder Risikoentscheidung darf er sich nicht selbst erteilen.
+> Der Nutzen ist: Das Modell muss eine Lücke nicht mehr mit einer schönen Geschichte füllen.
 
-### 11 – Kleine Toolbox statt Mega-Prompt
+### 11 – Bestell keine drei Fehler
 
-Die sechs Karten nur als Beispiele zeigen.
+Links:
 
-> Das sind verschiedene Werkzeuge für verschiedene Aufgaben. Nicht alle gleichzeitig reinschütten. Das wäre wieder der Mega-Prompt mit anderem Branding.
+> Nenn mir die drei größten Risiken.
 
-### 12 – Bessere Arbeit, nicht hübschere Prompts
+Dann rechts:
+
+> Versuche den Plan drei Mal ernsthaft zu widerlegen.
+
+**Merksatz:**
+
+> Drei Funde sind eine Quote. Drei Falsifikationsversuche sind Arbeit.
+
+`CLEAN` ausdrücklich als gültiges Ergebnis nennen.
+
+### 12 – Auto-Agent ohne Selbstfreigabe
+
+> Wir wollen nicht nach jedem kleinen Schritt „Soll ich weitermachen?“ lesen. Innerhalb der bestehenden Befugnis soll der Agent weiterarbeiten und nach jedem Slice sinnvoll prüfen.
+
+Dann die Grenze:
+
+> Eine neue Owner-, Security-, Risiko- oder destruktive Entscheidung kann der Agent sich aber nicht selbst genehmigen.
+
+### 13 – Kleine L2-Toolbox statt Mega-Prompt
+
+Hier wirklich klicken.
+
+Empfohlene Reihenfolge:
+
+1. `discovery-first`
+2. `reproduce-before-fix`
+3. `adversarial-review`
+4. bei Interesse `production-ready-handoff`
+
+> Das sind die echten aktuellen L2-Source-Prompts aus unserem agent-recall-compiler. Ein Klick zeigt den Prompt vollständig; wir müssen also nicht so tun, als wären drei Stichpunkte dasselbe wie die echte Methode.
+
+Darauf hinweisen:
+
+> `evidence-report` und `continue-until-done` fehlen hier absichtlich. Die sind im aktuellen Katalog Level 1 und nicht L2.
+
+Bei langen Prompts nicht alles vorlesen. Struktur zeigen und ggf. kopieren.
+
+### 14 – Bessere Arbeit, nicht hübschere Prompts
 
 Mit den drei Karten enden:
 
 - einmalig → direkter Prompt
-- wiederkehrend → Methode
+- wiederkehrend → L2-Methode
 - kritisch → Evidenz + Befugnis explizit
 
-> Das Ziel ist nicht, dass der Prompt beeindruckend aussieht. Das Ziel ist, dass die Arbeit nachher stimmt und wir wissen, warum wir das behaupten dürfen.
+> Das Ziel ist nicht, dass ein Prompt nach Prompt Engineering aussieht. Das Ziel ist, dass die Arbeit stimmt und wir wissen, warum wir das behaupten dürfen.
 
 ## Kurzfassung – 15 Minuten
 
-**1 → 2 → 3 → 5 → 6 → 8 → 10 → 11 → 12**
+**1 → 2 → 3 → 5 → 6 → 7 → 8 → 10 → 13 → 14**
+
+Wenn nur zehn Minuten da sind:
+
+**1 → 2 → 3 → 5 → 6 → 7 → 13 → 14**
 
 ## Vor Teams
 
-- Präsentation einmal in der veröffentlichten Pages-Version durchklicken.
-- Folie 5 einmal aufklappen.
+- Pages-Version einmal komplett neu laden.
+- Folie 7: L1-Auftrag einmal auf-/zuklappen.
+- Folie 13: mindestens `discovery-first` und `adversarial-review` anklicken; Scrollbereich prüfen.
 - Browserfenster statt kompletten Desktop teilen.
-- Keine Live-Demo mit Prompt-Scoring. Die wurde mit gutem Grund gelöscht.
+- Beim Token-Beispiel ausdrücklich sagen, dass die Token-Chunks im Bild schematisch sind.
+- Beim Next-Token-Beispiel ausdrücklich sagen, dass die Balken keine echten Modellwahrscheinlichkeiten darstellen.
