@@ -30,7 +30,10 @@ const App: React.FC = () => {
   const prevLabel = lang === 'de' ? 'ZURÜCK' : 'BACK';
   const nextLabel = lang === 'de' ? 'WEITER' : 'NEXT';
   const overviewLabel = lang === 'de' ? 'ÜBERSICHT' : 'OVERVIEW';
-  const deckTitle = lang === 'de' ? 'VON PROMPTS ZU METHODEN' : 'FROM PROMPTS TO METHODS';
+  const fullscreenLabel = lang === 'de' ? 'VOLLBILD' : 'FULLSCREEN';
+  const slideLabel = lang === 'de' ? 'FOLIE' : 'STAGE';
+  const progressLabel = lang === 'de' ? 'FORTSCHRITT' : 'PROGRESS';
+  const deckTitle = lang === 'de' ? 'VON PROMPTS ZU BELASTBAREN METHODEN' : 'FROM PROMPTS TO RELIABLE METHODS';
 
   return (
     <div className="retro-stage flex min-h-screen flex-col text-slate-100 selection:bg-fuchsia-500 selection:text-white">
@@ -46,7 +49,7 @@ const App: React.FC = () => {
             <span className="pixel-font hidden text-[9px] text-amber-300 sm:inline">{String(safeCurrentSlideIndex + 1).padStart(2, '0')}/{String(slides.length).padStart(2, '0')}</span>
             <button type="button" onClick={() => setLang((v) => v === 'en' ? 'de' : 'en')} className="retro-button bg-slate-900 px-3 py-2 font-mono text-xs font-bold text-cyan-300">{lang === 'en' ? 'DE' : 'EN'}</button>
             <button type="button" onClick={() => setIsGridOpen((v) => !v)} className="retro-button bg-slate-900 p-2 text-fuchsia-300" title={overviewLabel}>{isGridOpen ? <X size={19} /> : <LayoutGrid size={19} />}</button>
-            <button type="button" onClick={toggleFullscreen} className="retro-button bg-slate-900 p-2 text-cyan-300" title="Fullscreen"><Maximize size={19} /></button>
+            <button type="button" onClick={toggleFullscreen} className="retro-button bg-slate-900 p-2 text-cyan-300" title={fullscreenLabel}><Maximize size={19} /></button>
             <a href="https://github.com/voku/Prompt_Intro" target="_blank" rel="noopener noreferrer" className="retro-button hidden bg-slate-900 p-2 text-slate-300 md:block"><Github size={19} /></a>
           </div>
         </div>
@@ -56,13 +59,13 @@ const App: React.FC = () => {
         <div className={`flex h-full w-full justify-center transition-opacity duration-200 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
           {currentSlide && <SlideLayout key={safeCurrentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />}
         </div>
-        {isGridOpen && <div className="absolute inset-0 z-40 overflow-y-auto bg-[#050816]/95 p-6 backdrop-blur-sm animate-fadeIn"><div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{slides.map((slide, index) => { const Icon = resolveIcon(slide.icon); const title = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title; return <button key={slide.id} type="button" onClick={() => { setCurrentSlideIndex(index); setIsGridOpen(false); }} className={`retro-panel group relative flex min-h-44 flex-col items-start p-5 text-left transition ${safeCurrentSlideIndex === index ? 'bg-indigo-950 text-white' : 'bg-slate-950/90 text-slate-400 hover:bg-slate-900'}`}><div className="mb-4 border-2 border-indigo-800 bg-slate-900 p-2 text-cyan-300"><Icon size={22} /></div><span className="pixel-font mb-3 text-[8px] text-fuchsia-400">STAGE {String(index + 1).padStart(2, '0')}</span><h3 className="font-bold leading-tight">{title}</h3>{safeCurrentSlideIndex === index && <span className="pixel-pulse absolute right-3 top-3 h-2 w-2 bg-emerald-400" />}</button>; })}</div></div>}
+        {isGridOpen && <div className="absolute inset-0 z-40 overflow-y-auto bg-[#050816]/95 p-6 backdrop-blur-sm animate-fadeIn"><div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{slides.map((slide, index) => { const Icon = resolveIcon(slide.icon); const title = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title; return <button key={slide.id} type="button" onClick={() => { setCurrentSlideIndex(index); setIsGridOpen(false); }} className={`retro-panel group relative flex min-h-44 flex-col items-start p-5 text-left transition ${safeCurrentSlideIndex === index ? 'bg-indigo-950 text-white' : 'bg-slate-950/90 text-slate-400 hover:bg-slate-900'}`}><div className="mb-4 border-2 border-indigo-800 bg-slate-900 p-2 text-cyan-300"><Icon size={22} /></div><span className="pixel-font mb-3 text-[8px] text-fuchsia-400">{slideLabel} {String(index + 1).padStart(2, '0')}</span><h3 className="font-bold leading-tight">{title}</h3>{safeCurrentSlideIndex === index && <span className="pixel-pulse absolute right-3 top-3 h-2 w-2 bg-emerald-400" />}</button>; })}</div></div>}
       </main>
 
       <footer className="fixed bottom-0 left-0 z-50 w-full border-t-2 border-indigo-900 bg-[#070a19]/95 p-3 shadow-[0_-4px_0_#020617] backdrop-blur md:p-4">
         <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3">
           <button type="button" onClick={prevSlide} disabled={safeCurrentSlideIndex === 0} className="retro-button flex items-center gap-2 bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-200 disabled:opacity-30"><ChevronLeft size={18} />{prevLabel}</button>
-          <button type="button" onClick={() => setIsGridOpen(true)} className="group mx-1 flex h-5 flex-grow items-center border-2 border-indigo-900 bg-slate-950 p-[2px] md:mx-8" title={overviewLabel}><div className="h-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 transition-all duration-300" style={{ width: `${progress}%` }} /><span className="pixel-font ml-3 hidden text-[8px] text-slate-500 lg:inline">PROGRESS {Math.round(progress)}%</span></button>
+          <button type="button" onClick={() => setIsGridOpen(true)} className="group mx-1 flex h-5 flex-grow items-center border-2 border-indigo-900 bg-slate-950 p-[2px] md:mx-8" title={overviewLabel}><div className="h-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 transition-all duration-300" style={{ width: `${progress}%` }} /><span className="pixel-font ml-3 hidden text-[8px] text-slate-500 lg:inline">{progressLabel} {Math.round(progress)}%</span></button>
           <button type="button" onClick={nextSlide} disabled={safeCurrentSlideIndex === slides.length - 1 || slides.length === 0} className="retro-button flex items-center gap-2 bg-fuchsia-700 px-4 py-2 font-mono text-xs font-bold text-white disabled:opacity-30">{nextLabel}<ChevronRight size={18} /></button>
         </div>
       </footer>
