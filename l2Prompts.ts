@@ -1,6 +1,9 @@
 export interface L2ToolboxPrompt {
   id: string;
   sourceRecipe: string;
+  category: string;
+  title: string;
+  prompt: string;
   categoryDE: string;
   categoryEN: string;
   titleDE: string;
@@ -15,6 +18,22 @@ export const L2_TOOLBOX_PROMPTS: L2ToolboxPrompt[] = [
   {
     id: 'import-discovery',
     sourceRecipe: 'discovery-first',
+    category: 'IMPORT',
+    title: 'CSV-Import erst verstehen',
+    prompt: `Erzeuge aus dem aktuellen Import-Ticket, der CSV-Datei, der Zielsystem-Dokumentation und dem vorhandenen Runbook einen konkreten L1-Auftrag für die Prüfung des Imports.
+
+Der L1-Auftrag muss enthalten:
+- Ziel: Welches beobachtbare Importergebnis wird erwartet?
+- Kontext: Welche Datei, welches Zielsystem, welches Mapping und welcher Ist-Zustand sind tatsächlich belegt?
+- Grenzen: Bestehende Identitäten nicht überschreiben. Fehlende IDs, Mappings, Befehle oder Berechtigungen nicht erfinden.
+- Prüfung: Nur Dry-Runs, Proben oder Befehle verwenden, die aus dem aktuellen Material belegt sind.
+- Fertig, wenn: Jede Eingabezeile ist erklärt und unbeabsichtigte Schreibzugriffe sind ausgeschlossen.
+
+Trenne VERIFIED, INFERRED, UNKNOWN, BLOCKED und CONTRADICTED sichtbar voneinander.
+
+Wenn eine notwendige Information fehlt, benenne genau den fehlenden Beleg statt eine plausible Annahme einzusetzen.
+
+Stoppe nach dem L1-Auftrag. Noch nichts importieren oder verändern.`,
     categoryDE: 'IMPORT',
     categoryEN: 'IMPORT',
     titleDE: 'CSV-Import erst verstehen',
@@ -44,6 +63,24 @@ Stop after producing the L1 contract. Do not import or change anything yet.`,
   {
     id: 'vpn-reproduce',
     sourceRecipe: 'reproduce-before-fix',
+    category: 'SUPPORT',
+    title: 'VPN-Fehler erst reproduzieren',
+    prompt: `Erzeuge aus dem aktuellen VPN-Ticket, den vorhandenen Client-Logs, dem VPN-Profil und den freigegebenen Diagnosemöglichkeiten einen konkreten L1-Auftrag zur Reproduktion des Fehlers.
+
+Der Auftrag soll die Verbindung in beobachtbare Schritte zerlegen, zum Beispiel:
+Client → Namensauflösung → Gateway → Authentifizierung → MFA → interne Ressource.
+
+Für jeden relevanten Schritt festhalten:
+- erwartetes Verhalten,
+- kleinste sinnvolle Probe,
+- beobachtetes Ergebnis,
+- Evidenzzustand.
+
+Produktive Einstellungen noch nicht ändern.
+
+Wenn der Fehler nicht reproduziert werden kann, ist das ein gültiges Ergebnis: dokumentiere die ausgeführten Proben und lasse die Fehlerursache UNKNOWN statt eine Erklärung zu erfinden.
+
+Stoppe nach dem Reproduktionsauftrag.`,
     categoryDE: 'SUPPORT',
     categoryEN: 'SUPPORT',
     titleDE: 'VPN-Fehler erst reproduzieren',
@@ -71,6 +108,25 @@ Stoppe nach dem Reproduktionsauftrag.`,
   {
     id: 'change-review',
     sourceRecipe: 'adversarial-review',
+    category: 'CHANGE',
+    title: 'Den 18-Uhr-Change wirklich angreifen',
+    prompt: `Erzeuge für den aktuellen Production-Change einen konkreten L1-Review-Auftrag.
+
+Behandle den Change-Plan als ersten Entwurf, nicht als Wahrheit und auch nicht als automatisch fehlerhaft.
+
+Verlange mindestens drei unterschiedliche ernsthafte Falsifikationsversuche. Pro Versuch:
+- Hypothese / möglicher Fehlerzustand,
+- konkretes Trigger-Szenario,
+- Evidenz, die den Verdacht bestätigt oder widerlegt,
+- kleinste sinnvolle Probe vor dem Change.
+
+Berücksichtige nur Risiken, die aus aktuellem Scope, betroffenen Systemen, Abhängigkeiten, Rollback-Weg und vorhandener Evidenz plausibel werden.
+
+Eine widerlegte Hypothese ist ein erfolgreicher Review-Versuch, kein Fund.
+CLEAN ist ein gültiges Ergebnis.
+Keine Risiken erfinden, nur damit eine Liste voll wird.
+
+Stoppe nach dem Review-Auftrag.`,
     categoryDE: 'CHANGE',
     categoryEN: 'CHANGE',
     titleDE: 'Den 18-Uhr-Change wirklich angreifen',
@@ -99,6 +155,25 @@ Stoppe nach dem Review-Auftrag.`,
   {
     id: 'incident-missingness',
     sourceRecipe: 'missingness-audit',
+    category: 'STÖRUNG',
+    title: 'Was fehlt uns vor der Behebung?',
+    prompt: `Erzeuge aus dem aktuellen Störungsticket, den Logs, der betroffenen Konfiguration und dem vorhandenen Betriebswissen einen L1-Auftrag für einen Missingness-Check.
+
+Prüfe nur dort, wo der konkrete Fall es relevant macht, ob uns etwas Notwendiges fehlt:
+- Evidenz zur vermuteten Ursache,
+- reproduzierbare Probe,
+- Fehler- oder Negativpfad,
+- Rollback / Recovery,
+- Monitoring oder beobachtbares Erfolgssignal,
+- notwendige Berechtigung oder Owner-Entscheidung.
+
+Jede behauptete Lücke braucht einen konkreten Anker im aktuellen Fall.
+Keine neue Wunschliste und keinen allgemeinen Best-Practice-Backlog erzeugen.
+
+UNKNOWN bedeutet: Der Beleg fehlt.
+BLOCKED bedeutet: Wir wissen, was wir brauchen, kommen aber aktuell nicht daran.
+
+Stoppe nach dem L1-Auftrag. Noch keine Störung beheben.`,
     categoryDE: 'STÖRUNG',
     categoryEN: 'INCIDENT',
     titleDE: 'Was fehlt uns vor der Behebung?',
@@ -127,6 +202,27 @@ Stoppe nach dem L1-Auftrag. Noch keine Störung beheben.`,
   {
     id: 'incident-plan',
     sourceRecipe: 'plan-as-draft',
+    category: 'PLAN',
+    title: 'Störungsplan als Entwurf behandeln',
+    prompt: `Erzeuge aus dem vorhandenen Plan zur Störungsbehebung und der aktuellen Evidenz einen konkreten L1-Planungsauftrag.
+
+Behandle den vorhandenen Plan als brauchbaren Entwurf, nicht als fertige Wahrheit.
+
+Prüfe gezielt:
+- Stimmen Ursache und aktueller Ist-Zustand noch mit der Evidenz überein?
+- Sind die Schritte in einer sicheren Reihenfolge?
+- Bleiben Scope und Befugnisse erhalten?
+- Gibt es pro kritischem Schritt eine beobachtbare Prüfung?
+- Sind Negativpfad und Rollback dort geklärt, wo sie wirklich relevant sind?
+
+Kennzeichne Änderungen am Plan als:
+KEEP | STÄRKEN | ERGÄNZEN | AUSSERHALB_SCOPE
+
+Nur evidenzgestützte Änderungen übernehmen. Keine zusätzlichen Aufgaben erfinden, nur um den Plan umfangreicher wirken zu lassen.
+
+Wenn der Plan nach der Prüfung ausreicht, ist PLAN_SUFFICIENT ein gültiges Ergebnis.
+
+Stoppe nach dem verbesserten L1-Plan.`,
     categoryDE: 'PLAN',
     categoryEN: 'PLAN',
     titleDE: 'Störungsplan als Entwurf behandeln',
@@ -157,6 +253,26 @@ Stoppe nach dem verbesserten L1-Plan.`,
   {
     id: 'support-handoff',
     sourceRecipe: 'production-ready-handoff',
+    category: 'ÜBERGABE',
+    title: 'Schichtwechsel ohne Chat-Gedächtnis',
+    prompt: `Erzeuge aus dem aktuellen Support-/Störungsfall einen eigenständigen L1-Übergabeauftrag für jemanden, der den bisherigen Chat nicht kennt.
+
+Die Übergabe muss aus der aktuellen Evidenz rekonstruierbar sein und mindestens enthalten:
+- Ziel und aktueller Scope,
+- VERIFIED Ist-Zustand mit konkreten Quellen/Proben,
+- bereits ausgeführte Schritte und deren beobachtete Ergebnisse,
+- widerlegte Hypothesen, damit sie nicht ohne neue Evidenz erneut aufgemacht werden,
+- UNKNOWN / BLOCKED / CONTRADICTED,
+- bestehende Befugnisse und echte Entscheidungsgrenzen,
+- kleinster sinnvoller nächster Schritt,
+- dazugehörige Prüfung und Fertig-wenn-Kriterium.
+
+Alte Chat-Annahmen nicht als Fakten übernehmen.
+Keine Zugangsdaten, Secrets oder irrelevante Gesprächshistorie in die Übergabe kopieren.
+
+Wenn eine notwendige Owner-/Security-/Risikoentscheidung fehlt, benenne sie als BLOCKED statt sie dem nächsten Bearbeiter still unterzuschieben.
+
+Das Ergebnis ist ein kopierfertiger L1-Übergabeauftrag, keine Erfolgsmeldung.`,
     categoryDE: 'ÜBERGABE',
     categoryEN: 'HANDOFF',
     titleDE: 'Schichtwechsel ohne Chat-Gedächtnis',
