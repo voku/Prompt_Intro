@@ -1,5 +1,5 @@
 {
-  "name": "From Prompts to Methods",
-  "description": "A bilingual Part 2 presentation about making recurring or consequential LLM-assisted work reusable, reviewable, and evidence-based while keeping direct prompts valid for simple one-off tasks.",
+  "name": "From Prompts to Reliable Methods",
+  "description": "A bilingual Part 2 presentation about current prompt techniques for recurring IT Support/Admin work: reusable L2 construction methods, concrete L1 contracts, explicit evidence, verification and authority boundaries.",
   "requestFramePermissions": []
 }
