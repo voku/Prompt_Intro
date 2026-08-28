@@ -1,0 +1,59 @@
+export interface L2ToolboxPrompt {
+  id: string;
+  category: string;
+  title: string;
+  descriptionDE: string;
+  descriptionEN: string;
+  prompt: string;
+}
+
+export const L2_TOOLBOX_PROMPTS: L2ToolboxPrompt[] = [
+  {
+    id: 'discovery-first',
+    category: 'DISCOVERY',
+    title: 'discovery-first',
+    descriptionDE: 'Bevor etwas geändert wird: aktuellen Stand, Scope, Owner und kleinste sinnvolle Probe aus echter Repo-Evidenz ableiten.',
+    descriptionEN: 'Before editing: re-ground current state, scope, owner and the smallest useful probe in real repository evidence.',
+    prompt: `Create a project-specific discovery prompt that re-grounds the task against current repository evidence before proposing or implementing a change. Make the generated prompt inspect the current branch, diff, or target state; existing issue, pull-request, review, and task history when available in recall context; affected files, symbols, callers, tests, runtime boundaries, dependency/toolchain state, and repository-supported validation; and any already-completed or disproved work. Require material claims to be labelled VERIFIED, INFERRED, UNKNOWN, BLOCKED, or CONTRADICTED and require concrete anchors for VERIFIED claims. Separate observed current state from hypotheses and recommendations. Require bounded falsification of plausible stale-assumption, regression, ownership, dependency/toolchain, and measurement-definition risks only where task evidence makes them relevant; a disproved hypothesis is useful evidence and NO_CHANGE is valid. The generated prompt must identify the smallest evidence-backed next slice, its semantic owner boundary, the exact verification or discriminating probe needed before editing, and what must not be changed. If authoritative context is missing or conflicting, return BLOCKED instead of inventing commands, architecture, or scope. Do not implement during the discovery pass.`,
+  },
+  {
+    id: 'reproduce-before-fix',
+    category: 'BUGFIX',
+    title: 'reproduce-before-fix',
+    descriptionDE: 'Produktionscode bleibt unangetastet, bis der vermutete Fehler mit einem fehlschlagenden Test reproduziert ist.',
+    descriptionEN: 'Production code stays untouched until the suspected bug is reproduced by a failing test.',
+    prompt: `Create a project-specific bug-fixing prompt that forbids production-code changes until the suspected behavior is reproduced by a failing automated test. Use the actual affected production files, nearest relevant tests, public contracts, callers, runtime boundaries, and repository-specific test and validation commands from recall context. The generated prompt must require the failure to be observed before the fix, then require the smallest production change, rerun the regression test, and run the relevant repository validation. If the bug cannot be reproduced, Done When must permit a BLOCKED result that records the exact attempted reproduction commands, inputs, environment, observed results, and why the bug claim remains unconfirmed. Do not manufacture failure by asserting behavior that repository evidence does not support.`,
+  },
+  {
+    id: 'adversarial-review',
+    category: 'REVIEW',
+    title: 'adversarial-review',
+    descriptionDE: 'Nicht „finde drei Fehler“, sondern mehrere ernsthafte Versuche, die aktuelle Lösung mit konkreter Evidenz zu widerlegen.',
+    descriptionEN: 'Not “find three defects”, but several serious attempts to falsify the current implementation with concrete evidence.',
+    prompt: `Create a project-specific review prompt that treats the current implementation as a first draft. Require at least {{minimum_failure_modes}} distinct plausible failure-mode hypotheses or attack scenarios to be investigated, plus the design assumption most likely to be wrong. Ground the review in the actual changed files, contracts, callers, tests, runtime boundaries, and repository-specific validation already present in recall context. For every attempted failure mode, require an exact trigger scenario and confirming or disproving evidence. A hypothesis disproved by evidence is a successful falsification attempt, not a finding. Do not manufacture defects merely to satisfy the numeric floor; CLEAN remains valid when the required adversarial probes were performed and no evidence-backed defect remains.`,
+  },
+  {
+    id: 'deletion-first',
+    category: 'SIMPLIFY',
+    title: 'deletion-first',
+    descriptionDE: 'Vor neuer Abstraktion erst prüfen, was aus Diff, Callern und Verträgen sicher gelöscht werden kann.',
+    descriptionEN: 'Before adding abstractions, first prove what can safely be deleted from the current diff, callers and contracts.',
+    prompt: `Create a project-specific simplification prompt that evaluates deletion before extension. Use the current diff, affected symbols, callers, tests, and repository conventions to identify code that can be removed safely. The generated prompt must forbid speculative abstractions, fallbacks, compatibility paths, or configuration unless a verified contract requires them, and it must define evidence proving deletion is safe.`,
+  },
+  {
+    id: 'plan-as-draft',
+    category: 'PLAN',
+    title: 'plan-as-draft',
+    descriptionDE: 'Einen vorhandenen Plan als Mindestentwurf behandeln und nur evidenzgestützt stärken, statt ihn hübscher umzuschreiben.',
+    descriptionEN: 'Treat an existing plan as a minimum draft and strengthen it only with evidence instead of cosmetically rewriting it.',
+    prompt: `Create a project-specific planning prompt that must treat the supplied plan as a deliberately provisional draft and minimum floor, even when it already looks polished or plausible. This is a challenge frame for increasing planning quality, not evidence that the existing plan is objectively poor. Re-ground the plan against current authoritative repository and task evidence, then build the strongest evidence-backed executable plan that still fits the approved Goal, acceptance criteria, scope, non-goals, and authority. Do not merely restate, reformat, or cosmetically expand the supplied plan. Preserve VERIFIED goals, acceptance criteria, scope, non-goals, authority, and already-completed work; do not reopen them without contradictory current evidence or the required owner decision. Challenge the plan's completeness where relevant across milestone decomposition, dependency ordering, semantic-owner and package boundaries, integration points, executable verification, negative and recovery paths, rollback or reversibility, migration or release sequencing, dogfood or operational proof, observability, and explicit exit conditions. Require the generated plan to classify existing and proposed plan elements as KEEP, STRENGTHEN, ADD, and REJECT_OR_OUT_OF_SCOPE, and require repository evidence for every material addition or revision plus the concrete deficiency or risk it closes. Prefer fewer stronger additions over speculative breadth. If a proposed improvement would widen approved scope, change a non-goal, invent authority, or require a human, owner, reviewer, security, destructive, or accepted-risk decision, keep it out of the executable plan and mark it BLOCKED or REJECT_OR_OUT_OF_SCOPE with the exact missing decision. PLAN_SUFFICIENT is valid only after a bounded challenge pass finds no material evidence-backed strengthening; do not manufacture work merely to prove the draft framing useful. The result must be a project-specific L1 planning contract with observable Done When and repository-supported Verification, and must not invent backlog, commands, dependencies, architecture, or authority.`,
+  },
+  {
+    id: 'production-ready-handoff',
+    category: 'HANDOFF',
+    title: 'production-ready-handoff',
+    descriptionDE: 'Einen frischen Coding-Agenten ohne Chat-Gedächtnis mit belegten Anchors, Scope, Milestones, Prüfungen und Stop-Grenzen arbeitsfähig machen.',
+    descriptionEN: 'Make a fresh coding agent productive without chat memory using verified anchors, scope, milestones, validation and stop boundaries.',
+    prompt: `Create a project-specific production-ready execution-handoff prompt for a fresh coding agent that has no access to the current chat, Session-private context, hidden reasoning, or prior-agent memory. Build it from VERIFIED discovery and current-state evidence present in recall context; if that evidence is absent, incomplete, or stale, make bounded re-grounding the first step instead of filling gaps from conversation-shaped assumptions. Before calling the handoff production-ready, identify known hard prerequisites with their semantic owner, verification probe, current evidence state, whether the delegated worker can satisfy them, and whether they are required before execution. If current authoritative evidence already proves a required hard prerequisite is missing and the delegated worker is forbidden to satisfy it, render NOT_READY_TO_DELEGATE instead of spending a remote execution run rediscovering the blocker. Keep this recipe bounded to one execution contract. If the requested handoff contains independently resumable milestones, cross-repository/release sequencing, or follow-up work that should survive the current execution context, do not serialize that durable backlog into one giant prompt. When an existing durable task/card owner is established, return WORK_PACKAGE_REQUIRED and name that owner plus todo-card-handoff as the explicit durable-work-package construction path; do not create or persist cards implicitly. If durable ownership is required but missing or conflicting, return BLOCKED instead of inventing a task system. For a bounded ready implementation, require concrete executable milestones only where they belong to the current execution contract; each milestone must identify its objective, dependencies, required artifact or change, acceptance evidence, and validation/checkpoint where applicable. Require the executor to attempt all remaining independent authorized milestones inside that bounded contract when a blocker affects only part of it; an unresolved required blocker still prevents final DONE. Require the next agent to re-ground all supplied anchors against current repository state before acting. The generated prompt must preserve VERIFIED, INFERRED, UNKNOWN, BLOCKED, and CONTRADICTED distinctions; record already-completed work and disproved hypotheses so they are not reopened without new evidence; name exact repository anchors such as files, symbols, issues, pull requests, commits, contracts, runs, and artifacts; and state task authority, semantic owner boundaries, scope and non-goals, invariants, compatibility/security/failure semantics, and the smallest safe implementation preference. Require repository-supported positive and negative-path tests, stale-artifact/retry/reproducibility checks when relevant, exact validation commands or explicit UNKNOWN discovery obligations, baseline-aware classification of failing validation as PRE_EXISTING, INTRODUCED, or UNKNOWN_ORIGIN when practical, falsification questions that try to disprove the proposed fix, and observable Done When criteria. Require final completion claims to be reconciled against available actual head/base/diff, changed files or artifacts, validation results, review findings, and remaining blockers; executor prose is not repository truth. Production-ready must not mean broader scope: forbid speculative abstractions, invented commands or historical provenance, unsupported cleanup, and redesign of already-validated behavior. If handoff evidence conflicts with current authoritative artifacts, current authority wins and the generated prompt must require re-planning or BLOCKED rather than silently carrying stale claims forward. The result must be a copy-paste-ready L1 execution prompt for one bounded execution contract, not a summary, TODO card, implementation, or claim of verification, and it must not act as a durable work package.`,
+  },
+];
