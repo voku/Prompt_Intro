@@ -6,64 +6,50 @@ Interactive React + TypeScript presentation about **why LLMs behave the way they
 
 ## Story
 
-The deck no longer starts with prompt architecture. It starts with the mental model behind the tool:
+The deck starts by reconnecting to the previous [`voku/LLM`](https://github.com/voku/LLM) talk instead of assuming everybody still remembers it.
 
-1. **Von plausiblen Antworten zu belastbarer Arbeit**
-2. **50 Meter? Laufen klingt super. Falsche Aufgabe.** — explicit clue vs. implicit goal
-3. **Da war nichts. Beide Modelle fanden trotzdem etwas.** — visual hallucination / invented observation
-4. **Buchstaben, Wörter, Tokens: nicht dasselbe** — tokenisation vs. exact character work
-5. **Plausible Fortsetzung ist keine Wahrheitsdatenbank** — contextual fit vs. truth
-6. **Darum bauen wir einen Auftrag – keinen Zauberspruch** — `L2 + current context/evidence → L1`
-7. **Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.** — concrete CSV import case
-8. **Benutzer sagt: „VPN geht wieder.“ Ticket zu?** — user report vs. acceptance evidence
-9. **Kontext ist keine Erlaubnis** — analysis context vs. edit authority
-10. **Unsicherheit braucht einen Namen** — evidence states
-11. **Bestell keine drei Fehler** — adversarial review without finding quotas
-12. **Auto-Agent ohne Selbstfreigabe** — autonomous continuation inside existing authority
-13. **Kleine L2-Toolbox statt Mega-Prompt** — clickable current L2 source prompts
-14. **Bessere Arbeit, nicht hübschere Prompts** — decision rule
+1. **Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt …** — visual recall of the previous talk
+2. **Dann bekam der Chatbot plötzlich Hände** — from answer generation to tool-using / agentic work
+3. **Von plausiblen Antworten zu belastbarer Arbeit** — today's actual question
+4. **50 Meter? Laufen klingt super. Falsche Aufgabe.** — explicit clue vs. implicit goal
+5. **Da war nichts. Beide Modelle fanden trotzdem etwas.** — hallucinated observation
+6. **Buchstaben, Wörter, Tokens: nicht dasselbe** — tokenisation vs. exact character work
+7. **Plausible Fortsetzung ist keine Wahrheitsdatenbank** — contextual fit vs. truth
+8. **Darum bauen wir einen Auftrag – keinen Zauberspruch** — `L2 + current context/evidence → L1`
+9. **Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.** — CSV import
+10. **Benutzer sagt: „VPN geht wieder.“ Ticket zu?** — user report vs. acceptance evidence
+11. **Kontext ist keine Erlaubnis** — analysis context vs. edit authority
+12. **Unsicherheit braucht einen Namen** — evidence states
+13. **Bestell keine drei Fehler** — adversarial review without finding quotas
+14. **Auto-Agent ohne Selbstfreigabe** — autonomous continuation inside current authority
+15. **Kleine L2-Toolbox statt Mega-Prompt** — clickable German IT examples adapted from Recall recipes
+16. **Bessere Arbeit, nicht hübschere Prompts** — decision rule
 
-The point of the first four examples is not “LLMs are stupid”. It is the opposite: they are extremely good at contextual pattern completion, but that is not the same thing as inheriting every human assumption, observing ground truth, operating on characters one-to-one, or querying a truth database.
+## Bridge from the previous talk
 
-That makes the later practices feel like engineering rather than prompt superstition:
+The first two slides deliberately reuse reaction GIFs from the old `voku/LLM` presentation. They are loaded from that repository and serve as a visual callback, not as random decoration.
+
+The transition is:
 
 ```text
-current context + evidence
-          ↓
-     L2 construction method
-          ↓
-     concrete L1 contract
-          ↓
-        execution
-          ↓
- observed verification / Done When
+THEN
+What is an LLM and what can it do?
+        ↓
+NOW
+Models use tools and execute multi-step work
+        ↓
+BUT
+Plausibility is still not ground truth
+        ↓
+TODAY'S QUESTION
+How do we give an LLM work so the result is controllable and verifiable?
 ```
 
-## The four mental-model examples
+## Mental-model examples
 
-### Car wash
+The car-wash, noisy-image, token and next-token slides are not there to argue that LLMs are stupid. They explain four useful failure modes: implicit goals can be missed, model output is not observation, tokens are not characters, and plausible continuation is not the same thing as truth.
 
-The prompt asks whether to walk or drive 50 metres to a car wash. A model can focus on the explicit distance and produce the locally plausible answer “walk”, while the implicit task requires the car to arrive too.
-
-Teaching point: make the actual goal and relevant constraints observable when they matter.
-
-### Noisy image
-
-A deliberately noisy image contains no hidden message. Different models still produced confident interpretations such as “I love you” or an imagined prompt-injection story about claiming the image shows a rose.
-
-Teaching point: confident model output is not observation. Ground truth wins.
-
-### Letter counting / tokens
-
-Humans see the characters in `strawberry` directly. Language models first operate on model-specific tokenisation, and tokens do not necessarily correspond one-to-one to characters or words.
-
-Teaching point: exact string work, counting and arithmetic should use deterministic tools when correctness matters.
-
-### Plausible continuation
-
-Generation selects contextually fitting continuations token by token. A fabricated statement can therefore be linguistically excellent.
-
-Teaching point: plausibility and truth are different axes; important claims need evidence, retrieval or tools.
+That makes the later practices feel like engineering rather than prompt superstition.
 
 ## L1 / L2
 
@@ -77,36 +63,24 @@ Verification
 Done When
 ```
 
-The dedicated L1-definition slide was removed. Those five parts now appear directly inside the `L2 + context → L1` visual and again in the generated CSV-import L1 contract.
+L2 holds the reusable construction method; current ticket/file/system details belong in the generated L1 contract.
 
 ## Clickable L2 toolbox
 
-Slide 13 contains only **actual Level-2 recipes** from the current [`voku/agent-recall-compiler`](https://github.com/voku/agent-recall-compiler) operating-prompt catalog:
+Slide 15 uses German, presentation-specific IT examples adapted from current Recall recipe shapes:
 
-- `discovery-first`
-- `reproduce-before-fix`
-- `adversarial-review`
-- `deletion-first`
-- `plan-as-draft`
-- `production-ready-handoff`
+- CSV import → `discovery-first`
+- VPN reproduction → `reproduce-before-fix`
+- production change review → `adversarial-review`
+- incident missingness → `missingness-audit`
+- incident plan review → `plan-as-draft`
+- shift handoff → `production-ready-handoff`
 
-Clicking a card opens the current source prompt verbatim and exposes a copy button. The presentation explains the purpose in German/English, while the catalog prompt intentionally stays in its original source language so the slide does not quietly become another translation layer.
-
-`continue-until-done` and `evidence-report` are deliberately **not** in the L2 toolbox because they are current Level-1 prompts. They remain relevant concepts elsewhere in the deck.
-
-## Practical examples
-
-The deck uses IT work rather than generic office examples:
-
-- CSV/user import with a suspicious mapping and dry-run validation
-- VPN support-ticket closure
-- incident analysis across ticket, logs, config and deployment dependencies
-- change-plan adversarial review
-- bounded autonomous agent execution
+Clicking a card opens a copyable concrete L2 example. The recipe name remains visible as provenance, but the prompt itself is intentionally adapted to the Support/Admin cases used in this talk.
 
 ## Removed on purpose
 
-There is no prompt generator, regex evaluator, prompt score or pseudo-objective quality meter. Prompt quality is not responsibly reducible to keyword matches, and the deck should explain techniques rather than pretend to certify them.
+There is no prompt generator, regex evaluator, prompt score or pseudo-objective quality meter. Prompt quality is not responsibly reducible to keyword matches.
 
 ## Run locally
 
@@ -129,9 +103,12 @@ npm run build
 
 | File | Purpose |
 |---|---|
-| `constants.ts` | 14 bilingual slides and practical prompt examples |
-| `l2Prompts.ts` | current clickable L2 source prompts from `agent-recall-compiler` |
-| `components/VisualPanel.tsx` | LLM mental-model diagrams, IT visuals and interactive L2 toolbox |
+| `introSlides.ts` | two-slide bridge from the previous LLM talk |
+| `constants.ts` | 14-slide main deck |
+| `components/LegacyBridge.tsx` | reused old GIFs + then/now transition |
+| `l2Prompts.ts` | German IT-specific L2 examples adapted from Recall recipes |
+| `components/L2ToolboxPanel.tsx` | clickable L2 toolbox |
+| `components/VisualPanel.tsx` | LLM mental-model and IT diagrams |
 | `components/PromptComparison.tsx` | direct-case prompt vs. reusable method |
 | `components/SlideLayout.tsx` | visual-first slide renderer |
 | `PRESENTATION-NOTES-DE.md` | German speaker notes |
