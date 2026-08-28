@@ -2,6 +2,7 @@ import React from 'react';
 import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
 import L2ToolboxPanel from './L2ToolboxPanel';
+import LegacyBridge from './LegacyBridge';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
 
@@ -24,11 +25,14 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const thanksLabel = lang === 'de' ? 'ENDE // FRAGEN SIND JETZT ERLAUBT' : 'END // QUESTIONS NOW ALLOWED';
   const trainingLabel = lang === 'de' ? 'TEIL 2 · WARUM LLMs SO ARBEITEN + WIE WIR DAS NUTZEN' : 'PART 2 · WHY LLMS BEHAVE THIS WAY + HOW TO USE THAT';
   const mentalModelVisuals = ['carwash', 'noise-hallucination', 'tokens', 'next-token'];
-  const contentLabel = data.visual && mentalModelVisuals.includes(data.visual)
-    ? (lang === 'de' ? 'LLM // MENTAL MODEL' : 'LLM // MENTAL MODEL')
-    : data.visual === 'toolbox'
-      ? (lang === 'de' ? 'METHODEN // L2' : 'METHODS // L2')
-      : (lang === 'de' ? 'MISSION // IDEE' : 'MISSION // IDEA');
+  const legacyVisuals = ['legacy-recap', 'legacy-timejump'];
+  const contentLabel = data.visual && legacyVisuals.includes(data.visual)
+    ? (lang === 'de' ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
+    : data.visual && mentalModelVisuals.includes(data.visual)
+      ? 'LLM // MENTAL MODEL'
+      : data.visual === 'toolbox'
+        ? (lang === 'de' ? 'METHODEN // L2' : 'METHODS // L2')
+        : (lang === 'de' ? 'MISSION // IDEE' : 'MISSION // IDEA');
   const compareLabel = lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER';
   const readyLabel = lang === 'de' ? 'BEREIT' : 'READY';
 
@@ -47,6 +51,14 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
       );
     }
     return <p className="text-lg font-medium leading-relaxed text-slate-300 md:text-xl">{content}</p>;
+  };
+
+  const renderVisual = () => {
+    if (data.visual === 'legacy-recap' || data.visual === 'legacy-timejump') {
+      return <LegacyBridge kind={data.visual} lang={lang} />;
+    }
+    if (!data.visual) return null;
+    return <VisualPanel kind={data.visual} lang={lang} />;
   };
 
   const renderContent = () => {
@@ -105,9 +117,14 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
                 <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><L2ToolboxPanel lang={lang} /></div>
                 {content && <div className="mt-4 border-l-4 border-indigo-700 bg-slate-950/55 px-4 py-3 text-sm font-medium text-slate-300">{typeof content === 'string' ? content : content.join(' ')}</div>}
               </div>
+            ) : data.visual && legacyVisuals.includes(data.visual) ? (
+              <div className="grid flex-grow gap-6 xl:grid-cols-[1.65fr_.6fr] xl:items-center">
+                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7">{renderVisual()}</div>
+                <div>{renderTextBlock()}</div>
+              </div>
             ) : data.visual ? (
               <div className="grid flex-grow gap-6 lg:grid-cols-[1.55fr_.72fr] lg:items-center">
-                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><VisualPanel kind={data.visual} lang={lang} /></div>
+                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7">{renderVisual()}</div>
                 <div>{renderTextBlock()}</div>
               </div>
             ) : (
