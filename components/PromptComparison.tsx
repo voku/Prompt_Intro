@@ -26,53 +26,53 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
   const optimizedWordCount = useMemo(() => countWords(optimized), [optimized]);
 
   const labels = {
-    techniquePrefix: lang === 'de' ? 'Fall' : 'Case',
-    standardLabel: lang === 'de' ? 'Prompt für diesen einen Fall' : 'Prompt for this one case',
-    optimizedLabel: lang === 'de' ? 'Methode, die den Auftrag baut' : 'Method that builds the work order',
+    techniquePrefix: lang === 'de' ? 'Praxisfall' : 'Case',
+    standardLabel: lang === 'de' ? 'Direkter Prompt für genau diesen Fall' : 'Direct prompt for this case',
+    optimizedLabel: lang === 'de' ? 'L2-Methode für wiederkehrende Fälle' : 'Reusable L2 method',
     wordCount: lang === 'de' ? 'Wörter' : 'words',
     footer: lang === 'de'
-      ? 'Links steht der Einzelfall. Rechts steht das, was beim nächsten Fall noch gilt.'
-      : 'The left one is this case. The right one is what still holds for the next one.',
-    showWorkOrder: lang === 'de' ? 'Zeigen, was Durchgang 1 daraus macht' : 'Show what pass 1 produces from it',
-    hideWorkOrder: lang === 'de' ? 'Durchgang 1 ausblenden' : 'Hide pass 1',
-    workOrderLabel: lang === 'de' ? 'Durchgang 1 · Arbeitsauftrag, den du liest und freigibst' : 'Pass 1 · the work order you read and approve',
+      ? 'Links steckt der aktuelle Fall im Prompt. Rechts bleibt die Bauanleitung, die auch beim nächsten Fall noch gilt.'
+      : 'The left prompt contains the current case. The right side keeps only the construction method that survives the next case.',
+    showWorkOrder: lang === 'de' ? 'Zeig den daraus erzeugten L1-Auftrag' : 'Show the generated L1 contract',
+    hideWorkOrder: lang === 'de' ? 'L1-Auftrag ausblenden' : 'Hide L1 contract',
+    workOrderLabel: lang === 'de' ? 'Erzeugter L1-Auftrag · erst prüfen, dann ausführen' : 'Generated L1 contract · review before execution',
     workOrderNote: lang === 'de'
-      ? 'Das hat die Methode gebaut, nicht du. Du korrigierst eine halbe Seite – nicht vier fertige.'
-      : 'The method built this, not you. You correct half a page instead of four finished ones.',
+      ? 'Genau hier liegt der Nutzen: Der konkrete Fall wird automatisch in einen kurzen Auftrag übersetzt, den wir vor jeder Änderung gegenlesen können.'
+      : 'This is the useful boundary: the current case becomes a short concrete contract that can be reviewed before anything is changed.',
   };
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <div className="mb-2 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
-        <strong>{labels.techniquePrefix}: {technique}</strong> — {description}
+      <div className="border-2 border-indigo-800 bg-indigo-950/60 p-4 text-sm text-cyan-100 shadow-[4px_4px_0_#020617]">
+        <strong className="text-amber-300">{labels.techniquePrefix}: {technique}</strong> — {description}
       </div>
 
       <div className="grid h-full flex-grow grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="flex flex-col overflow-hidden rounded-xl border-2 border-amber-300 bg-white">
-          <div className="flex items-center justify-between border-b border-amber-200 bg-amber-50 px-4 py-3">
-            <span className="text-sm font-semibold uppercase tracking-wider text-amber-900">{labels.standardLabel}</span>
-            <FileClock size={20} className="text-amber-700" />
+        <div className="flex flex-col overflow-hidden border-2 border-amber-500 bg-slate-950/85 shadow-[5px_5px_0_#020617]">
+          <div className="flex items-center justify-between border-b-2 border-amber-700 bg-amber-950/50 px-4 py-3">
+            <span className="text-sm font-bold uppercase tracking-wider text-amber-200">{labels.standardLabel}</span>
+            <FileClock size={20} className="text-amber-300" />
           </div>
-          <div className="flex-grow p-6 font-mono text-sm text-gray-800 whitespace-pre-wrap">{standard}</div>
-          <div className="border-t border-amber-100 bg-amber-50/60 px-4 py-2 text-right text-xs font-medium text-amber-800">
+          <div className="flex-grow p-5 font-mono text-sm leading-relaxed text-slate-200 whitespace-pre-wrap">{standard}</div>
+          <div className="border-t border-amber-900 bg-amber-950/30 px-4 py-2 text-right text-xs font-medium text-amber-300">
             {standardWordCount} {labels.wordCount}
           </div>
         </div>
 
-        <div className="flex flex-col overflow-hidden rounded-xl border-2 border-blue-400 bg-white">
-          <div className="flex items-center justify-between border-b border-blue-300 bg-blue-50 px-4 py-3">
-            <span className="text-sm font-semibold uppercase tracking-wider text-blue-900">{labels.optimizedLabel}</span>
-            <Recycle size={20} className="text-blue-700" />
+        <div className="flex flex-col overflow-hidden border-2 border-cyan-500 bg-slate-950/85 shadow-[5px_5px_0_#020617]">
+          <div className="flex items-center justify-between border-b-2 border-cyan-800 bg-cyan-950/40 px-4 py-3">
+            <span className="text-sm font-bold uppercase tracking-wider text-cyan-200">{labels.optimizedLabel}</span>
+            <Recycle size={20} className="text-cyan-300" />
           </div>
-          <div className="flex-grow p-6 font-mono text-sm text-gray-800 whitespace-pre-wrap">{optimized}</div>
-          <div className="border-t border-blue-100 bg-blue-50/60 px-4 py-2 text-right text-xs font-medium text-blue-800">
+          <div className="flex-grow p-5 font-mono text-sm leading-relaxed text-slate-200 whitespace-pre-wrap">{optimized}</div>
+          <div className="border-t border-cyan-900 bg-cyan-950/30 px-4 py-2 text-right text-xs font-medium text-cyan-300">
             {optimizedWordCount} {labels.wordCount}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-center text-sm italic text-gray-600">
-        <ArrowRight className="mr-2 inline shrink-0" size={16} />
+      <div className="flex justify-center text-sm font-medium text-slate-400">
+        <ArrowRight className="mr-2 inline shrink-0 text-fuchsia-400" size={16} />
         {labels.footer}
       </div>
 
@@ -81,26 +81,26 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
           <button
             type="button"
             onClick={() => setShowWorkOrder((value) => !value)}
-            className="flex w-full items-center justify-between rounded-xl border-2 border-slate-300 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="retro-button flex w-full items-center justify-between bg-slate-900 px-4 py-3 text-sm font-bold text-cyan-200 transition-colors hover:bg-indigo-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             aria-expanded={showWorkOrder}
             aria-label={showWorkOrder ? labels.hideWorkOrder : labels.showWorkOrder}
           >
             <span className="flex items-center gap-2">
-              <Wrench size={16} className="text-slate-600" />
+              <Wrench size={16} className="text-fuchsia-300" />
               {showWorkOrder ? labels.hideWorkOrder : labels.showWorkOrder}
             </span>
             {showWorkOrder ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
 
           {showWorkOrder && (
-            <div className="mt-2 overflow-hidden rounded-xl border-2 border-slate-300 shadow-sm">
-              <div className="flex items-center gap-2 bg-slate-700 px-4 py-3">
-                <Wrench size={18} className="text-white" />
-                <span className="text-sm font-semibold uppercase tracking-wider text-white">{labels.workOrderLabel}</span>
+            <div className="mt-3 overflow-hidden border-2 border-emerald-700 bg-slate-950 shadow-[5px_5px_0_#020617]">
+              <div className="flex items-center gap-2 border-b-2 border-emerald-800 bg-emerald-950/50 px-4 py-3">
+                <Wrench size={18} className="text-emerald-300" />
+                <span className="text-sm font-bold uppercase tracking-wider text-emerald-200">{labels.workOrderLabel}</span>
               </div>
-              <div className="bg-slate-50 p-5">
-                <p className="mb-3 text-xs italic text-slate-600">{labels.workOrderNote}</p>
-                <pre className="font-mono text-sm leading-relaxed text-slate-900 whitespace-pre-wrap">{workOrder}</pre>
+              <div className="p-5">
+                <p className="mb-3 text-xs font-medium text-slate-400">{labels.workOrderNote}</p>
+                <pre className="font-mono text-sm leading-relaxed text-slate-200 whitespace-pre-wrap">{workOrder}</pre>
               </div>
             </div>
           )}
