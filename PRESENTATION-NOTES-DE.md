@@ -2,88 +2,119 @@
 
 ## Ziel
 
-Die Kollegen sollen zuerst verstehen, **warum** LLMs bestimmte Fehler machen. Danach wirken Prompt-Techniken, Evidenzregeln und L2 nicht wie Sonderregeln, sondern wie direkte Konsequenzen aus dem Werkzeug.
+Die Kollegen sollen nicht das Gefühl bekommen, sie hätten vor Monaten Hausaufgaben für „Teil 2“ bekommen. Der Einstieg holt die alte LLM-Präsentation kurz zurück, zeigt den Fähigkeitssprung seitdem und stellt dann die neue Frage:
 
-Nicht die Botschaft „LLMs sind dumm“ vermitteln. Die interessantere Aussage ist:
+> Nicht mehr nur: Was kann ein LLM?
+>
+> Sondern: Wie geben wir einem inzwischen sehr handlungsfähigen LLM Arbeit so, dass das Ergebnis belastbar ist?
 
-> LLMs sind extrem gut darin, plausible Fortsetzungen und Muster zu erzeugen. Genau deshalb können falsche Antworten so überzeugend aussehen.
+Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die interessantere Aussage ist:
 
-## Ablauf
+> LLMs sind extrem gut darin, plausible Muster und Fortsetzungen zu erzeugen. Heute können sie zusätzlich Tools benutzen und selbst Arbeitsschritte ausführen. Genau deshalb werden Kontext, Evidenz und Grenzen wichtiger, nicht unwichtiger.
 
-### 1 – Von plausiblen Antworten zu belastbarer Arbeit
+## Einstieg / Übergang
 
-> Letztes Mal ging es darum, was LLMs können. Heute schauen wir zuerst kurz darauf, warum sie manchmal komplett logisch klingenden Unsinn produzieren – und was wir daraus für unsere Arbeit ableiten.
+### 1 – Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt …
 
-### 2 – 50 Meter? Laufen klingt super. Falsche Aufgabe.
+Erst den alten GIF wirken lassen.
+
+> Einige erinnern sich vielleicht noch an den Vortrag. Falls nicht: völlig okay, ich erinnere mich selbst kaum noch an meine Foliennummern.
+
+Dann nur drei Dinge rekonstruieren:
+
+- Text rein → plausible Antwort raus.
+- Zusammenfassen, Übersetzen, Schreiben, Code.
+- Das Modell lernt Muster und setzt Kontext fort.
+
+Nicht die alte Präsentation nacherzählen.
+
+> Das war damals die Kernfrage: Was ist so ein LLM überhaupt und wofür kann man es benutzen?
+
+**Brücke:**
+
+> Seitdem ist ein kleines Detail passiert: Der Chatbot hat Hände bekommen.
+
+### 2 – Dann bekam der Chatbot plötzlich Hände
+
+Die beiden alten GIFs bewusst als Zeitmarker verwenden.
+
+Links:
+
+> Damals haben wir überwiegend über Antworten gesprochen.
+
+Rechts:
+
+> Heute lesen Modelle Dateien, benutzen Web und APIs, schreiben und ändern Code, arbeiten Tickets ab und führen mehrstufige Aufgaben aus.
+
+Dann den wichtigsten Satz langsam:
+
+> Der Fähigkeitssprung ist echt. Aber mehr Fähigkeiten machen eine plausible Aussage nicht automatisch wahr.
+
+**Brücke zur eigentlichen Präsentation:**
+
+> Und damit hat sich für mich die spannendere Frage verschoben: Nicht mehr „Was kann ein LLM?“, sondern „Wie geben wir ihm Arbeit so, dass wir dem Ergebnis anschließend trauen dürfen?“
+
+### 3 – Von plausiblen Antworten zu belastbarer Arbeit
+
+Diese Folie jetzt als eigentliche Titelfolie behandeln.
+
+> Genau darum geht es heute. Erst ganz kurz: Warum passieren bei LLMs bestimmte scheinbar absurde Fehler? Danach: Welche einfachen Arbeitsmethoden ergeben sich daraus für Support, Admin und Entwicklung?
+
+Ab hier beginnt der neue Vortrag wirklich.
+
+## Warum LLMs manchmal seltsamen Unsinn produzieren
+
+### 4 – 50 Meter? Laufen klingt super. Falsche Aufgabe.
 
 Prompt vorlesen:
 
 > Ich will mein Auto waschen. Die Waschanlage ist 50 Meter entfernt. Laufen oder fahren?
 
-Dann auf die beiden Karten zeigen.
+> „50 Meter“ aktiviert ein starkes Muster: kurze Strecke, also laufen. Aber unser eigentliches Ziel enthält eine implizite Bedingung: Das Auto muss zur Waschanlage.
 
-> „50 Meter“ aktiviert ein sehr starkes Muster: kurze Strecke, also laufen. Aber unser eigentliches Ziel enthält eine implizite Bedingung: Das Auto muss zur Waschanlage.
-
-Nicht behaupten, dass jedes Modell immer so antwortet. Die Pointe ist, dass die explizite Formulierung stärker wirken **kann** als die unausgesprochene Absicht.
-
-**Brücke:**
-
-> Genau deshalb sollten wichtige Ziele und Randbedingungen nicht nur in unserem Kopf existieren.
-
-### 3 – Da war nichts. Beide Modelle fanden trotzdem etwas.
-
-Das Rauschbild zuerst wirken lassen.
-
-Dann die beiden Antworten zeigen:
-
-- GPT-5.6 Sol: `I love you.`
-- Claude Fable 5: imaginierte Prompt-Injection / Rose
-
-Dann Ground Truth:
-
-> Da war gar keine versteckte Nachricht.
+Nicht behaupten, jedes Modell antworte immer so.
 
 **Merksatz:**
 
+> Wichtige Ziele und Randbedingungen sollten nicht nur in unserem Kopf existieren.
+
+### 5 – Da war nichts. Beide Modelle fanden trotzdem etwas.
+
+Das Rauschbild wirken lassen, dann die beiden Antworten und Ground Truth.
+
 > Eine überzeugende Beschreibung ist noch keine Beobachtung.
 
-Das ist später die direkte Brücke zu `UNKNOWN`, `VERIFIED` und echter Evidenz.
+Brücke zu `UNKNOWN`, `VERIFIED` und Evidenz.
 
-### 4 – Buchstaben, Wörter, Tokens
+### 6 – Buchstaben, Wörter, Tokens
 
-Auf `strawberry` zeigen und die drei `r` markieren.
+Auf `strawberry` und die drei `r` zeigen.
 
-> Wir sehen hier zehn Zeichen und können die drei r direkt zählen. Das Modell arbeitet intern aber nicht automatisch mit genau dieser Zeichenliste, sondern mit modellabhängigen Tokens.
+> Wir sehen Zeichen. Ein Sprachmodell verarbeitet Text über modellabhängige Tokens und interne Repräsentationen. Das ist nicht automatisch dieselbe Ebene.
 
-Wichtig: Nicht behaupten, dass LLMs deshalb grundsätzlich keine Buchstaben zählen können. Moderne Modelle können das oft korrekt lösen, besonders mit Reasoning oder Tools.
+Nicht behaupten, moderne Modelle könnten grundsätzlich keine Buchstaben zählen.
 
-**Punkt:**
+> Wenn exakte String-Arbeit zählt, benutze ich lieber ein deterministisches Tool.
 
-> Wenn exakte String-Arbeit zählt, gebe ich einem Sprachmodell lieber ein deterministisches Tool, statt darauf zu hoffen, dass Sprachrepräsentation zufällig exakt genug ist.
+### 7 – Plausible Fortsetzung ist keine Wahrheitsdatenbank
 
-### 5 – Plausible Fortsetzung ist keine Wahrheitsdatenbank
+Die Balken als **schematisch** kennzeichnen.
 
-Die Balken ausdrücklich als **schematisch** bezeichnen.
-
-> Sprachmodelle generieren passende Fortsetzungen. „Passt gut in den Kontext“ und „ist nachweislich wahr“ sind zwei unterschiedliche Fragen.
-
-Dann:
-
-> Eine erfundene Person kann deshalb eine fantastisch glaubwürdige Biografie bekommen. Sprachlich passt alles. Nur die Realität fehlt.
+> „Passt gut zum Kontext“ und „ist nachweislich wahr“ sind zwei unterschiedliche Fragen.
 
 **Brücke:**
 
-> Jetzt ergibt der ganze Evidenz-Kram plötzlich Sinn.
+> Und jetzt ergibt der ganze Evidenz-Kram plötzlich Sinn.
 
-### 6 – Darum bauen wir einen Auftrag, keinen Zauberspruch
+## Vom Modell zur Arbeitsmethode
 
-Das Bild erklären:
+### 8 – Darum bauen wir einen Auftrag, keinen Zauberspruch
 
 ```text
 L2 + aktueller Kontext/Evidenz → L1
 ```
 
-Darunter die fünf L1-Bestandteile:
+Die fünf L1-Bestandteile kurz zeigen:
 
 - Ziel
 - Kontext
@@ -91,126 +122,81 @@ Darunter die fünf L1-Bestandteile:
 - Prüfung
 - Fertig, wenn
 
-> L2 ist die wiederverwendbare Bauanleitung. Der Fall von heute kommt aus dem aktuellen Kontext. Das Ergebnis ist der konkrete Auftrag, den man gegenlesen und prüfen kann.
+> L2 ist die wiederverwendbare Bauanleitung. Der aktuelle Fall gehört in L1. Erst Auftrag bauen und gegenlesen, dann handeln.
 
-> Und der L2-Durchgang macht noch nichts kaputt. Er baut erstmal nur den Auftrag.
+### 9 – Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.
 
-### 7 – Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.
+Hauptbeispiel. Links konkreter Einzelfall, rechts Methode, dann erzeugten L1-Auftrag öffnen.
 
-Hauptbeispiel.
+> Links ist nichts schlecht. L2 lohnt sich dann, wenn derselbe Qualitätsmaßstab auch beim nächsten Import gelten soll.
 
-Links: konkreter Prompt für `SD-18427`.
+### 10 – Benutzer sagt: „VPN geht wieder.“ Ticket zu?
 
-Rechts: Methode ohne die Falldaten.
-
-Dann **„Daraus erzeugten L1-Auftrag zeigen“** öffnen.
-
-> Links ist nichts schlecht. Für genau diesen Import ist das ein brauchbarer Prompt. Rechts steckt nur das drin, was auch beim nächsten Import noch gelten soll.
-
-Das neue `cost_center → department`-Mapping als Beispiel für `UNKNOWN/BLOCKED` verwenden:
-
-> Wenn wir den Beleg nicht haben, wird das Mapping nicht kreativ vervollständigt. Es bleibt sichtbar offen.
-
-### 8 – Benutzer sagt: „VPN geht wieder.“ Ticket zu?
-
-> Die Aussage des Benutzers ist echte Information und kann wertvolle Evidenz sein. Sie ersetzt aber nicht automatisch alle Abnahmekriterien.
-
-Die drei Ebenen unterscheiden:
+Drei Ebenen unterscheiden:
 
 1. was das Ticket fordert,
 2. was der Benutzer berichtet,
-3. was wir tatsächlich geprüft/beobachtet haben.
+3. was wir tatsächlich geprüft haben.
 
-### 9 – Kontext ist keine Erlaubnis
-
-Auf Ticket / Logs / Config / Deploy-Skript zeigen.
-
-> Ein Agent darf eine Datei brauchen, um die Ursache zu verstehen, ohne sie deshalb ändern zu dürfen.
-
-**Merksatz:**
+### 11 – Kontext ist keine Erlaubnis
 
 > Relevanz ist keine Schreibfreigabe.
 
-### 10 – Unsicherheit braucht einen Namen
+### 12 – Unsicherheit braucht einen Namen
 
-Die Zustände nicht akademisch durchdefinieren.
-
-Die drei wichtigsten für den Vortrag:
+Für den Vortrag vor allem:
 
 - `VERIFIED` – belegt
 - `UNKNOWN` – Beleg fehlt
-- `BLOCKED` – wir wissen, was fehlt, kommen aber gerade nicht daran / dürfen es nicht
+- `BLOCKED` – benötigter Beleg/Zugriff ist bekannt, aber aktuell nicht verfügbar
 
-Die anderen Boxen nur kurz erwähnen.
+> Eine Lücke darf eine Lücke bleiben. Sie muss nicht mit einer hübschen Geschichte gefüllt werden.
 
-> Der Nutzen ist: Das Modell muss eine Lücke nicht mehr mit einer schönen Geschichte füllen.
+### 13 – Bestell keine drei Fehler
 
-### 11 – Bestell keine drei Fehler
+> Drei Funde sind eine Quote. Drei ernsthafte Falsifikationsversuche sind Review-Arbeit.
 
-Links:
+`CLEAN` ist gültig.
 
-> Nenn mir die drei größten Risiken.
+### 14 – Auto-Agent ohne Selbstfreigabe
 
-Dann rechts:
+> Innerhalb der bestehenden Freigabe automatisch weiterarbeiten. Neue Owner-, Security-, Risiko- oder destruktive Entscheidungen nicht selbst erteilen.
 
-> Versuche den Plan drei Mal ernsthaft zu widerlegen.
+### 15 – Kleine L2-Toolbox statt Mega-Prompt
 
-**Merksatz:**
+Hier wirklich klicken. Die Beispiele sind absichtlich deutsch und auf die Fälle dieses Vortrags zugeschnitten.
 
-> Drei Funde sind eine Quote. Drei Falsifikationsversuche sind Arbeit.
+Gute Reihenfolge:
 
-`CLEAN` ausdrücklich als gültiges Ergebnis nennen.
+1. CSV-Import erst verstehen
+2. VPN-Fehler erst reproduzieren
+3. Den 18-Uhr-Change wirklich angreifen
+4. Schichtwechsel ohne Chat-Gedächtnis
 
-### 12 – Auto-Agent ohne Selbstfreigabe
+Bei langen Prompts nicht alles vorlesen. Struktur und Unterschied zeigen.
 
-> Wir wollen nicht nach jedem kleinen Schritt „Soll ich weitermachen?“ lesen. Innerhalb der bestehenden Befugnis soll der Agent weiterarbeiten und nach jedem Slice sinnvoll prüfen.
-
-Dann die Grenze:
-
-> Eine neue Owner-, Security-, Risiko- oder destruktive Entscheidung kann der Agent sich aber nicht selbst genehmigen.
-
-### 13 – Kleine L2-Toolbox statt Mega-Prompt
-
-Hier wirklich klicken.
-
-Empfohlene Reihenfolge:
-
-1. `discovery-first`
-2. `reproduce-before-fix`
-3. `adversarial-review`
-4. bei Interesse `production-ready-handoff`
-
-> Das sind die echten aktuellen L2-Source-Prompts aus unserem agent-recall-compiler. Ein Klick zeigt den Prompt vollständig; wir müssen also nicht so tun, als wären drei Stichpunkte dasselbe wie die echte Methode.
-
-Darauf hinweisen:
-
-> `evidence-report` und `continue-until-done` fehlen hier absichtlich. Die sind im aktuellen Katalog Level 1 und nicht L2.
-
-Bei langen Prompts nicht alles vorlesen. Struktur zeigen und ggf. kopieren.
-
-### 14 – Bessere Arbeit, nicht hübschere Prompts
-
-Mit den drei Karten enden:
+### 16 – Bessere Arbeit, nicht hübschere Prompts
 
 - einmalig → direkter Prompt
 - wiederkehrend → L2-Methode
 - kritisch → Evidenz + Befugnis explizit
 
-> Das Ziel ist nicht, dass ein Prompt nach Prompt Engineering aussieht. Das Ziel ist, dass die Arbeit stimmt und wir wissen, warum wir das behaupten dürfen.
+> Das Ziel ist nicht Prompt Engineering als Selbstzweck. Das Ziel ist, dass die Arbeit stimmt und wir wissen, warum wir das behaupten dürfen.
 
 ## Kurzfassung – 15 Minuten
 
-**1 → 2 → 3 → 5 → 6 → 7 → 8 → 10 → 13 → 14**
+**1 → 2 → 3 → 4 → 5 → 7 → 8 → 9 → 10 → 12 → 15 → 16**
 
 Wenn nur zehn Minuten da sind:
 
-**1 → 2 → 3 → 5 → 6 → 7 → 13 → 14**
+**1 → 2 → 3 → 4 → 5 → 8 → 9 → 15 → 16**
 
 ## Vor Teams
 
 - Pages-Version einmal komplett neu laden.
-- Folie 7: L1-Auftrag einmal auf-/zuklappen.
-- Folie 13: mindestens `discovery-first` und `adversarial-review` anklicken; Scrollbereich prüfen.
+- Prüfen, dass die drei alten Reaction-GIFs laden.
+- Folie 9: L1-Auftrag einmal auf-/zuklappen.
+- Folie 15: mindestens CSV-Import und Change-Review anklicken; Scrollbereich prüfen.
 - Browserfenster statt kompletten Desktop teilen.
-- Beim Token-Beispiel ausdrücklich sagen, dass die Token-Chunks im Bild schematisch sind.
-- Beim Next-Token-Beispiel ausdrücklich sagen, dass die Balken keine echten Modellwahrscheinlichkeiten darstellen.
+- Token-Chunks ausdrücklich als schematisch erklären.
+- Next-Token-Balken ausdrücklich als Illustration, nicht echte Modellwahrscheinlichkeiten erklären.
