@@ -1,226 +1,100 @@
 # Präsentationsnotizen – Von Prompts zu belastbaren Methoden
 
-Zielgruppe: Kolleginnen und Kollegen, die die frühere LLM-Einführung bereits kennen.
+## Ziel
 
-## Kernbotschaft
+Keine Prompt-Theorie-Vorlesung. Jede Folie soll eine Idee in wenigen Sekunden verständlich machen und dann an einem echten IT-Fall zeigen, warum sie nützlich ist.
 
-Wir brauchen nicht für jede Kleinigkeit ein Prompt-Framework. Ein direkter Prompt ist für eine kleine Einmal-Aufgabe völlig ausreichend.
+## Ablauf
 
-Sobald Arbeit aber **wiederkehrt, kritisch ist, übergeben oder sauber geprüft werden muss**, lohnt sich ein anderer Schnitt:
+### 1 – Von Prompts zu belastbaren Methoden
 
-```text
-L2-Methode + aktueller Kontext
-        ↓
-konkreter L1-Auftrag
-        ↓
-Prüfung / Freigabe
-        ↓
-Ausführung
-        ↓
-Evidenz gegen Done When
-```
+> Letztes Mal ging es darum, was LLMs können. Heute geht es darum, wie wir sie für echte Arbeit einsetzen, ohne bei jedem Ticket wieder bei null anzufangen.
 
-L2 ist dabei keine längere Formulierung. Es ist die wiederverwendbare Bauanleitung. Der konkrete Fall gehört in L1.
+### 2 – Der Fall veraltet. Die Methode nicht.
 
-## Einstieg – ca. 1 Minute
+Auf die zwei Karten zeigen.
 
-> Letztes Mal ging es darum, was LLMs überhaupt können. Heute gehe ich einen Schritt weiter: Wie bekomme ich aus einzelnen guten Chats Arbeit, die beim nächsten Ticket nicht wieder bei null anfängt?
+> Ticket-ID, Datei und Zielsystem ändern sich. Die Regeln für Evidenz, Scope und Prüfung sollten das nicht.
 
-> Und nein: Die Antwort ist nicht, jeden Prompt auf drei Bildschirmseiten aufzublasen.
+### 3 – L2 ist ein Prompt-Compiler
 
-Dann direkt zu Folie 2.
-
-## Empfohlener Ablauf – 25 bis 30 Minuten
-
-### Folie 1 – Von Prompts zu belastbaren Methoden
-
-Nur den Anschluss an die alte Präsentation herstellen.
-
-**Merksatz:**
-
-> Heute geht es nicht um ein neues Modell. Es geht um bessere Arbeitsverträge mit dem Modell.
-
-### Folie 2 – Copy & Paste ist kein Prozess
-
-Die drei Praxisbilder nennen:
-
-- CSV-/Benutzerimport
-- Support-/VPN-Ticket
-- Störungsmeldung / Kommunikation
-
-**Punkt:** Falldaten ändern sich. Qualitätsregeln sollten bleiben.
-
-### Folie 3 – L2 baut L1
-
-Hier die Begriffe sauber setzen:
-
-- **L2-Rezept** = wiederverwendbare Bauanleitung + Qualitätsmaßstab.
-- **L1-Auftrag** = konkrete ausführbare Anweisung für den aktuellen Fall.
-
-Wichtig:
-
-> Der L2-Durchgang endet nach dem Bau von L1. Noch nichts importieren, ändern oder verschicken.
-
-Ein direkter Prompt bleibt für Einmal-Aufgaben legitim.
-
-### Folie 4 – Die fünf Teile von L1
-
-Die aktuelle `agent-recall-compiler`-Form verwenden:
-
-1. Goal / Ziel
-2. Context / Kontext
-3. Constraints / Grenzen
-4. Verification / Prüfung
-5. Done When / Fertig, wenn
-
-**Nicht** als starre Prompt-Schablone verkaufen. Die Pointe ist gerade, dass L2 diese fünf Teile aus aktuellem Kontext konstruiert.
-
-### Folie 5 – Hauptdemo: Benutzerimport aus CSV
-
-Hier Zeit investieren.
-
-1. Erst den direkten Prompt links zeigen. Der ist absichtlich **gut**.
-2. Dann rechts die L2-Methode zeigen. Darin fehlen Ticket-ID, Dateiname und Zielsystem absichtlich.
-3. Danach **„Zeig den daraus erzeugten L1-Auftrag“** öffnen.
-
-Das ist der zentrale Moment der Präsentation:
-
-> Die Methode kennt nicht den Fall von morgen. Sie kennt die Regeln, nach denen aus dem Fall von morgen ein prüfbarer Auftrag gebaut wird.
-
-### Folie 6 – Prüfung != Fertig-wenn
-
-Praxisfall AD-Gruppenänderung.
-
-**Merksatz:**
-
-> Prüfung beschreibt den Messweg. Fertig-wenn beschreibt das Ergebnis, das aus dieser Messung herauskommen muss.
-
-„Sieht richtig aus“ gehört in keine der beiden Spalten.
-
-### Folie 7 – Anforderung != Evidenz
-
-VPN-Ticket als Beispiel.
-
-> „MFA funktioniert“ im Ticket ist die Forderung. Ein tatsächlich beobachteter erfolgreicher Test ist der Nachweis.
-
-Wenn die Probe nicht möglich ist:
-
-- fehlender Beleg → `UNKNOWN`
-- bekannter notwendiger Beleg/Zugriff, aktuell nicht erreichbar → `BLOCKED`
-
-Nicht einfach Haken setzen, weil die Zeile existiert.
-
-### Folie 8 – Kontext != Änderungserlaubnis
-
-Störungsanalyse mit Ticket, Logs, `nginx.conf` und Deployment-Skript.
-
-**Punkt:** Relevant für die Analyse bedeutet nicht automatisch im Scope zum Ändern.
-
-> Kontext erweitert keine Befugnis.
-
-### Folie 9 – Evidenzzustände
-
-Nicht als akademische Taxonomie vortragen, sondern als Schutz gegen erfundene Sicherheit.
-
-- `VERIFIED`
-- `INFERRED`
-- `ASSUMED`
-- `UNKNOWN`
-- `BLOCKED`
-- `CONTRADICTED`
-
-Die formalen material conclusions in Recall sind `VERIFIED / INFERRED / ASSUMED / BLOCKED / CONTRADICTED`; fehlende Evidenz bleibt zusätzlich `UNKNOWN`, bis sie geklärt oder konkret blockiert ist.
-
-### Folie 10 – Quelle, Herkunft, Rolle
-
-Praxisfall Störungskommunikation aus Ticket + Monitoring + Teams-Chat + alter Statusmail.
-
-Die sechs Fragen nennen:
+Nur das Bild erklären:
 
 ```text
-WHAT
-WHY
-HOW
-AUTHORITY
-USE
-STATE
+L2 + aktueller Kontext → L1
 ```
 
-**Merksatz:**
+> L2 kennt nicht das Ticket von heute. L2 kennt die Regeln, nach denen aus dem Ticket von heute ein guter Auftrag entsteht.
 
-> Relevant heißt nicht maßgeblich. Maßgeblich für eine Aussage heißt nicht automatisch maßgeblich für alles. Und nichts davon ist automatisch Schreibfreigabe.
+### 4 – L1: fünf Dinge, kein Ritual
 
-### Folie 11 – Playground
+Die fünf Zeilen einmal durchgehen. Nicht länger.
 
-Reihenfolge für die Live-Demo:
+> Wichtig ist nicht, fünf Überschriften abzutippen. Wichtig ist, dass Ziel, Kontext, Grenzen, Prüfung und Fertig-wenn im konkreten Auftrag geklärt sind.
 
-1. **Direkter Prompt: ein Import**
-2. **Derselbe Fall als L2-Methode**
-3. **Methode mit altem Fall im Gepäck**
-4. **Zitiertes Ticket ist keine Anweisung**
+### 5 – Freitag, 16:47 Uhr. 742 Benutzer. Ein kaputtes Mapping.
 
-Den Score ausdrücklich kleinreden:
+Das ist das Hauptbeispiel.
 
-> Das ist eine lokale Heuristik, kein Gütesiegel. Interessant ist, welche Eigenschaften fehlen.
+Links: guter Einzelfall-Prompt.
 
-### Folie 12 – Blind-Spot-/Adversarial Review
+Rechts: wiederverwendbare L2-Methode.
 
-Nicht „finde drei Fehler“, sondern mindestens drei ernsthafte Versuche, den Plan zu widerlegen.
+Dann den erzeugten L1-Auftrag öffnen.
 
-Pro Versuch:
+> Links ist nichts „schlecht“. Es ist nur genau für diesen Fall geschrieben. Rechts bleibt der Qualitätsmaßstab übrig und der konkrete Fall wird jedes Mal neu eingesetzt.
 
-- Hypothese
-- Trigger
-- bestätigende/widerlegende Evidenz
-- Evidenzzustand
-- kleinste trennscharfe Probe
+### 6 – „VPN geht“ ist kein Nachweis
 
-`CLEAN` ist ein gültiges Ergebnis.
+> Die Checkliste sagt, was stimmen muss. Der Test sagt, ob es stimmt.
 
-### Folie 13 – Auto-Agent ohne Selbstfreigabe
+`UNKNOWN` und `BLOCKED` nur kurz unterscheiden, wenn es in der Runde passt.
 
-Das ist die Brücke zu moderner Agent-Arbeit:
+### 7 – Kontext ist keine Erlaubnis
 
-- Arbeit in begrenzte Slices zerlegen.
-- Nach jedem Slice die billigste sinnvolle Prüfung.
-- Intern prüfen, ob aktuelle Befugnis + Evidenz den nächsten Slice erlauben.
-- Unabhängige sichere Arbeit trotz lokalem Blocker fortsetzen.
-- Echte Owner-/Security-/Risiko-/destruktive Entscheidungen nie selbst bestätigen.
-- Vor `DONE` die eigene Erfolgsmeldung gegen echte Artefakte halten.
+Auf Ticket / Logs / Config / Deploy-Skript zeigen.
 
-**Merksatz:**
+> Nur weil ich eine Datei zum Verstehen brauche, darf ich sie noch lange nicht ändern.
 
-> Selbstständig weiterarbeiten ist gut. Sich selbst neue Befugnisse erteilen ist nur kreatives Organisationsdesign.
+### 8 – Unsicherheit braucht einen Namen
 
-### Folie 14 – Abschluss
+Nicht jede Box ausführlich definieren.
 
-Nicht mit „ihr müsst jetzt L2 benutzen“ enden.
+> Der wichtigste Effekt ist: Eine Lücke darf eine Lücke bleiben. Sonst wird aus „wahrscheinlich“ sehr schnell ein angeblicher Fakt.
 
-Besser:
+### 9 – Bestell keine drei Fehler
 
-> Für die kleine Einmal-Aufgabe bleibt der direkte Prompt. Für wiederkehrende oder kritische Arbeit bauen wir Methoden, die aus aktuellem Kontext einen konkreten Auftrag erzeugen und ihren Erfolg mit Evidenz belegen.
+Links einmal vorlesen, dann rechts.
 
-Als Beispiele für aktuelle Rezeptarten nennen:
+> Drei Funde sind eine Quote. Drei ernsthafte Versuche, den Plan zu widerlegen, sind Review-Arbeit.
 
-- Discovery First
-- Reproduce Before Fix
-- Adversarial Review
-- Evidence Report
-- Continue Until Done
+### 10 – Auto-Agent ohne Selbstfreigabe
 
-Nur einsetzen, wenn sie zur Aufgabe passen.
+> Innerhalb der bestehenden Freigabe darf der Agent weiterarbeiten. Eine neue Owner-, Security- oder Risikoentscheidung darf er sich nicht selbst erteilen.
 
-## 15-Minuten-Kurzfassung
+### 11 – Kleine Toolbox statt Mega-Prompt
 
-**1 → 2 → 3 → 4 → 5 → 7 → 9 → 13 → 14**
+Die sechs Karten nur als Beispiele zeigen.
 
-Folie 5 bleibt auch in der Kurzfassung drin. Sie erklärt L2/L1 schneller als zehn Definitionen.
+> Das sind verschiedene Werkzeuge für verschiedene Aufgaben. Nicht alle gleichzeitig reinschütten. Das wäre wieder der Mega-Prompt mit anderem Branding.
 
-## Vor Teams kurz prüfen
+### 12 – Bessere Arbeit, nicht hübschere Prompts
 
-- GitHub-Pages-URL im Browser öffnen.
+Mit den drei Karten enden:
+
+- einmalig → direkter Prompt
+- wiederkehrend → Methode
+- kritisch → Evidenz + Befugnis explizit
+
+> Das Ziel ist nicht, dass der Prompt beeindruckend aussieht. Das Ziel ist, dass die Arbeit nachher stimmt und wir wissen, warum wir das behaupten dürfen.
+
+## Kurzfassung – 15 Minuten
+
+**1 → 2 → 3 → 5 → 6 → 8 → 10 → 11 → 12**
+
+## Vor Teams
+
+- Präsentation einmal in der veröffentlichten Pages-Version durchklicken.
+- Folie 5 einmal aufklappen.
 - Browserfenster statt kompletten Desktop teilen.
-- Vollbild einschalten.
-- Folie 5 öffnen und den erzeugten L1-Auftrag einmal auf-/zuklappen.
-- Folie 11 öffnen und die vier Presets der Demo einmal durchklicken.
-- Auf 125–150 % Browser-Zoom achten, falls Teams auf dem Zielgerät kleine Schrift produziert. Weil Videokonferenz-Software offenbar auch Typografie als Netzwerkproblem behandeln kann.
+- Keine Live-Demo mit Prompt-Scoring. Die wurde mit gutem Grund gelöscht.
