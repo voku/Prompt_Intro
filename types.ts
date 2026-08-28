@@ -10,6 +10,8 @@ export enum SlideType {
 export type IconName = keyof typeof import('lucide-react');
 
 export type VisualKind =
+  | 'legacy-recap'
+  | 'legacy-timejump'
   | 'carwash'
   | 'noise-hallucination'
   | 'tokens'
