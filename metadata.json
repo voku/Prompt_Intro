@@ -1,5 +1,5 @@
 {
-  "name": "From Prompts to Reliable Methods",
-  "description": "A bilingual Part 2 presentation about current prompt techniques for recurring IT Support/Admin work: reusable L2 construction methods, concrete L1 contracts, explicit evidence, verification and authority boundaries.",
+  "name": "From Plausible Answers to Reliable Work",
+  "description": "A bilingual Part 2 presentation about why LLMs produce plausible errors and how that mental model leads to better IT prompts, L2 construction methods, evidence handling and agent workflows.",
   "requestFramePermissions": []
 }
