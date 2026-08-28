@@ -33,7 +33,7 @@ const App: React.FC = () => {
   const fullscreenLabel = lang === 'de' ? 'VOLLBILD' : 'FULLSCREEN';
   const slideLabel = lang === 'de' ? 'FOLIE' : 'STAGE';
   const progressLabel = lang === 'de' ? 'FORTSCHRITT' : 'PROGRESS';
-  const deckTitle = lang === 'de' ? 'VON PROMPTS ZU BELASTBAREN METHODEN' : 'FROM PROMPTS TO RELIABLE METHODS';
+  const deckTitle = lang === 'de' ? 'VON PLAUSIBLEN ANTWORTEN ZU BELASTBARER ARBEIT' : 'FROM PLAUSIBLE ANSWERS TO RELIABLE WORK';
 
   return (
     <div className="retro-stage flex min-h-screen flex-col text-slate-100 selection:bg-fuchsia-500 selection:text-white">
