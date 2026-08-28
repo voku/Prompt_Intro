@@ -4,16 +4,26 @@ export enum SlideType {
   TITLE = 'TITLE',
   CONTENT = 'CONTENT',
   COMPARISON = 'COMPARISON',
-  PLAYGROUND = 'PLAYGROUND',
   END = 'END'
 }
 
 export type IconName = keyof typeof import('lucide-react');
 
+export type VisualKind =
+  | 'case-split'
+  | 'compiler'
+  | 'l1-stack'
+  | 'authority-map'
+  | 'evidence-board'
+  | 'agent-loop'
+  | 'toolbox'
+  | 'library';
+
 export interface SlideData {
   id: number;
   type: SlideType;
   icon?: IconName;
+  visual?: VisualKind;
   title: string;
   subtitle?: string;
   content?: string | string[];
@@ -22,13 +32,10 @@ export interface SlideData {
   subtitleDE?: string;
   contentDE?: string | string[];
   techniqueDE?: string;
-  /** The one-off prompt written for exactly this case. */
   codeStandard?: string;
-  /** The reusable method that builds the work order for any case like it. */
   codeOptimized?: string;
   codeStandardDE?: string;
   codeOptimizedDE?: string;
-  /** What pass 1 produces from the method plus the current material. */
   codeWorkOrder?: string;
   codeWorkOrderDE?: string;
 }
