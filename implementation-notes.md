@@ -1,89 +1,126 @@
 # Implementation notes
 
-## What this revision changed and why
+## Current teaching contract
 
-The previous revision taught a five-field prompt template that a person fills in by hand: job, material, limits, form, done-when. That is an **L1 contract** — a filled-in instruction for one case. It is the older, weaker artifact, and building a deck around it teaches people to keep writing disposable prompts slightly better.
+The deck is no longer a presentation about making one-off prompts more elaborate. Its core distinction follows the current `voku/agent-recall-compiler` contract:
 
-The power in `voku/agent-recall-compiler` is at **L2**: a reusable construction method that tells the agent how to build the project-specific L1 contract from current evidence, and to stop there. The deck now teaches that instead:
+- **L2 recipe**: reusable construction method and quality bar;
+- **L1 contract**: concrete executable instructions for the current case.
+
+The L2 pass constructs L1 from current evidence and stops before execution. A direct L1-style prompt remains valid for simple one-off work.
+
+The concrete L1 target shape is exactly:
 
 ```text
-Pass 1   method + today's material  →  the work order for this case  →  STOP
-Pass 2   your go-ahead              →  execute the work order it built
+Goal
+Context
+Constraints
+Verification
+Done When
 ```
 
-The reusable part is the method and the quality bar. The specifics — supplier, date, file, page — are re-derived from whatever material arrives, so the method never goes stale.
+`Verification` is the measurement procedure. `Done When` is the acceptable observed result. Missing required evidence remains `UNKNOWN` or `BLOCKED`; prompt prose, model confidence, reviewer agreement or an unexecuted command are not verification.
 
-## Decisions made because the spec was incomplete
+## Why the examples changed
 
-- **Collapsed the two decks into one.** The previous revision kept the deck switch and re-themed both modes, which meant the presentation still told two stories. "No switch to another story" was read as: one deck, one thread. `GuideMode` is gone from types, app shell, components, presets and evaluator, and the title-slide deck picker with it. If the switch is wanted back, it is a small addition — the content no longer needs it.
-- **Merged `taskFitEvaluator.ts` into `promptEvaluator.ts`.** The wrapper-over-base split mirrored an override pattern that had no reason to exist once both files were rewritten.
-- **Renamed `codeVokuprompt` to `codeWorkOrder`.** The expandable panel now shows what pass 1 actually produces from the method plus three attached offers, which is the single most convincing thing in the deck.
-- **The left column is not a strawman.** It is a good, complete, well-structured prompt for one tender — with a shelf life of one week. Making it bad would have proved nothing about L2.
-- **English content uses English field names** (Goal / Material / Limits / Check / Done-when), German content uses German ones. The first draft leaked `Prüfung` and `Fertig-wenn` into the English slides.
+The previous version used generic office examples such as tenders, supplier comparisons and letters. Those examples made the German copy sound translated and hid the connection to the actual engineering principles.
 
-## Mapping to the source repositories
+The current deck uses recognizable IT Support/Admin cases:
 
-Each principle in the deck traces to a specific mechanism, not to a general vibe:
+- CSV/user import with ticket, target system and runbook;
+- AD group membership change;
+- VPN/support-ticket acceptance checks;
+- incident analysis across ticket, logs, configuration and deployment dependencies;
+- incident communication from monitoring, ticket, chat and prior communication;
+- change-plan adversarial review;
+- bounded automatic agent continuation.
 
-| Slide | Source |
+The direct-prompt side of comparison slides is deliberately allowed to be good. The point is not that a direct prompt is primitive. The point is that case-specific details expire while reusable construction rules can survive the next case.
+
+## Main demo: CSV import
+
+Slide 5 is the central L2/L1 demonstration.
+
+The left side contains a concrete prompt for one case: a named CSV, ticket ID, target system, row count and runbook location.
+
+The right side contains the reusable L2 construction method. It requires the model to derive exact case anchors from the current ticket/files and construct an L1 contract with Goal, Context, Constraints, Verification and Done When. It then stops before importing anything.
+
+The expandable panel shows the generated L1 contract for the current import. This is the useful human review boundary: inspect the concrete contract before execution rather than discovering a misunderstood requirement after a write operation.
+
+## Source-principle mapping
+
+| Deck concept | Current source principle |
 |---|---|
-| Two passes; the L2 pass ends at the L1 prompt | `OperatingPromptRenderer` L2 construction contract: "The L2 pass ends after producing the project-specific L1 prompt. Do not implement the task during prompt construction." |
-| Check ≠ done-when | "Keep Verification and Done When distinct: Verification names how reality is measured; Done When names the acceptable observed result." |
-| A checklist in the prompt is not a met checklist | "Preserve task acceptance criteria as required outcomes, never as evidence that they are satisfied." |
-| Attaching a file is not permission to change it | Design principle 4, "Context is not edit permission", plus the target-aware role semantics (`dependency` → `context_only_do_not_edit_from_selection_alone`) |
-| Five evidence words | Design principle 5, `VERIFIED / INFERRED / ASSUMED / BLOCKED / CONTRADICTED`, and "a system that cannot represent uncertainty will eventually manufacture certainty" |
-| Provenance per figure | `context-explain`: WHAT / WHY / HOW / AUTHORITY / USE / STATE, and the deliberate separation of HOW from AUTHORITY |
-| A floor is a floor, a quota produces fiction | `adversarial-review` and `regression-hunt`: "Do not manufacture defects merely to satisfy the numeric floor; CLEAN remains valid" |
-| Confidence is not proof | "Never treat prior model reasoning, model confidence, reviewer consensus, prompt construction, or an unexecuted command as verification" |
-| Stop retrying without new evidence | `retry-stop` |
-| Record whether a method helped | Design principle 9, "Selection is not usefulness", and the operating-prompt outcome events |
+| L2 builds L1 and stops | `OperatingPromptRenderer`: L2 recipes synthesize project-specific L1 prompts and do not implement during construction |
+| Five-part L1 shape | Goal · Context · Constraints · Verification · Done When |
+| Verification != Done When | measurement procedure and acceptable observed result remain separate |
+| Ticket criteria != evidence | acceptance criteria are required outcomes, never proof that they are already satisfied |
+| Context != edit permission | selected context may be needed for understanding or verification without being an edit target |
+| Evidence state | VERIFIED / INFERRED / ASSUMED / BLOCKED / CONTRADICTED; missing evidence remains UNKNOWN or BLOCKED |
+| Source explanation | WHAT / WHY / HOW / AUTHORITY / USE / STATE |
+| Adversarial review | serious falsification attempts, no mandatory finding quota, CLEAN is valid |
+| Auto continuation | bounded slices + validation + internal continuation checks inside existing authority |
+| Human/owner boundaries | self-confirmation never satisfies owner, security, accepted-risk, destructive or irreversible decisions |
+| Completion claims | reconcile prose against current artifacts, validation, review findings and blockers |
+| Recipe usefulness | selection or application is not evidence that the recipe helped |
 
-## The playground is a different instrument now
+## Playground
 
-It no longer counts contract fields. It answers "is this a prompt or a method?" by looking for six traits — two passes, derived from the material, check/done-when kept apart, missing stays missing, no quota and no softening, material has a role — and separately lists everything that binds the text to one case: a date, an amount, a file name, a page number, a person, a company.
+The playground is intentionally a teaching heuristic, not a prompt-quality metric.
 
-That second list is the honest half. A text can have all six traits and still expire, because someone left "the Solvent GmbH comparison of 14 Mar" inside the method. The preset "method with a leftover case" exists to demonstrate exactly that, and scores in the seventies rather than at 100.
+Its six signals are:
 
-## The evaluator found a real defect in the deck
+1. construct a concrete L1 contract before execution;
+2. derive case facts from current evidence/context;
+3. keep Verification and Done When separate;
+4. preserve missing evidence as UNKNOWN/BLOCKED;
+5. allow CLEAN and forbid manufactured findings or weakened criteria;
+6. give context an explicit role and authority boundary.
 
-On the first run, four of the twelve methods on the right-hand side scored 15–45 out of 100: the sign-off check, the attachment roles, the provenance rules and the second-pair-of-eyes review were written as **rule lists**, not as two-pass methods. By the deck's own definition they were not methods at all.
+Case-bound detection now includes ticket IDs in addition to dates, filenames, document locations, amounts and company names. A reusable method containing `SD-18427` or `users_2026-08-28.csv` is correctly treated as carrying stale case data.
 
-That was a content bug, not a detector bug, and the content was fixed: each of those four now derives its work order from the attached material, stops before the work, and keeps check and done-when apart. All twelve now score 93–100 with all six traits present, in both languages.
+Explicit source containers are masked before method scoring. Triple-quoted/fenced source material or labelled ticket text can contain `L1`, `Done When`, ticket IDs and filenames without those tokens being mistaken for the surrounding instruction.
 
-Two genuine detector gaps were fixed alongside it: bare `not` was missing from the negation list, so "not into the figure as an estimate" was reported as a request for a guess; and the German "nur zu lesen" did not match the read-only pattern that "nur lesen" did.
+## Copy decisions
 
-## Bug found in the previous revision
+German copy is written independently rather than translated sentence-for-sentence from English. Technical terms stay English where they are part of the source contract (`L1`, `L2`, `Goal`, `Context`, `Verification`, `Done When`, `VERIFIED`, `BLOCKED`, etc.) and receive a German explanation in the surrounding text.
 
-`iconUtils.resolveIcon` guarded with `typeof candidate === 'function'`. Lucide icons are `forwardRef` **objects**, so the guard rejected every icon and the app rendered `HelpCircle` on every slide. Fixed there, kept here.
+The presentation deliberately avoids generic prompt filler such as:
 
-## Intentionally unchanged behavior
+- "sehr sorgfältig";
+- "denke Schritt für Schritt";
+- "berücksichtige alles";
+- "bestmögliches Ergebnis".
 
-- EN/DE toggle, keyboard and swipe navigation, overview grid, timer, responsive layout.
-- 14 slides, the `PLAYGROUND` slide type, and the local-only check with no backend and no model call.
-- The GitHub Pages deployment workflow and the `/Prompt_Intro/` base path.
+The playground keeps one deliberately bad example using this language so the contrast remains visible.
 
-## Validation log
+## Visual direction
 
+The shell uses a dark pixel/arcade presentation style inspired by the reaction-GIF character of the earlier `voku/LLM` deck:
+
+- retro HUD with hearts, XP/progress, timer and slide count;
+- pixel font for chrome/labels;
+- cyan/fuchsia/violet accents;
+- `MISSION // BRIEFING`, `BOSS FIGHT // VERGLEICH` and `TRAINING // LIVE` labels;
+- content remains readable in a normal sans/monospace font instead of turning every paragraph into pixel typography.
+
+The visual joke stays in the frame; the technical text stays readable over Teams screen sharing. Humanity has suffered enough decorative monospace paragraphs.
+
+## Validation
+
+GitHub Pages deployment from `main` now runs both checks before publication:
+
+```bash
+npm run typecheck
+npm run build
 ```
-$ npm run typecheck
-> tsc --noEmit
-(no output, exit code 0)
 
-$ npm run build
-vite v6.4.3 building for production...
-✓ 1751 modules transformed.
-✓ built in 4.15s
-```
+The deployment job runs only after that build job succeeds. Pull requests also run typecheck + build through `.github/workflows/ci.yml`.
 
-Browser run against the dev server: no page errors, icons render, the pass-1 work order panel opens, the playground returns a verdict.
+## Intentionally retained
 
-Throwaway script over all twelve comparisons and all ten presets, in both languages:
-
-```
-methods (slides)              93–100   6/6 traits, 0 case-bound tokens
-"the same as a method"           100   6/6 traits
-"method with a leftover case"  69–77   5/6 traits, 2 case-bound tokens
-"prompt for one case"          14–22   2/6 traits, 1–2 case-bound tokens
-"rules, but no two passes"        30   2/6 traits
-"long but empty"                   0   0/6 traits, 2–3 filler warnings
-```
+- German is the default language, with English available through the toggle.
+- Keyboard navigation, swipe navigation, fullscreen, overview grid and timer remain.
+- The deck remains 14 slides.
+- The playground is local-only and performs no backend/model call.
+- The GitHub Pages base path remains `/Prompt_Intro/`.
