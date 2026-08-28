@@ -21,38 +21,34 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
 
   const labels = useMemo(
     () => ({
-      badge: lang === 'de' ? 'Lokale Prüfung · kein Modellaufruf' : 'Local check · no model call',
+      badge: lang === 'de' ? 'Lokale Heuristik · kein LLM-Aufruf' : 'Local heuristic · no model call',
       helper: lang === 'de'
-        ? 'Sucht die zwei Durchgänge, die Trennung von Prüfung und Fertig-wenn – und alles, was den Text an einen Fall bindet.'
-        : 'Looks for the two passes, the split between check and done-when — and for everything that binds the text to one case.',
-      placeholder: lang === 'de'
-        ? 'Eigene Methode oder eigenen Prompt einfügen…'
-        : 'Paste your own method or prompt…',
-      run: lang === 'de' ? 'Prüfen' : 'Check it',
+        ? 'Die Heuristik sucht nach L2-Eigenschaften: erst einen konkreten L1-Auftrag aus aktuellem Kontext bauen, vor der Ausführung stoppen, Prüfung und Fertig-wenn trennen, fehlende Evidenz sichtbar lassen und Kontextrollen respektieren.'
+        : 'The heuristic looks for L2 properties: construct a concrete L1 contract from current context, stop before execution, separate Verification from Done When, preserve missing evidence and respect context roles.',
+      placeholder: lang === 'de' ? 'Eigenen Prompt oder eine eigene Methode einfügen …' : 'Paste your own prompt or method …',
+      run: lang === 'de' ? 'Analysieren' : 'Analyse',
       reset: lang === 'de' ? 'Zurücksetzen' : 'Reset',
-      checks: lang === 'de' ? 'Was eine Methode ausmacht' : 'What makes it a method',
-      caseBound: lang === 'de' ? 'Bindet den Text an einen Fall' : 'Binds the text to one case',
+      checks: lang === 'de' ? 'Welche L2-Eigenschaften sind vorhanden?' : 'Which L2 properties are present?',
+      caseBound: lang === 'de' ? 'Falldaten im wiederverwendbaren Text' : 'Case data in reusable text',
       caseBoundNote: lang === 'de'
-        ? 'Das gehört ins Material, das du beilegst – nicht in die Methode. Sonst läuft sie mit dem Fall ab.'
-        : 'This belongs in the material you attach, not in the method. Otherwise it expires with the case.',
-      warnings: lang === 'de' ? 'Hinweise' : 'Warnings',
-      filler: lang === 'de' ? 'Fülltext erkannt' : 'Filler detected',
-      risk: lang === 'de' ? 'Risiko' : 'Risk',
-      history: lang === 'de' ? 'Letzte Prüfungen' : 'Recent checks',
-      score: lang === 'de' ? 'Wiederverwendbarkeit' : 'Reusability',
+        ? 'Ticket-ID, Dateiname, Datum oder ähnliche Falldaten gehören in den aktuellen Kontext bzw. den erzeugten L1-Auftrag – nicht dauerhaft in die L2-Methode.'
+        : 'Ticket IDs, filenames, dates and similar case data belong in the current context or generated L1 contract, not in the reusable L2 method.',
+      warnings: lang === 'de' ? 'Auffälligkeiten' : 'Warnings',
+      filler: lang === 'de' ? 'Prompt-Füllmaterial' : 'Prompt filler',
+      risk: lang === 'de' ? 'Befugnis / Risiko' : 'Authority / risk',
+      history: lang === 'de' ? 'Letzte Analysen' : 'Recent analyses',
+      score: lang === 'de' ? 'Heuristik-Score' : 'Heuristic score',
       words: lang === 'de' ? 'Wörter' : 'words',
       signals: lang === 'de' ? 'von 6 Merkmalen' : 'of 6 traits',
       lengthNote: lang === 'de'
-        ? 'Länge zählt nicht. Gewertet wird, ob der Text den Auftrag selbst bauen kann und ob er den nächsten Fall übersteht.'
-        : 'Length does not count. What counts is whether the text can build the work order itself and survive the next case.',
-      noWarnings: lang === 'de' ? 'Keine Hinweise.' : 'Nothing flagged.',
-      noCaseBound: lang === 'de'
-        ? 'Nichts gefunden, was an einen Einzelfall gebunden ist.'
-        : 'Nothing found that is tied to a single case.',
+        ? 'Die Länge ist egal. Entscheidend ist, ob die Methode aus aktuellem Kontext einen konkreten Auftrag baut, vor der Ausführung stoppt und beim nächsten Fall noch funktioniert.'
+        : 'Length does not matter. What matters is whether the method builds a concrete contract from current context, stops before execution and survives the next case.',
+      noWarnings: lang === 'de' ? 'Keine Auffälligkeit gefunden.' : 'Nothing flagged.',
+      noCaseBound: lang === 'de' ? 'Keine offensichtlichen Falldaten in der wiederverwendbaren Anweisung.' : 'No obvious case-specific data in the reusable instruction.',
       waiting: lang === 'de'
-        ? 'Nimm ein Beispiel oder füg deinen eigenen Text ein. Vergleich vor allem „Prompt für einen Fall“ mit „Dasselbe als Methode“.'
-        : 'Pick an example or paste your own text. Compare “prompt for one case” with “the same as a method”.',
-      missing: lang === 'de' ? 'Fehlt' : 'Missing',
+        ? 'Starte mit „Direkter Prompt: ein Import“ und vergleiche danach „Derselbe Fall als L2-Methode“. Danach den absichtlich kaputten Fall „Methode mit altem Fall im Gepäck“ ausprobieren.'
+        : 'Start with “Direct prompt: one import”, compare it with “Same task as an L2 method”, then try the deliberately polluted method.',
+      missing: lang === 'de' ? 'FEHLT' : 'MISSING',
     }),
     [lang],
   );
@@ -66,9 +62,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
   }, [lang]);
 
   const handleRun = (): void => {
-    if (!prompt.trim()) {
-      return;
-    }
+    if (!prompt.trim()) return;
 
     const matchingPreset = presets.find((preset) => preset.text === prompt);
     const nextEvaluation = evaluatePrompt(prompt);
@@ -93,15 +87,15 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
 
   return (
     <div className="flex h-full flex-col space-y-4">
-      <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
-        <div className="mb-1 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 font-semibold text-blue-700 shadow-sm">
+      <div className="border-2 border-cyan-800 bg-cyan-950/30 px-4 py-3 text-sm text-cyan-100 shadow-[4px_4px_0_#020617]">
+        <div className="pixel-font mb-2 inline-flex items-center gap-2 text-[8px] text-emerald-300">
           <BadgeCheck size={14} />
           {labels.badge}
         </div>
-        <p>{labels.helper}</p>
+        <p className="leading-relaxed">{labels.helper}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.2fr_1fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_.85fr]">
         <div className="flex flex-col space-y-4">
           <div className="flex flex-wrap gap-2">
             {presets.map((preset) => (
@@ -112,7 +106,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
                   setPrompt(preset.text);
                   setEvaluation(null);
                 }}
-                className="rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200"
+                className="retro-button bg-slate-900 px-3 py-2 text-xs font-bold text-slate-200 hover:text-cyan-200"
               >
                 {preset.label}
               </button>
@@ -123,7 +117,7 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
             value={prompt}
             onChange={(event) => setPrompt(event.target.value)}
             placeholder={labels.placeholder}
-            className="min-h-[320px] w-full resize-none rounded-xl border border-gray-300 p-4 font-mono text-sm shadow-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
+            className="min-h-[360px] w-full resize-y border-2 border-indigo-800 bg-[#050816] p-4 font-mono text-sm leading-relaxed text-slate-200 shadow-[5px_5px_0_#020617] outline-none focus:border-cyan-500"
           />
 
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -131,150 +125,112 @@ const InteractivePlayground: React.FC<InteractivePlaygroundProps> = ({ lang }) =
               type="button"
               onClick={handleRun}
               disabled={!prompt.trim()}
-              className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white shadow-md transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="retro-button flex-1 bg-fuchsia-700 px-4 py-3 font-bold text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <span className="inline-flex items-center gap-2">
-                <Play size={16} />
-                {labels.run}
-              </span>
+              <span className="inline-flex items-center gap-2"><Play size={16} />{labels.run}</span>
             </button>
-
-            <button
-              type="button"
-              onClick={handleReset}
-              className="rounded-lg border border-gray-200 bg-white px-4 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
-            >
-              <span className="inline-flex items-center gap-2">
-                <RotateCcw size={16} />
-                {labels.reset}
-              </span>
+            <button type="button" onClick={handleReset} className="retro-button bg-slate-900 px-4 py-3 font-bold text-slate-200">
+              <span className="inline-flex items-center gap-2"><RotateCcw size={16} />{labels.reset}</span>
             </button>
           </div>
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="border-2 border-indigo-800 bg-slate-950/85 p-5 shadow-[5px_5px_0_#020617]">
             {evaluation ? (
               <>
-                <div className="mb-4 border-b border-gray-100 pb-4">
+                <div className="mb-5 border-b-2 border-indigo-900 pb-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wider text-gray-500">{labels.score}</div>
-                      <div className="text-4xl font-bold text-gray-900">
-                        {evaluation.score}<span className="text-lg text-gray-400">/100</span>
-                      </div>
-                      <div className="mt-1 text-sm font-bold text-blue-700">{evaluation.verdict[lang]}</div>
+                      <div className="pixel-font text-[8px] text-fuchsia-400">{labels.score}</div>
+                      <div className="mt-2 text-4xl font-black text-white">{evaluation.score}<span className="text-lg text-slate-500">/100</span></div>
+                      <div className="mt-1 text-sm font-bold text-cyan-300">{evaluation.verdict[lang]}</div>
                     </div>
-                    <div className="max-w-xs rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">
+                    <div className="max-w-xs border-2 border-emerald-800 bg-emerald-950/30 px-4 py-3 text-sm font-semibold leading-relaxed text-emerald-100">
                       {evaluation.summary[lang]}
                     </div>
                   </div>
 
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-gray-700">
-                    <span className="rounded-full bg-gray-100 px-3 py-1">{evaluation.wordCount} {labels.words}</span>
-                    <span className="rounded-full bg-blue-100 px-3 py-1 text-blue-800">{evaluation.methodSignalCount} {labels.signals}</span>
-                    <span className={`rounded-full px-3 py-1 ${evaluation.caseBoundTokens.length > 0 ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold">
+                    <span className="border border-slate-700 bg-slate-900 px-3 py-1 text-slate-300">{evaluation.wordCount} {labels.words}</span>
+                    <span className="border border-cyan-800 bg-cyan-950/30 px-3 py-1 text-cyan-200">{evaluation.methodSignalCount} {labels.signals}</span>
+                    <span className={`border px-3 py-1 ${evaluation.caseBoundTokens.length > 0 ? 'border-amber-700 bg-amber-950/30 text-amber-200' : 'border-emerald-800 bg-emerald-950/30 text-emerald-200'}`}>
                       {evaluation.caseBoundTokens.length}× {lang === 'de' ? 'fallgebunden' : 'case-bound'}
                     </span>
                   </div>
-
-                  <p className="mt-3 text-xs text-gray-500">{labels.lengthNote}</p>
+                  <p className="mt-3 text-xs leading-relaxed text-slate-400">{labels.lengthNote}</p>
                 </div>
 
-                <div className="mb-4">
-                  <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">{labels.checks}</h3>
+                <div className="mb-5">
+                  <h3 className="pixel-font mb-3 text-[8px] text-fuchsia-400">{labels.checks}</h3>
                   <div className="space-y-2">
                     {evaluation.checks.map((check) => (
-                      <div
-                        key={check.key}
-                        className={`rounded-lg border px-3 py-3 ${check.passed ? 'border-blue-200 bg-blue-50' : 'border-amber-200 bg-amber-50'}`}
-                      >
+                      <div key={check.key} className={`border px-3 py-3 ${check.passed ? 'border-cyan-800 bg-cyan-950/20' : 'border-amber-800 bg-amber-950/20'}`}>
                         <div className="flex items-center justify-between gap-3">
-                          <span className={`font-semibold ${check.passed ? 'text-blue-900' : 'text-amber-900'}`}>
-                            {check.label[lang]}
-                          </span>
-                          <span className={`text-xs font-bold uppercase tracking-wider ${check.passed ? 'text-blue-700' : 'text-amber-700'}`}>
-                            {check.passed ? 'OK' : labels.missing}
-                          </span>
+                          <span className={`font-bold ${check.passed ? 'text-cyan-100' : 'text-amber-100'}`}>{check.label[lang]}</span>
+                          <span className={`pixel-font text-[7px] ${check.passed ? 'text-emerald-300' : 'text-amber-300'}`}>{check.passed ? 'OK' : labels.missing}</span>
                         </div>
-                        <p className={`mt-1 text-sm ${check.passed ? 'text-blue-800' : 'text-amber-800'}`}>{check.detail[lang]}</p>
+                        <p className="mt-1 text-sm leading-relaxed text-slate-400">{check.detail[lang]}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="mb-4">
-                  <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">{labels.caseBound}</h3>
+                <div className="mb-5">
+                  <h3 className="pixel-font mb-3 text-[8px] text-fuchsia-400">{labels.caseBound}</h3>
                   {evaluation.caseBoundTokens.length > 0 ? (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-900">
-                      <div className="mb-1 inline-flex items-center gap-2 font-semibold">
-                        <CalendarX size={16} />
-                        {evaluation.caseBoundTokens.length}
-                      </div>
+                    <div className="border border-amber-700 bg-amber-950/25 px-3 py-3 text-sm text-amber-100">
+                      <div className="mb-2 inline-flex items-center gap-2 font-bold"><CalendarX size={16} />{evaluation.caseBoundTokens.length}</div>
                       <ul className="mb-2 list-disc space-y-1 pl-5">
-                        {evaluation.caseBoundTokens.map((token) => (
-                          <li key={token}>{describeCaseBoundToken(token, lang)}</li>
-                        ))}
+                        {evaluation.caseBoundTokens.map((token) => <li key={token}>{describeCaseBoundToken(token, lang)}</li>)}
                       </ul>
-                      <p className="text-xs italic">{labels.caseBoundNote}</p>
+                      <p className="text-xs leading-relaxed text-amber-200/80">{labels.caseBoundNote}</p>
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-3 text-sm text-green-900">{labels.noCaseBound}</div>
+                    <div className="border border-emerald-800 bg-emerald-950/25 px-3 py-3 text-sm text-emerald-100">{labels.noCaseBound}</div>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">{labels.warnings}</h3>
+                  <h3 className="pixel-font mb-3 text-[8px] text-fuchsia-400">{labels.warnings}</h3>
                   <div className="space-y-2 text-sm">
                     {evaluation.fillerWarnings.map((warning, index) => (
-                      <div key={`${warning.en}-${index}`} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-amber-900">
-                        <div className="mb-1 inline-flex items-center gap-2 font-semibold">
-                          <Gauge size={16} />
-                          {labels.filler}
-                        </div>
+                      <div key={`${warning.en}-${index}`} className="border border-amber-800 bg-amber-950/20 px-3 py-3 text-amber-100">
+                        <div className="mb-1 inline-flex items-center gap-2 font-bold"><Gauge size={16} />{labels.filler}</div>
                         <div>{warning[lang]}</div>
                       </div>
                     ))}
-
                     {evaluation.riskWarnings.map((warning, index) => (
-                      <div key={`${warning.en}-${index}`} className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-red-900">
-                        <div className="mb-1 inline-flex items-center gap-2 font-semibold">
-                          <ShieldAlert size={16} />
-                          {labels.risk}
-                        </div>
+                      <div key={`${warning.en}-${index}`} className="border border-rose-800 bg-rose-950/20 px-3 py-3 text-rose-100">
+                        <div className="mb-1 inline-flex items-center gap-2 font-bold"><ShieldAlert size={16} />{labels.risk}</div>
                         <div>{warning[lang]}</div>
                       </div>
                     ))}
-
-                    {totalWarnings === 0 && (
-                      <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-3 text-gray-600">{labels.noWarnings}</div>
-                    )}
+                    {totalWarnings === 0 && <div className="border border-slate-700 bg-slate-900 px-3 py-3 text-slate-400">{labels.noWarnings}</div>}
                   </div>
                 </div>
               </>
             ) : (
-              <div className="flex min-h-[420px] flex-col items-center justify-center gap-3 text-center text-gray-500">
-                <Wrench size={28} className="text-blue-500" />
-                <div className="max-w-sm">{labels.waiting}</div>
+              <div className="flex min-h-[460px] flex-col items-center justify-center gap-4 text-center text-slate-400">
+                <Wrench size={34} className="text-cyan-400" />
+                <div className="max-w-sm leading-relaxed">{labels.waiting}</div>
               </div>
             )}
           </div>
 
           {runHistory.length > 0 && (
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">{labels.history}</h3>
+            <div className="border-2 border-indigo-900 bg-slate-950/70 p-4">
+              <h3 className="pixel-font mb-3 text-[8px] text-fuchsia-400">{labels.history}</h3>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {runHistory.map((run) => (
-                  <div key={run.id} className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+                  <div key={run.id} className="border border-slate-700 bg-slate-900 p-3">
                     <div className="mb-2 flex items-center justify-between gap-3">
-                      <span className="truncate text-sm font-semibold text-gray-800" title={run.label}>{run.label}</span>
-                      <span className="rounded-full bg-slate-900 px-2 py-1 text-xs font-bold text-white">{run.evaluation.score}</span>
+                      <span className="truncate text-sm font-bold text-slate-200" title={run.label}>{run.label}</span>
+                      <span className="bg-fuchsia-800 px-2 py-1 text-xs font-black text-white">{run.evaluation.score}</span>
                     </div>
-                    <div className="space-y-1 text-xs text-gray-500">
+                    <div className="space-y-1 text-xs text-slate-500">
                       <div>{run.evaluation.verdict[lang]}</div>
-                      <div>
-                        {run.evaluation.methodSignalCount}/6 · {run.evaluation.caseBoundTokens.length}× {lang === 'de' ? 'fallgebunden' : 'case-bound'}
-                      </div>
+                      <div>{run.evaluation.methodSignalCount}/6 · {run.evaluation.caseBoundTokens.length}× {lang === 'de' ? 'fallgebunden' : 'case-bound'}</div>
                     </div>
                   </div>
                 ))}
