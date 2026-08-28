@@ -14,7 +14,11 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const t = (en: string | undefined, de: string | undefined): string | undefined => lang === 'de' && de ? de : en;
   const tArr = (en: string | string[] | undefined, de: string | string[] | undefined): string | string[] | undefined => lang === 'de' && de ? de : en;
   const title = t(data.title, data.titleDE) ?? data.title;
-  const subtitle = t(data.subtitle, data.subtitleDE);
+  const subtitle = data.visual === 'toolbox'
+    ? (lang === 'de'
+      ? 'Auf eine Methode klicken: darunter öffnet sich ein deutscher L2-Beispielprompt für genau die IT-Fälle aus dieser Präsentation.'
+      : 'Click a method to open an L2 example adapted to the IT cases in this presentation.')
+    : t(data.subtitle, data.subtitleDE);
   const content = tArr(data.content, data.contentDE);
   const technique = t(data.technique, data.techniqueDE);
   const thanksLabel = lang === 'de' ? 'ENDE // FRAGEN SIND JETZT ERLAUBT' : 'END // QUESTIONS NOW ALLOWED';
