@@ -134,7 +134,7 @@ const L2ToolboxPanel: React.FC<L2ToolboxPanelProps> = ({ lang }) => {
       </div>
 
       {showPrompt && (
-        <pre className="max-h-80 overflow-auto whitespace-pre-wrap border-2 border-cyan-800 bg-[#050816] p-5 font-mono text-[13px] leading-6 text-slate-200">{text.prompt}</pre>
+        <pre className="max-h-80 overflow-auto whitespace-pre-wrap border-2 border-cyan-800 bg-[#050816] p-5 font-mono text-sm leading-6 text-slate-200">{text.prompt}</pre>
       )}
     </div>
   );
