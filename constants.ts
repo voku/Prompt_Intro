@@ -295,7 +295,7 @@ Never invent IDs, mappings, commands or permissions.
 Missing evidence stays explicitly unresolved; do not guess.
 Keep Verification separate from Done When.
 
-Stop after L1. Do not import yet.`,
+Stop after the work order. Do not import yet.`,
     codeOptimizedDE: `Erstelle aus Ticket, CSV-Datei, Mapping-Doku, Zielsystem-Doku und Runbook einen konkreten Arbeitsauftrag für den Import.
 
 Dateien, Mappings, Werkzeuge und Prüfwege aus diesen Unterlagen ableiten.
