@@ -19,13 +19,13 @@ export const SLIDES: SlideData[] = [
     subtitle: 'Why ChatGPT sometimes acts like an overly confident, clueless intern',
     subtitleDE: 'Warum ChatGPT manchmal wie ein sehr selbstbewusster, aber ahnungsloser Praktikant wirkt',
     content: [
-      'LLMs do not look things up. They continue text plausibly.',
+      'The model itself generates from its context. Looking things up, calculating or checking systems requires provided tools.',
       'Classic weaknesses: arithmetic (math), up-to-date facts (news), citations.',
       'The risk: hallucinations. The model sounds just as convincing when it is wrong – instead of saying "I don\'t know".',
       'Our solution: We must give the model tools and guardrails.',
     ],
     contentDE: [
-      'LLMs schlagen nichts nach. Sie setzen Text plausibel fort.',
+      'Das Modell selbst erzeugt aus seinem Kontext. Nachschlagen, rechnen oder Systeme prüfen kann es nur über bereitgestellte Werkzeuge.',
       'Klassische Schwächen: Rechnen (Mathe), aktuelle Fakten (News), Zitate.',
       'Das Risiko: Halluzinationen. Das Modell klingt auch dann überzeugend, wenn es falsch liegt – statt „Ich weiß es nicht“ zu sagen.',
       'Unsere Lösung: Wir müssen dem Modell Werkzeuge und Leitplanken geben.',
@@ -186,10 +186,12 @@ Nenne für jede Person die Quelle (URL).`,
     codeStandardDE: 'Erstelle einen Plan für die Wartung der Sortieranlage X.',
     codeOptimized: `1. Analysis: What components does plant X have (conveyor belts, sensors...)?
 2. Risks: Where do failures occur most frequently?
-3. Schedule: Based on this, create a maintenance plan (daily, weekly, monthly).`,
+3. Schedule: Based on this, create a maintenance plan (daily, weekly, monthly).
+4. Missing information: Mark what is not documented or cannot be determined from the available information.`,
     codeOptimizedDE: `1. Analyse: Welche Komponenten hat Anlage X (Förderbänder, Sensoren...)?
 2. Risiken: Wo sind die häufigsten Ausfälle?
-3. Zeitplan: Erstelle basierend darauf einen Wartungsplan (Täglich, Wöchentlich, Monatlich).`,
+3. Zeitplan: Erstelle basierend darauf einen Wartungsplan (täglich, wöchentlich, monatlich).
+4. Fehlende Informationen: Markiere, was nicht dokumentiert ist oder sich aus den vorhandenen Informationen nicht ableiten lässt.`,
     content: 'Modern models reason on their own. What helps is our structure: the plan then builds on the analysis of this plant instead of a generic template.',
     contentDE: 'Moderne Modelle „denken“ ohnehin mit. Was hilft, ist unsere Struktur: Der Plan baut dann auf der Analyse dieser Anlage auf statt auf einer Standardvorlage.',
   },
@@ -254,24 +256,6 @@ Antworte NUR im JSON-Format:
     contentDE: 'Im Chat: Format im Prompt vorgeben (wie hier). Per API: echtes JSON-Schema bzw. Structured Output nutzen – dann erzwingt das System das Format, nicht eine höfliche Bitte im Prompt.',
   },
   {
-    id: 13,
-    type: SlideType.CONTENT,
-    visual: 'compiler',
-    icon: 'Workflow',
-    title: 'So We Build a Contract, Not a Magic Spell',
-    titleDE: 'Darum bauen wir einen Auftrag – keinen Zauberspruch',
-    subtitle: 'Reusable way of working + today’s case → concrete work order. (I call these two levels L2 and L1.)',
-    subtitleDE: 'Wiederverwendbare Arbeitsweise + heutiger Fall → konkreter Arbeitsauftrag. (Bei mir heißen die beiden Ebenen L2 und L1.)',
-    content: [
-      'L2 holds the reusable method. Today’s ticket, file and system belong in L1.',
-      'The construction pass stops before execution. First understand the contract, then act.',
-    ],
-    contentDE: [
-      'Die Vorlage (L2) beschreibt das Vorgehen. Ticket, Datei und System von heute stehen erst im Arbeitsauftrag (L1).',
-      'Beim Erstellen des Auftrags wird noch nichts ausgeführt. Erst den Auftrag verstehen, dann handeln.',
-    ],
-  },
-  {
     id: 14,
     type: SlideType.COMPARISON,
     icon: 'FileSpreadsheet',
@@ -303,12 +287,12 @@ Bestehende Identitäten nicht überschreiben.
 Fehlende Personalnummern sind Fehler.
 Den dokumentierten Dry-Run verwenden.
 Alle 742 Zeilen erklären; das neue Mapping markieren, wenn dafür der Beleg fehlt.`,
-    codeOptimized: `Build the L1 import contract from the current ticket, CSV, mapping documentation, target-system docs and runbook.
+    codeOptimized: `Build a concrete import work order from the current ticket, CSV, mapping documentation, target-system docs and runbook.
 
 Derive the actual files, mappings, tools and checks from that evidence.
 Preserve identity.
 Never invent IDs, mappings, commands or permissions.
-Missing evidence stays UNKNOWN/BLOCKED.
+Missing evidence stays explicitly unresolved; do not guess.
 Keep Verification separate from Done When.
 
 Stop after L1. Do not import yet.`,
@@ -317,7 +301,7 @@ Stop after L1. Do not import yet.`,
 Dateien, Mappings, Werkzeuge und Prüfwege aus diesen Unterlagen ableiten.
 Bestehende Benutzerkonten nicht überschreiben.
 Keine IDs, Mappings, Befehle oder Berechtigungen erfinden.
-Was nicht belegt ist, bleibt UNKNOWN/BLOCKED.
+Fehlende Belege ausdrücklich als offen markieren; nicht raten.
 „Prüfung“ und „Erledigt, wenn“ getrennt aufführen.
 
 Nach dem Arbeitsauftrag aufhören. Noch nichts importieren.`,
@@ -325,14 +309,14 @@ Nach dem Arbeitsauftrag aufhören. Noch nichts importieren.`,
 Context: users_2026-08-28.csv → Portal-Test; 742 rows; new cost_center → department mapping.
 Constraints: no identity overwrite; no invented employee IDs or mapping assumptions.
 Verification: documented dry-run + reconcile 742/742 rows + verify the new mapping against current docs.
-Done When: every row is explained; zero unintended writes; the new mapping is VERIFIED or explicitly BLOCKED.`,
+Done When: every row is explained; zero unintended writes; the new mapping is verified against current docs or explicitly left open with a reason.`,
     codeWorkOrderDE: `Ziel: SD-18427 prüfen, bevor der Import läuft.
 Kontext: users_2026-08-28.csv → Portal-Test; 742 Zeilen; neues Mapping cost_center → department.
 Grenzen: keine bestehenden Konten überschreiben; keine Personalnummer oder Mapping-Annahme erfinden.
 Prüfung: dokumentierter Dry-Run + 742/742 Zeilen abgleichen + neues Mapping gegen aktuelle Doku prüfen.
-Erledigt, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; neues Mapping VERIFIED oder ausdrücklich BLOCKED.`,
-    content: 'The direct prompt is fine for this ticket. L2 is useful when the same quality bar should survive the next import.',
-    contentDE: 'Der direkte Prompt ist für dieses Ticket völlig okay. L2 lohnt sich, wenn derselbe Qualitätsmaßstab auch beim nächsten Import gelten soll.',
+Erledigt, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; neues Mapping gegen aktuelle Doku belegt oder mit Grund ausdrücklich offen.`,
+    content: 'The direct prompt is fine for this ticket. A reusable template is useful when the same quality bar should survive the next import.',
+    contentDE: 'Der direkte Prompt ist für dieses Ticket völlig okay. Eine wiederverwendbare Vorlage lohnt sich, wenn derselbe Qualitätsmaßstab auch beim nächsten Import gelten soll.',
   },
   {
     id: 15,
@@ -363,53 +347,21 @@ Checkliste:
     codeOptimized: `Treat the user report and ticket checklist as input, not proof.
 
 For each required criterion record:
-probe → observed result → evidence state.
+probe → observed result → status (proven / assumed / open).
 
-VERIFIED only with observed evidence.
-No result = UNKNOWN.
-Required probe unavailable = BLOCKED.
-Close only when Done When is supported by the observed results.`,
+Do not turn a missing result into a pass.
+If a required probe is unavailable, mark it open with the reason.
+Close only when the observed results support the acceptance criteria.`,
     codeOptimizedDE: `Aussage des Benutzers und Ticket-Checkliste sind Hinweise, kein Beweis.
 
 Pro notwendigem Kriterium festhalten:
-Test → beobachtetes Ergebnis → Belegstatus.
+Test → beobachtetes Ergebnis → Status (belegt / vermutet / offen).
 
-VERIFIED nur mit beobachtetem Nachweis.
-Kein Ergebnis = UNKNOWN.
-Notwendiger Test nicht möglich = BLOCKED.
-Erst schließen, wenn die beobachteten Ergebnisse das Abschlusskriterium belegen.`,
+Ein fehlendes Ergebnis ist kein bestandener Test.
+Ist ein notwendiger Test nicht möglich, bleibt er mit Begründung offen.
+Erst schließen, wenn die beobachteten Ergebnisse die Abschlusskriterien belegen.`,
     content: '“Works for me” can be useful evidence. It is still not automatically the whole acceptance test.',
     contentDE: '„Geht bei mir wieder“ ist ein wertvoller Hinweis – aber noch keine vollständige Abnahme.',
-  },
-  {
-    id: 16,
-    type: SlideType.CONTENT,
-    visual: 'authority-map',
-    icon: 'FileLock2',
-    title: 'Context Is Not Permission',
-    titleDE: 'Kontext ist keine Erlaubnis',
-    subtitle: 'A file may explain the incident and still be outside edit scope.',
-    subtitleDE: 'Eine Datei kann die Störung erklären und trotzdem außerhalb des Änderungsumfangs liegen.',
-    content: [
-      'Relevance answers “should I inspect this?”. Authority answers “may I change this?”.',
-      'If the fix leaves approved scope, name the missing decision instead of silently widening scope.',
-    ],
-    contentDE: [
-      'Relevanz beantwortet „muss ich das ansehen?“. Befugnis beantwortet „darf ich das ändern?“.',
-      'Liegt die Lösung außerhalb des freigegebenen Umfangs: fehlende Entscheidung benennen, statt den Umfang heimlich zu erweitern.',
-    ],
-  },
-  {
-    id: 17,
-    type: SlideType.CONTENT,
-    visual: 'evidence-board',
-    icon: 'BadgeCheck',
-    title: 'Give Uncertainty a Name',
-    titleDE: 'Unsicherheit braucht einen Namen',
-    subtitle: 'Otherwise “probably” has a nasty habit of becoming “fact” two messages later.',
-    subtitleDE: 'Sonst wird aus „wahrscheinlich“ zwei Nachrichten später erstaunlich zuverlässig ein „Fakt“.',
-    content: 'Confidence is not a fourth state.',
-    contentDE: 'Selbstsicherheit ist kein vierter Zustand.',
   },
   {
     id: 18,
@@ -431,7 +383,7 @@ For each attempt:
 hypothesis → exact trigger → confirming/disproving evidence → smallest useful probe.
 
 A disproved hypothesis is a successful review attempt.
-CLEAN is valid.
+“No issue found” is a valid result.
 Do not manufacture a finding to fill the list.`,
     codeOptimizedDE: `Versuche den Plan auf mindestens drei unterschiedliche ernsthafte Arten zu widerlegen.
 
@@ -439,36 +391,18 @@ Pro Versuch:
 Vermutung → konkreter Auslöser → Beleg dafür oder dagegen → kleinster sinnvoller Test.
 
 Eine widerlegte Vermutung ist ein erfolgreicher Prüfversuch.
-CLEAN ist erlaubt.
+„Kein Problem gefunden“ ist ein gültiges Ergebnis.
 Keinen Fund erfinden, nur damit die Liste voll ist.`,
     content: 'The number belongs to the investigation effort, not to the number of defects reality is required to provide.',
     contentDE: 'Die Zahl gehört zur Prüfleistung – nicht zur Anzahl der Fehler, die die Realität gefälligst liefern soll.',
-  },
-  {
-    id: 19,
-    type: SlideType.CONTENT,
-    visual: 'agent-loop',
-    icon: 'Bot',
-    title: 'Auto-Agent Without Self-Approval',
-    titleDE: 'Auto-Agent ohne Selbstfreigabe',
-    subtitle: 'Continue inside authority. Stop at real decisions.',
-    subtitleDE: 'Innerhalb der Freigabe weiterarbeiten. An echten Entscheidungen stoppen.',
-    content: [
-      'After each slice: cheapest meaningful check, then continue while evidence and authority still hold.',
-      'Owner, security, accepted-risk, destructive and irreversible decisions are never self-approved.',
-    ],
-    contentDE: [
-      'Nach jedem Arbeitsschritt kurz und sinnvoll prüfen – dann automatisch weiter, solange Belege und Freigabe reichen.',
-      'Entscheidungen zu Zuständigkeit, Sicherheit und Risiko – und alles, was löscht oder sich nicht rückgängig machen lässt – nie selbst freigeben.',
-    ],
   },
   {
     id: 20,
     type: SlideType.CONTENT,
     visual: 'toolbox',
     icon: 'Library',
-    title: 'Small L2 Toolbox, Not One Mega-Prompt',
-    titleDE: 'Kleine L2-Toolbox statt Mega-Prompt',
+    title: 'Small Reusable Toolbox, Not One Mega-Prompt',
+    titleDE: 'Kleine Vorlagen-Toolbox statt Mega-Prompt',
     subtitle: 'Three everyday situations. The template stays the same, the case changes – out comes a concrete work order.',
     subtitleDE: 'Drei typische Situationen. Die Vorlage bleibt gleich, der Fall wechselt – heraus kommt ein konkreter Arbeitsauftrag.',
     content: 'Use a template when it actually changes how you approach the task — not every task needs every technique.',
