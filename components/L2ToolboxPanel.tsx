@@ -83,7 +83,7 @@ const L2ToolboxPanel: React.FC<L2ToolboxPanelProps> = ({ lang }) => {
 
         <div className="grid gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1.35fr] lg:items-stretch">
           <div className="border-2 border-fuchsia-700 bg-fuchsia-950/20 p-4">
-            <Label className="text-fuchsia-300">{de ? 'VORLAGE · L2 · BLEIBT GLEICH' : 'TEMPLATE · L2 · REUSABLE'}</Label>
+            <Label className="text-fuchsia-300">{de ? 'VORLAGE · BLEIBT GLEICH' : 'TEMPLATE · REUSABLE'}</Label>
             <ul className="mt-3 space-y-2 text-sm text-slate-200">
               {text.recipe.map((line, index) => (
                 <li key={line} style={appear(recipeStart + index * 0.25)} className="flex gap-2"><span className="text-fuchsia-400">▸</span>{line}</li>
@@ -97,7 +97,7 @@ const L2ToolboxPanel: React.FC<L2ToolboxPanelProps> = ({ lang }) => {
             <Label className="text-amber-300">{de ? 'HEUTIGER FALL' : 'TODAY’S CASE'}</Label>
             <ul className="mt-3 space-y-2">
               {text.caseFacts.map((fact, index) => (
-                <li key={fact} style={appear(caseStart + index * 0.25)} className="border border-amber-800 bg-slate-950/60 px-2 py-1 font-mono text-[11px] text-amber-100">{fact}</li>
+                <li key={fact} style={appear(caseStart + index * 0.25)} className="border border-amber-800 bg-slate-950/60 px-2 py-1 font-mono text-xs text-amber-100">{fact}</li>
               ))}
             </ul>
           </div>
@@ -107,7 +107,7 @@ const L2ToolboxPanel: React.FC<L2ToolboxPanelProps> = ({ lang }) => {
           </div>
 
           <div className="border-2 border-emerald-700 bg-emerald-950/20 p-4">
-            <Label className="text-emerald-300">{de ? 'ARBEITSAUFTRAG · L1 · NUR FÜR HEUTE' : 'WORK ORDER · L1 · JUST FOR TODAY'}</Label>
+            <Label className="text-emerald-300">{de ? 'ARBEITSAUFTRAG · NUR FÜR HEUTE' : 'WORK ORDER · JUST FOR TODAY'}</Label>
             <dl className="mt-3 space-y-2 text-sm">
               {text.workOrder.map(({ label, text: value }, index) => (
                 <div key={label} style={appear(workOrderStart + index * 0.35)} className="grid grid-cols-[7.5rem_1fr] gap-2">
@@ -134,7 +134,7 @@ const L2ToolboxPanel: React.FC<L2ToolboxPanelProps> = ({ lang }) => {
       </div>
 
       {showPrompt && (
-        <pre className="max-h-80 overflow-auto whitespace-pre-wrap border-2 border-cyan-800 bg-[#050816] p-5 font-mono text-[12px] leading-6 text-slate-200">{text.prompt}</pre>
+        <pre className="max-h-80 overflow-auto whitespace-pre-wrap border-2 border-cyan-800 bg-[#050816] p-5 font-mono text-[13px] leading-6 text-slate-200">{text.prompt}</pre>
       )}
     </div>
   );
