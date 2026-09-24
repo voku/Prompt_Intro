@@ -2,7 +2,6 @@ import React from 'react';
 import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
 import L2ToolboxPanel from './L2ToolboxPanel';
-import DeskTakeaways from './DeskTakeaways';
 import LegacyBridge from './LegacyBridge';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
@@ -117,7 +116,6 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
     if (data.visual === 'legacy-recap' || data.visual === 'legacy-timejump') {
       return <LegacyBridge kind={data.visual} lang={lang} />;
     }
-    if (data.visual === 'desk-takeaways') return <DeskTakeaways lang={lang} />;
     if (!data.visual) return null;
     return <VisualPanel kind={data.visual} lang={lang} />;
   };

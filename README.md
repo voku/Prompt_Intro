@@ -44,7 +44,7 @@ Die interaktive React + TypeScript Präsentation vereint das **fundierte mentale
 
 ### 7. Sicherheit & Abschluss
 23. **Sicherheit & Compliance** — Freigegebener Dienst + zulässige Daten, Human in the Loop
-24. **Zusammenfassung & Takeaways** — Sechs kopierbare Sätze für die Schreibtischarbeit (aus den L2-Rezepten abgeleitet) plus Kernregeln
+24. **Zusammenfassung & Takeaways** — Sechs Kernregeln: bessere Arbeit, nicht hübschere Prompts
 
 ---
 
@@ -85,6 +85,5 @@ npm run build
 | `components/SlideLayout.tsx` | Layout-Renderer für Titel, Visual Panels, leveled Content Cards und Comparisons |
 | `components/VisualPanel.tsx` | Visuelle Render-Panels für Waschanlage, Rauschen, Tokens, Scope, etc. |
 | `components/L2ToolboxPanel.tsx` | Animierte L2-Toolbox (Vorlage + Fall → Arbeitsauftrag) |
-| `components/DeskTakeaways.tsx` | Takeaways: kopierbare Sätze für Mail, Excel, Konzept, Übergabe & Co. |
 | `App.tsx` | Präsentationssteuerung, Progress-Tracking, Timer und Modals |
 | `PRESENTATION-NOTES-DE.md` | Umfassende deutsche Vortragsnotizen für den Sprecher |

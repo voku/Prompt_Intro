@@ -158,17 +158,10 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * **Mündlich ergänzen (nicht auf der Folie, weil Open Source):** Welche Dienste bei uns konkret freigegeben sind und für welche Daten.
 
 ### 24 – Zusammenfassung & Takeaways (Folie 24)
-* **Brücke:** Die L2-Vorlagen gelten nicht nur für IT-Tickets. Links stehen sechs Sätze für die Schreibtischarbeit, jeweils aus einem Rezept in `agent-recall-compiler` abgeleitet. Ein Klick kopiert den Satz.
-  - Knifflige Mail beantworten → `discovery-first`: belegt / angenommen / fehlt, dann Rückfragen.
-  - Excel-Formel rechnet falsch → `reproduce-before-fix`: erst an drei Zeilen nachrechnen, dann umbauen.
-  - Konzept oder Folien prüfen → `adversarial-review`: drei Widerlegungsversuche, „hält“ ist eine gültige Antwort.
-  - Vor dem Abschicken → `missingness-audit`: Was fehlt dem Empfänger für die Entscheidung?
-  - Übergabe vor dem Urlaub → `production-ready-handoff`: für jemanden ohne Vorwissen.
-  - Ergebnis melden → `evidence-report`: geprüft / ungeprüft / offen.
-* **Kernregeln (rechte Spalte):**
+* **Kernregeln:**
   1. Briefen wie einen klugen neuen Kollegen: Rolle, Kontext, Ziel.
-  2. Rechnen mit Code, Fakten mit Quelle, Planen Schritt für Schritt.
+  2. Rechnen mit Code, Fakten mit Quelle, erst analysieren, dann Ergebnis.
   3. Unsicherheit benennen: belegt, vermutet oder offen.
   4. Erst verstehen oder nachstellen, dann ändern.
   5. Dreht sich die KI im Kreis: nicht neu würfeln, sondern neue Infos geben oder neu anfangen (`retry-stop`).
-  6. Wiederkehrende Aufgabe: Satz als Vorlage aufheben – der Fall wechselt, die Vorlage bleibt.
+  6. Wiederkehrende Aufgabe: Prompt als Vorlage aufheben – der Fall wechselt, die Vorlage bleibt.
