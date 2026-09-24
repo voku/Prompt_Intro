@@ -15,38 +15,97 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const t = (en: string | undefined, de: string | undefined): string | undefined => lang === 'de' && de ? de : en;
   const tArr = (en: string | string[] | undefined, de: string | string[] | undefined): string | string[] | undefined => lang === 'de' && de ? de : en;
   const title = t(data.title, data.titleDE) ?? data.title;
-  const subtitle = data.visual === 'toolbox'
-    ? (lang === 'de'
-      ? 'Auf eine Methode klicken: darunter öffnet sich ein deutscher L2-Beispielprompt für genau die IT-Fälle aus dieser Präsentation.'
-      : 'Click a method to open an L2 example adapted to the IT cases in this presentation.')
-    : t(data.subtitle, data.subtitleDE);
+  const subtitle = t(data.subtitle, data.subtitleDE);
   const content = tArr(data.content, data.contentDE);
   const technique = t(data.technique, data.techniqueDE);
-  const thanksLabel = lang === 'de' ? 'ENDE // FRAGEN SIND JETZT ERLAUBT' : 'END // QUESTIONS NOW ALLOWED';
-  const trainingLabel = lang === 'de' ? 'TEIL 2 · WARUM LLMs SO ARBEITEN + WIE WIR DAS NUTZEN' : 'PART 2 · WHY LLMS BEHAVE THIS WAY + HOW TO USE THAT';
+  const thanksLabel = lang === 'de' ? 'ENDE // VIELEN DANK // FRAGEN & DISKUSSION' : 'END // THANK YOU // QUESTIONS & DISCUSSION';
+  const trainingLabel = 'PROMPT ENGINEERING · TRAINING';
   const mentalModelVisuals = ['carwash', 'noise-hallucination', 'tokens', 'next-token'];
   const legacyVisuals = ['legacy-recap', 'legacy-timejump'];
-  const contentLabel = data.visual && legacyVisuals.includes(data.visual)
-    ? (lang === 'de' ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
-    : data.visual && mentalModelVisuals.includes(data.visual)
-      ? 'LLM // MENTAL MODEL'
-      : data.visual === 'toolbox'
-        ? (lang === 'de' ? 'METHODEN // L2' : 'METHODS // L2')
-        : (lang === 'de' ? 'MISSION // IDEE' : 'MISSION // IDEA');
+  const contentLabel = data.type === SlideType.END
+    ? (lang === 'de' ? 'FAZIT // TAKEAWAYS' : 'SUMMARY // TAKEAWAYS')
+    : data.icon === 'Layers'
+      ? (lang === 'de' ? 'HIERARCHIE // STUFEN' : 'HIERARCHY // LEVELS')
+      : data.icon === 'ShieldAlert'
+        ? (lang === 'de' ? 'COMPLIANCE // REGELN' : 'COMPLIANCE // RULES')
+        : data.icon === 'AlertTriangle'
+          ? (lang === 'de' ? 'PROBLEM // ANALYSE' : 'PROBLEM // ANALYSIS')
+          : data.visual && legacyVisuals.includes(data.visual)
+            ? (lang === 'de' ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
+            : data.visual && mentalModelVisuals.includes(data.visual)
+              ? 'LLM // MENTAL MODEL'
+              : data.visual === 'toolbox'
+                ? (lang === 'de' ? 'METHODEN // VORLAGEN' : 'METHODS // TEMPLATES')
+                : (lang === 'de' ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');
   const compareLabel = lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER';
   const readyLabel = lang === 'de' ? 'BEREIT' : 'READY';
 
   const renderTextBlock = () => {
     if (!content) return null;
     if (Array.isArray(content)) {
+      const isHierarchy = content.some((p) => p.startsWith('Level '));
       return (
         <div className="grid gap-3">
-          {content.map((point, index) => (
-            <div key={index} className="flex items-start gap-3 border-l-4 border-indigo-700 bg-slate-950/55 px-4 py-3">
-              <span className="pixel-font mt-1 text-[8px] text-amber-300">0{index + 1}</span>
-              <p className="text-base font-medium leading-relaxed text-slate-200 md:text-lg">{point}</p>
-            </div>
-          ))}
+          {content.map((point, index) => {
+            const levelMatch = point.match(/^Level\s+(\d+):\s*([^(]+)(\(.*\))?$/);
+            if (isHierarchy && levelMatch) {
+              const [, levelNum, levelName, levelDesc] = levelMatch;
+              const levelColors = [
+                'border-slate-600 bg-slate-950/70 text-slate-300',
+                'border-cyan-700 bg-cyan-950/40 text-cyan-200',
+                'border-violet-700 bg-violet-950/40 text-violet-200',
+                'border-fuchsia-600 bg-fuchsia-950/50 text-fuchsia-200 shadow-[0_0_15px_rgba(217,70,239,.15)]',
+              ];
+              const badgeColors = [
+                'bg-slate-800 text-slate-300 border-slate-600',
+                'bg-cyan-900/60 text-cyan-300 border-cyan-600',
+                'bg-violet-900/60 text-violet-300 border-violet-600',
+                'bg-fuchsia-900/60 text-fuchsia-300 border-fuchsia-500',
+              ];
+              const colorIdx = Math.min(Number(levelNum) - 1, levelColors.length - 1);
+              return (
+                <div
+                  key={index}
+                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 ${levelColors[colorIdx]} px-5 py-4 transition hover:translate-x-1`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`pixel-font border px-2.5 py-1 text-[9px] font-bold ${badgeColors[colorIdx]}`}>
+                      LVL {levelNum}
+                    </span>
+                    <span className="text-lg font-bold text-white md:text-xl">{levelName.trim()}</span>
+                  </div>
+                  {levelDesc && (
+                    <span className="font-mono text-sm text-slate-300 sm:text-right">{levelDesc.trim()}</span>
+                  )}
+                </div>
+              );
+            }
+
+            const isSolution = point.startsWith('Unsere Lösung:') || point.startsWith('Our solution:');
+            const isWarning = data.icon === 'ShieldAlert';
+
+            return (
+              <div
+                key={index}
+                className={`flex items-start gap-3 border-l-4 px-4 py-3.5 transition ${
+                  isSolution
+                    ? 'border-emerald-500 bg-emerald-950/30'
+                    : isWarning
+                      ? 'border-rose-600 bg-rose-950/20'
+                      : 'border-indigo-700 bg-slate-950/55'
+                }`}
+              >
+                <span
+                  className={`pixel-font mt-1 text-[8px] ${
+                    isSolution ? 'text-emerald-300' : isWarning ? 'text-rose-400' : 'text-amber-300'
+                  }`}
+                >
+                  0{index + 1}
+                </span>
+                <p className="text-base font-medium leading-relaxed text-slate-200 md:text-lg">{point}</p>
+              </div>
+            );
+          })}
         </div>
       );
     }
@@ -72,26 +131,26 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               <div className="my-8 h-1 w-48 bg-gradient-to-r from-fuchsia-500 via-amber-400 to-cyan-400" />
               <h2 className="max-w-3xl text-xl font-semibold leading-relaxed text-cyan-100 md:text-2xl">{subtitle}</h2>
               <div className="mt-10 flex flex-wrap gap-3 font-mono text-sm">
-                <span className="border-2 border-slate-700 bg-slate-950 px-4 py-2 text-slate-300">LLM</span>
+                <span className="border-2 border-slate-700 bg-slate-950 px-4 py-2 text-slate-300">{lang === 'de' ? 'PROMPT' : 'PROMPT'}</span>
                 <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-amber-700 bg-amber-950/30 px-4 py-2 text-amber-200">PLAUSIBLE</span>
-                <span className="self-center text-fuchsia-400">≠</span>
-                <span className="border-2 border-emerald-700 bg-emerald-950/30 px-4 py-2 text-emerald-200">VERIFIED</span>
+                <span className="border-2 border-amber-700 bg-amber-950/30 px-4 py-2 text-amber-200">{lang === 'de' ? 'LEITPLANKEN' : 'GUARDRAILS'}</span>
                 <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-cyan-700 bg-cyan-950/30 px-4 py-2 text-cyan-200">METHOD</span>
+                <span className="border-2 border-emerald-700 bg-emerald-950/30 px-4 py-2 text-emerald-200">{lang === 'de' ? 'WERKZEUGE' : 'TOOLS'}</span>
+                <span className="self-center text-fuchsia-400">→</span>
+                <span className="border-2 border-cyan-700 bg-cyan-950/30 px-4 py-2 text-cyan-200">{lang === 'de' ? 'ERGEBNISSE' : 'RESULTS'}</span>
               </div>
             </div>
 
             <div className="retro-panel relative hidden min-h-[500px] overflow-hidden bg-[#080d20] p-8 lg:block">
               <div className="absolute inset-0 opacity-50" style={{backgroundImage:'linear-gradient(rgba(34,211,238,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.08) 1px,transparent 1px)',backgroundSize:'24px 24px'}} />
               <div className="relative flex h-full min-h-[430px] flex-col justify-between">
-                <div className="flex justify-between"><span className="pixel-font text-[9px] text-fuchsia-400">MISSION // 02</span><span className="pixel-font text-[9px] text-amber-300">{readyLabel}</span></div>
+                <div className="flex justify-between"><span className="pixel-font text-[9px] text-fuchsia-400">PROMPT // AI</span><span className="pixel-font text-[9px] text-amber-300">{readyLabel}</span></div>
                 <div className="mx-auto flex h-44 w-44 items-center justify-center border-4 border-indigo-700 bg-indigo-950 shadow-[8px_8px_0_#020617,0_0_50px_rgba(217,70,239,.28)]"><IconComponent size={92} className="text-cyan-300" strokeWidth={1.5} /></div>
                 <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                  <div className="border border-cyan-800 bg-cyan-950/20 p-3 text-cyan-200">CONTEXT</div>
-                  <div className="border border-emerald-800 bg-emerald-950/20 p-3 text-emerald-200">EVIDENCE</div>
-                  <div className="border border-fuchsia-800 bg-fuchsia-950/20 p-3 text-fuchsia-200">AUTHORITY</div>
-                  <div className="border border-amber-800 bg-amber-950/20 p-3 text-amber-200">DONE WHEN</div>
+                  <div className="border border-cyan-800 bg-cyan-950/20 p-3 text-cyan-200">{lang === 'de' ? 'ROLLE & KONTEXT' : 'ROLE & CONTEXT'}</div>
+                  <div className="border border-emerald-800 bg-emerald-950/20 p-3 text-emerald-200">{lang === 'de' ? 'ERST ANALYSIEREN' : 'ANALYSE FIRST'}</div>
+                  <div className="border border-fuchsia-800 bg-fuchsia-950/20 p-3 text-fuchsia-200">{lang === 'de' ? 'TOOLS & CODE' : 'TOOLS & CODE'}</div>
+                  <div className="border border-amber-800 bg-amber-950/20 p-3 text-amber-200">{lang === 'de' ? 'BELEGE & SICHERHEIT' : 'EVIDENCE & SAFETY'}</div>
                 </div>
               </div>
             </div>

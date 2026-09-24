@@ -20,8 +20,7 @@ export type VisualKind =
   | 'authority-map'
   | 'evidence-board'
   | 'agent-loop'
-  | 'toolbox'
-  | 'library';
+  | 'toolbox';
 
 export interface SlideData {
   id: number;

@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const fullscreenLabel = lang === 'de' ? 'VOLLBILD' : 'FULLSCREEN';
   const slideLabel = lang === 'de' ? 'FOLIE' : 'STAGE';
   const progressLabel = lang === 'de' ? 'FORTSCHRITT' : 'PROGRESS';
-  const deckTitle = lang === 'de' ? 'VON PLAUSIBLEN ANTWORTEN ZU BELASTBARER ARBEIT' : 'FROM PLAUSIBLE ANSWERS TO RELIABLE WORK';
+  const deckTitle = 'PROMPT ENGINEERING IN DER PRAXIS';
 
   return (
     <div className="retro-stage flex min-h-screen flex-col text-slate-100 selection:bg-fuchsia-500 selection:text-white">
@@ -42,7 +42,7 @@ const App: React.FC = () => {
         <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
             <div className="retro-panel flex h-10 w-10 shrink-0 items-center justify-center bg-indigo-950 text-cyan-300"><BrainCircuit size={21} /></div>
-            <div className="hidden md:block"><div className="pixel-font text-[10px] leading-5 text-fuchsia-400">V0KU // LLM QUEST</div><div className="truncate text-sm font-extrabold tracking-[.12em] text-white">{deckTitle}</div></div>
+            <div className="hidden md:block"><div className="pixel-font text-[10px] leading-5 text-fuchsia-400">PROMPT // AI QUEST</div><div className="truncate text-sm font-extrabold tracking-[.12em] text-white">{deckTitle}</div></div>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <div className="hidden items-center gap-2 font-mono text-xs text-cyan-300 lg:flex"><span className="text-rose-400">♥ ♥ ♥</span><span className="text-slate-500">XP</span><div className="h-3 w-28 border-2 border-slate-600 bg-slate-950 p-[1px]"><div className="h-full bg-emerald-400" style={{ width: `${progress}%` }} /></div></div>

@@ -1,302 +1,275 @@
-export interface L2ToolboxPrompt {
-  id: string;
-  sourceRecipe: string;
+export type L2ToolIcon = 'wifi' | 'harddrive' | 'handoff';
+
+export interface L2WorkOrderLine {
+  label: string;
+  text: string;
+}
+
+export interface L2ToolText {
   category: string;
   title: string;
+  when: string;
+  quickFix: string;
+  recipe: string[];
+  caseFacts: string[];
+  workOrder: L2WorkOrderLine[];
   prompt: string;
-  categoryDE: string;
-  categoryEN: string;
-  titleDE: string;
-  titleEN: string;
-  descriptionDE: string;
-  descriptionEN: string;
-  promptDE: string;
-  promptEN: string;
+}
+
+export interface L2ToolboxPrompt {
+  id: string;
+  icon: L2ToolIcon;
+  de: L2ToolText;
+  en: L2ToolText;
 }
 
 export const L2_TOOLBOX_PROMPTS: L2ToolboxPrompt[] = [
   {
-    id: 'import-discovery',
-    sourceRecipe: 'discovery-first',
-    category: 'IMPORT',
-    title: 'CSV-Import erst verstehen',
-    prompt: `Erzeuge aus dem aktuellen Import-Ticket, der CSV-Datei, der Zielsystem-Dokumentation und dem vorhandenen Runbook einen konkreten L1-Auftrag für die Prüfung des Imports.
-
-Der L1-Auftrag muss enthalten:
-- Ziel: Welches beobachtbare Importergebnis wird erwartet?
-- Kontext: Welche Datei, welches Zielsystem, welches Mapping und welcher Ist-Zustand sind tatsächlich belegt?
-- Grenzen: Bestehende Identitäten nicht überschreiben. Fehlende IDs, Mappings, Befehle oder Berechtigungen nicht erfinden.
-- Prüfung: Nur Dry-Runs, Proben oder Befehle verwenden, die aus dem aktuellen Material belegt sind.
-- Fertig, wenn: Jede Eingabezeile ist erklärt und unbeabsichtigte Schreibzugriffe sind ausgeschlossen.
-
-Trenne VERIFIED, INFERRED, UNKNOWN, BLOCKED und CONTRADICTED sichtbar voneinander.
-
-Wenn eine notwendige Information fehlt, benenne genau den fehlenden Beleg statt eine plausible Annahme einzusetzen.
-
-Stoppe nach dem L1-Auftrag. Noch nichts importieren oder verändern.`,
-    categoryDE: 'IMPORT',
-    categoryEN: 'IMPORT',
-    titleDE: 'CSV-Import erst verstehen',
-    titleEN: 'Understand the CSV import first',
-    descriptionDE: 'Aus Ticket, CSV, Zielsystem und Runbook erst einen belastbaren Prüfauftrag bauen. Noch nichts importieren.',
-    descriptionEN: 'Build a grounded verification contract from ticket, CSV, target system and runbook before importing anything.',
-    promptDE: `Erzeuge aus dem aktuellen Import-Ticket, der CSV-Datei, der Zielsystem-Dokumentation und dem vorhandenen Runbook einen konkreten L1-Auftrag für die Prüfung des Imports.
-
-Der L1-Auftrag muss enthalten:
-- Ziel: Welches beobachtbare Importergebnis wird erwartet?
-- Kontext: Welche Datei, welches Zielsystem, welches Mapping und welcher Ist-Zustand sind tatsächlich belegt?
-- Grenzen: Bestehende Identitäten nicht überschreiben. Fehlende IDs, Mappings, Befehle oder Berechtigungen nicht erfinden.
-- Prüfung: Nur Dry-Runs, Proben oder Befehle verwenden, die aus dem aktuellen Material belegt sind.
-- Fertig, wenn: Jede Eingabezeile ist erklärt und unbeabsichtigte Schreibzugriffe sind ausgeschlossen.
-
-Trenne VERIFIED, INFERRED, UNKNOWN, BLOCKED und CONTRADICTED sichtbar voneinander.
-
-Wenn eine notwendige Information fehlt, benenne genau den fehlenden Beleg statt eine plausible Annahme einzusetzen.
-
-Stoppe nach dem L1-Auftrag. Noch nichts importieren oder verändern.`,
-    promptEN: `Create a concrete L1 contract for validating the import from the current import ticket, CSV file, target-system documentation and available runbook.
-
-The L1 contract must contain Goal, Context, Constraints, Verification and Done When. Derive exact files, mappings, systems and supported probes from current evidence. Never invent missing IDs, mappings, commands or permissions. Keep VERIFIED, INFERRED, UNKNOWN, BLOCKED and CONTRADICTED distinct.
-
-Stop after producing the L1 contract. Do not import or change anything yet.`,
-  },
-  {
     id: 'vpn-reproduce',
-    sourceRecipe: 'reproduce-before-fix',
-    category: 'SUPPORT',
-    title: 'VPN-Fehler erst reproduzieren',
-    prompt: `Erzeuge aus dem aktuellen VPN-Ticket, den vorhandenen Client-Logs, dem VPN-Profil und den freigegebenen Diagnosemöglichkeiten einen konkreten L1-Auftrag zur Reproduktion des Fehlers.
+    icon: 'wifi',
+    de: {
+      category: 'SUPPORT',
+      title: 'Erst nachstellen, dann reparieren',
+      when: 'Ein Fehler ist gemeldet, aber noch niemand hat gesehen, wo genau er entsteht.',
+      quickFix: '„Wir rollen das VPN-Profil einfach neu aus.“',
+      recipe: [
+        'Den Ablauf in einzelne, prüfbare Schritte zerlegen.',
+        'Pro Schritt den kleinsten sinnvollen Test festlegen.',
+        'Nicht nachstellbar? Dann bleibt die Ursache UNKNOWN.',
+      ],
+      caseFacts: [
+        'Ticket #4711: VPN bricht nach ca. 2 Min. ab',
+        'Nur im Homeoffice, im Büro alles ok',
+        'Client-Log vom Laptop liegt vor',
+      ],
+      workOrder: [
+        { label: 'Ziel', text: 'Herausfinden, an welchem Schritt die Verbindung abbricht.' },
+        { label: 'Kontext', text: '#4711 · Abbruch nach ca. 2 Min. · nur im Homeoffice · Client-Log vorhanden.' },
+        { label: 'Grenzen', text: 'Keine Änderung an VPN-Gateway oder Profil.' },
+        { label: 'Prüfung', text: 'DNS → Gateway → Anmeldung → MFA → Dateiserver einzeln testen.' },
+        { label: 'Erledigt, wenn', text: 'Der fehlerhafte Schritt belegt ist – oder alle Tests grün sind und die Ursache offen (UNKNOWN) bleibt.' },
+      ],
+      prompt: `Erstelle aus dem aktuellen Ticket, den vorhandenen Logs und den freigegebenen Diagnosemöglichkeiten einen konkreten Arbeitsauftrag, um den Fehler nachzustellen.
 
-Der Auftrag soll die Verbindung in beobachtbare Schritte zerlegen, zum Beispiel:
-Client → Namensauflösung → Gateway → Authentifizierung → MFA → interne Ressource.
+Zerlege den Ablauf in einzelne, beobachtbare Schritte (z. B. Client → Namensauflösung → Gateway → Anmeldung → MFA → Zielsystem).
 
-Für jeden relevanten Schritt festhalten:
-- erwartetes Verhalten,
-- kleinste sinnvolle Probe,
-- beobachtetes Ergebnis,
-- Evidenzzustand.
+Halte für jeden relevanten Schritt fest:
+- was passieren sollte,
+- den kleinsten sinnvollen Test,
+- was tatsächlich passiert ist,
+- wie gut das belegt ist (VERIFIED / UNKNOWN / BLOCKED).
 
-Produktive Einstellungen noch nicht ändern.
+Ändere noch keine produktiven Einstellungen.
 
-Wenn der Fehler nicht reproduziert werden kann, ist das ein gültiges Ergebnis: dokumentiere die ausgeführten Proben und lasse die Fehlerursache UNKNOWN statt eine Erklärung zu erfinden.
+Lässt sich der Fehler nicht nachstellen, ist das ein gültiges Ergebnis: Dokumentiere die durchgeführten Tests und lass die Ursache UNKNOWN, statt eine Erklärung zu erfinden.
 
-Stoppe nach dem Reproduktionsauftrag.`,
-    categoryDE: 'SUPPORT',
-    categoryEN: 'SUPPORT',
-    titleDE: 'VPN-Fehler erst reproduzieren',
-    titleEN: 'Reproduce the VPN failure first',
-    descriptionDE: 'Nicht gleich Profil, MFA oder Firewall anfassen. Erst beweisen, welcher Schritt wirklich scheitert.',
-    descriptionEN: 'Do not touch profile, MFA or firewall first. Prove which step actually fails.',
-    promptDE: `Erzeuge aus dem aktuellen VPN-Ticket, den vorhandenen Client-Logs, dem VPN-Profil und den freigegebenen Diagnosemöglichkeiten einen konkreten L1-Auftrag zur Reproduktion des Fehlers.
+Hör nach dem Arbeitsauftrag auf.`,
+    },
+    en: {
+      category: 'SUPPORT',
+      title: 'Reproduce first, then fix',
+      when: 'A failure was reported, but nobody has seen yet where exactly it happens.',
+      quickFix: '“Let’s just redeploy the VPN profile.”',
+      recipe: [
+        'Break the flow into separate, testable steps.',
+        'Define the smallest useful test for each step.',
+        'Cannot reproduce? Then the cause stays UNKNOWN.',
+      ],
+      caseFacts: [
+        'Ticket #4711: VPN drops after ~2 min',
+        'Only when working from home',
+        'Client log from the laptop is available',
+      ],
+      workOrder: [
+        { label: 'Goal', text: 'Find out at which step the connection drops.' },
+        { label: 'Context', text: '#4711 · drops after ~2 min · home office only · client log available.' },
+        { label: 'Constraints', text: 'No changes to VPN gateway or profile.' },
+        { label: 'Verification', text: 'Test DNS → gateway → login → MFA → file server one by one.' },
+        { label: 'Done when', text: 'The failing step is proven – or all tests pass and the cause stays UNKNOWN.' },
+      ],
+      prompt: `Using the current ticket, available logs and approved diagnostic options, create a concrete work order to reproduce the failure.
 
-Der Auftrag soll die Verbindung in beobachtbare Schritte zerlegen, zum Beispiel:
-Client → Namensauflösung → Gateway → Authentifizierung → MFA → interne Ressource.
+Break the flow into observable steps (e.g. client → name resolution → gateway → login → MFA → target system).
 
-Für jeden relevanten Schritt festhalten:
-- erwartetes Verhalten,
-- kleinste sinnvolle Probe,
-- beobachtetes Ergebnis,
-- Evidenzzustand.
+For each relevant step record:
+- what should happen,
+- the smallest useful test,
+- what actually happened,
+- how well it is proven (VERIFIED / UNKNOWN / BLOCKED).
 
-Produktive Einstellungen noch nicht ändern.
+Do not change production settings yet.
 
-Wenn der Fehler nicht reproduziert werden kann, ist das ein gültiges Ergebnis: dokumentiere die ausgeführten Proben und lasse die Fehlerursache UNKNOWN statt eine Erklärung zu erfinden.
+If the failure cannot be reproduced, that is a valid result: document the tests you ran and keep the cause UNKNOWN instead of inventing an explanation.
 
-Stoppe nach dem Reproduktionsauftrag.`,
-    promptEN: `Create a concrete L1 reproduction contract from the current VPN ticket, available client logs, VPN profile and approved diagnostic capabilities. Break the connection into observable steps and define the smallest useful probe for each relevant step. Do not change production settings yet. If the failure cannot be reproduced, preserve the cause as UNKNOWN and record the attempted probes instead of inventing an explanation. Stop after the reproduction contract.`,
+Stop after the work order.`,
+    },
   },
   {
-    id: 'change-review',
-    sourceRecipe: 'adversarial-review',
-    category: 'CHANGE',
-    title: 'Den 18-Uhr-Change wirklich angreifen',
-    prompt: `Erzeuge für den aktuellen Production-Change einen konkreten L1-Review-Auftrag.
+    id: 'incident-gaps',
+    icon: 'harddrive',
+    de: {
+      category: 'STÖRUNG',
+      title: 'Vor dem Aufräumen: Was wissen wir nicht?',
+      when: 'Es gibt schon eine naheliegende Lösung – aber sie wäre schwer rückgängig zu machen.',
+      quickFix: '„Platte voll? Archiv-Ordner löschen, Alarm ist weg.“',
+      recipe: [
+        'Nur Lücken nennen, die zu diesem Fall gehören.',
+        'Beleg fehlt → UNKNOWN. Kein Zugriff → BLOCKED.',
+        'Noch nichts löschen oder reparieren.',
+      ],
+      caseFacts: [
+        'Alarm: Dateiserver FS02, Laufwerk D: 97 % voll',
+        'Vorschlag: Ordner \\logs\\archiv löschen',
+        'D: wächst seit Montag ungewöhnlich schnell',
+      ],
+      workOrder: [
+        { label: 'Ziel', text: 'Klären, ob \\logs\\archiv gefahrlos gelöscht werden darf.' },
+        { label: 'Kontext', text: 'FS02 · D: 97 % · Wachstum seit Montag · Löschvorschlag liegt vor.' },
+        { label: 'Grenzen', text: 'Nichts löschen, solange eine der Fragen offen ist.' },
+        { label: 'Prüfung', text: 'Gilt eine Aufbewahrungsfrist? Gibt es ein Backup? Was schreibt seit Montag so viel?' },
+        { label: 'Erledigt, wenn', text: 'Jede Frage belegt beantwortet ist – oder als BLOCKED bei der verantwortlichen Person liegt.' },
+      ],
+      prompt: `Erstelle aus dem aktuellen Störungsticket, den Logs, der betroffenen Konfiguration und dem vorhandenen Betriebswissen einen Arbeitsauftrag, der klärt, was uns vor der Behebung noch fehlt.
 
-Behandle den Change-Plan als ersten Entwurf, nicht als Wahrheit und auch nicht als automatisch fehlerhaft.
+Prüfe nur dort, wo der konkrete Fall es nahelegt, ob etwas Wichtiges fehlt:
+- ein Beleg für die vermutete Ursache,
+- ein Test, mit dem sich der Fehler nachstellen lässt,
+- ein Weg zurück (Backup, Rollback, Wiederherstellung),
+- ein messbares Zeichen, dass die Behebung gewirkt hat,
+- eine nötige Berechtigung oder Entscheidung der verantwortlichen Person.
 
-Verlange mindestens drei unterschiedliche ernsthafte Falsifikationsversuche. Pro Versuch:
-- Hypothese / möglicher Fehlerzustand,
-- konkretes Trigger-Szenario,
-- Evidenz, die den Verdacht bestätigt oder widerlegt,
-- kleinste sinnvolle Probe vor dem Change.
+Jede genannte Lücke braucht einen konkreten Bezug zum aktuellen Fall. Keine allgemeine Best-Practice-Wunschliste.
 
-Berücksichtige nur Risiken, die aus aktuellem Scope, betroffenen Systemen, Abhängigkeiten, Rollback-Weg und vorhandener Evidenz plausibel werden.
+UNKNOWN heißt: Der Beleg fehlt.
+BLOCKED heißt: Wir wissen, was wir brauchen, kommen aber gerade nicht dran.
 
-Eine widerlegte Hypothese ist ein erfolgreicher Review-Versuch, kein Fund.
-CLEAN ist ein gültiges Ergebnis.
-Keine Risiken erfinden, nur damit eine Liste voll wird.
+Hör nach dem Arbeitsauftrag auf. Noch nichts beheben.`,
+    },
+    en: {
+      category: 'INCIDENT',
+      title: 'Before cleaning up: what don’t we know?',
+      when: 'An obvious fix is already on the table – but it would be hard to undo.',
+      quickFix: '“Disk full? Delete the archive folder, alert gone.”',
+      recipe: [
+        'Only name gaps that belong to this case.',
+        'Evidence missing → UNKNOWN. No access → BLOCKED.',
+        'Do not delete or fix anything yet.',
+      ],
+      caseFacts: [
+        'Alert: file server FS02, drive D: 97 % full',
+        'Proposal: delete folder \\logs\\archive',
+        'D: has been growing unusually fast since Monday',
+      ],
+      workOrder: [
+        { label: 'Goal', text: 'Clarify whether \\logs\\archive can be deleted safely.' },
+        { label: 'Context', text: 'FS02 · D: 97 % · growth since Monday · deletion proposed.' },
+        { label: 'Constraints', text: 'Delete nothing while any question is still open.' },
+        { label: 'Verification', text: 'Is there a retention period? Is there a backup? What has been writing so much since Monday?' },
+        { label: 'Done when', text: 'Every question is answered with evidence – or sits BLOCKED with the responsible owner.' },
+      ],
+      prompt: `Using the current incident ticket, logs, affected configuration and available operating knowledge, create a work order that clarifies what we are still missing before remediation.
 
-Stoppe nach dem Review-Auftrag.`,
-    categoryDE: 'CHANGE',
-    categoryEN: 'CHANGE',
-    titleDE: 'Den 18-Uhr-Change wirklich angreifen',
-    titleEN: 'Actually attack the 18:00 change',
-    descriptionDE: 'Keine bestellten „drei Risiken“. Drei ernsthafte Versuche, den Plan vor Production zu widerlegen.',
-    descriptionEN: 'No ordered “three risks”. Make three serious attempts to falsify the plan before production.',
-    promptDE: `Erzeuge für den aktuellen Production-Change einen konkreten L1-Review-Auftrag.
+Only where the current case makes it relevant, check whether something important is missing:
+- evidence for the suspected cause,
+- a test that reproduces the failure,
+- a way back (backup, rollback, recovery),
+- a measurable signal that the fix worked,
+- a required permission or owner decision.
 
-Behandle den Change-Plan als ersten Entwurf, nicht als Wahrheit und auch nicht als automatisch fehlerhaft.
+Every gap you name needs a concrete anchor in the current case. No generic best-practice wish list.
 
-Verlange mindestens drei unterschiedliche ernsthafte Falsifikationsversuche. Pro Versuch:
-- Hypothese / möglicher Fehlerzustand,
-- konkretes Trigger-Szenario,
-- Evidenz, die den Verdacht bestätigt oder widerlegt,
-- kleinste sinnvolle Probe vor dem Change.
+UNKNOWN means: evidence is missing.
+BLOCKED means: we know what we need but cannot get it right now.
 
-Berücksichtige nur Risiken, die aus aktuellem Scope, betroffenen Systemen, Abhängigkeiten, Rollback-Weg und vorhandener Evidenz plausibel werden.
-
-Eine widerlegte Hypothese ist ein erfolgreicher Review-Versuch, kein Fund.
-CLEAN ist ein gültiges Ergebnis.
-Keine Risiken erfinden, nur damit eine Liste voll wird.
-
-Stoppe nach dem Review-Auftrag.`,
-    promptEN: `Create a concrete L1 review contract for the current production change. Require at least three distinct serious falsification attempts grounded in current scope, affected systems, dependencies, rollback path and available evidence. For each attempt require a hypothesis, exact trigger, confirming/disproving evidence and the smallest useful pre-change probe. A disproved hypothesis is a successful review attempt. CLEAN is valid. Do not invent findings to fill a list. Stop after the review contract.`,
+Stop after the work order. Do not fix anything yet.`,
+    },
   },
   {
-    id: 'incident-missingness',
-    sourceRecipe: 'missingness-audit',
-    category: 'STÖRUNG',
-    title: 'Was fehlt uns vor der Behebung?',
-    prompt: `Erzeuge aus dem aktuellen Störungsticket, den Logs, der betroffenen Konfiguration und dem vorhandenen Betriebswissen einen L1-Auftrag für einen Missingness-Check.
+    id: 'shift-handoff',
+    icon: 'handoff',
+    de: {
+      category: 'ÜBERGABE',
+      title: 'Schichtwechsel ohne Chatverlauf',
+      when: 'Jemand anderes – Kollegin, Kollege oder Agent – übernimmt den Fall und kennt den Chat nicht.',
+      quickFix: '„Läuft fast. Details siehe Chat.“',
+      recipe: [
+        'Nur belegten Stand übergeben, keine Vermutungen als Fakten.',
+        'Verworfene Ideen mitgeben, damit niemand sie wiederholt.',
+        'Offene Entscheidungen als BLOCKED benennen.',
+      ],
+      caseFacts: [
+        'Druck-Warteschlange Halle 3 hängt immer wieder',
+        'Druckdienst 2× neu gestartet, hilft ca. 20 Min.',
+        'Treiber-Update wartet auf Freigabe',
+      ],
+      workOrder: [
+        { label: 'Ziel', text: 'Drucken in Halle 3 wieder stabil.' },
+        { label: 'Stand (belegt)', text: 'Neustart des Druckdienstes hilft jeweils ca. 20 Min.' },
+        { label: 'Verworfen', text: 'Netzwerkproblem – Ping und Port-Test waren ok.' },
+        { label: 'BLOCKED', text: 'Treiber-Update braucht Freigabe durch das Client-Team.' },
+        { label: 'Nächster Schritt', text: 'Den Druckauftrag finden, der die Warteschlange blockiert.' },
+        { label: 'Erledigt, wenn', text: '2 Std. ohne Hänger nach der Maßnahme.' },
+      ],
+      prompt: `Erstelle aus dem aktuellen Support- oder Störungsfall eine eigenständige Übergabe für jemanden, der den bisherigen Chat nicht kennt.
 
-Prüfe nur dort, wo der konkrete Fall es relevant macht, ob uns etwas Notwendiges fehlt:
-- Evidenz zur vermuteten Ursache,
-- reproduzierbare Probe,
-- Fehler- oder Negativpfad,
-- Rollback / Recovery,
-- Monitoring oder beobachtbares Erfolgssignal,
-- notwendige Berechtigung oder Owner-Entscheidung.
+Die Übergabe muss sich aus den aktuellen Belegen nachvollziehen lassen und mindestens enthalten:
+- Ziel und aktuellen Umfang,
+- den belegten Ist-Zustand mit konkreten Quellen oder Tests,
+- bereits erledigte Schritte und was dabei herauskam,
+- verworfene Vermutungen, damit sie nicht ohne neue Belege wieder aufgemacht werden,
+- offene Punkte als UNKNOWN / BLOCKED / CONTRADICTED,
+- was die übernehmende Person darf und wo sie nachfragen muss,
+- den kleinsten sinnvollen nächsten Schritt,
+- wie man prüft, ob er gewirkt hat, und wann der Fall erledigt ist.
 
-Jede behauptete Lücke braucht einen konkreten Anker im aktuellen Fall.
-Keine neue Wunschliste und keinen allgemeinen Best-Practice-Backlog erzeugen.
+Alte Annahmen aus dem Chat nicht als Fakten übernehmen.
+Keine Zugangsdaten, Geheimnisse oder unnötige Gesprächshistorie kopieren.
 
-UNKNOWN bedeutet: Der Beleg fehlt.
-BLOCKED bedeutet: Wir wissen, was wir brauchen, kommen aber aktuell nicht daran.
+Fehlt eine nötige Entscheidung (Verantwortliche, Security, Risiko), benenne sie als BLOCKED, statt sie der nächsten Person stillschweigend zu überlassen.
 
-Stoppe nach dem L1-Auftrag. Noch keine Störung beheben.`,
-    categoryDE: 'STÖRUNG',
-    categoryEN: 'INCIDENT',
-    titleDE: 'Was fehlt uns vor der Behebung?',
-    titleEN: 'What is missing before remediation?',
-    descriptionDE: 'Nicht sofort Lösungen sammeln. Erst prüfen, welche Evidenz, Rückfalloption oder Beobachtbarkeit für eine sichere Behebung fehlt.',
-    descriptionEN: 'Do not collect fixes first. Identify missing evidence, recovery paths or observability needed for safe remediation.',
-    promptDE: `Erzeuge aus dem aktuellen Störungsticket, den Logs, der betroffenen Konfiguration und dem vorhandenen Betriebswissen einen L1-Auftrag für einen Missingness-Check.
+Das Ergebnis ist eine kopierfertige Übergabe, keine Erfolgsmeldung.`,
+    },
+    en: {
+      category: 'HANDOFF',
+      title: 'Shift handoff without chat history',
+      when: 'Someone else – a colleague or an agent – takes over and has never seen the chat.',
+      quickFix: '“Almost working. See chat for details.”',
+      recipe: [
+        'Hand over proven state only, no guesses as facts.',
+        'Include discarded ideas so nobody repeats them.',
+        'Name open decisions as BLOCKED.',
+      ],
+      caseFacts: [
+        'Print queue in hall 3 keeps hanging',
+        'Print spooler restarted twice, helps for ~20 min',
+        'Driver update waiting for approval',
+      ],
+      workOrder: [
+        { label: 'Goal', text: 'Printing in hall 3 is stable again.' },
+        { label: 'State (proven)', text: 'Restarting the print spooler helps for ~20 min each time.' },
+        { label: 'Ruled out', text: 'Network issue – ping and port test were fine.' },
+        { label: 'BLOCKED', text: 'Driver update needs approval from the client team.' },
+        { label: 'Next step', text: 'Find the print job that blocks the queue.' },
+        { label: 'Done when', text: '2 h without a hang after the fix.' },
+      ],
+      prompt: `Create a self-contained handoff for the current support or incident case for someone who has not seen the previous chat.
 
-Prüfe nur dort, wo der konkrete Fall es relevant macht, ob uns etwas Notwendiges fehlt:
-- Evidenz zur vermuteten Ursache,
-- reproduzierbare Probe,
-- Fehler- oder Negativpfad,
-- Rollback / Recovery,
-- Monitoring oder beobachtbares Erfolgssignal,
-- notwendige Berechtigung oder Owner-Entscheidung.
+It must be reconstructible from current evidence and contain at least:
+- goal and current scope,
+- proven current state with concrete sources or tests,
+- steps already taken and their observed results,
+- discarded hypotheses, so they are not reopened without new evidence,
+- open items as UNKNOWN / BLOCKED / CONTRADICTED,
+- what the next person may do and where they must ask,
+- the smallest useful next step,
+- how to verify it worked and when the case is done.
 
-Jede behauptete Lücke braucht einen konkreten Anker im aktuellen Fall.
-Keine neue Wunschliste und keinen allgemeinen Best-Practice-Backlog erzeugen.
+Do not carry over old chat assumptions as facts.
+Do not copy credentials, secrets or irrelevant chat history.
 
-UNKNOWN bedeutet: Der Beleg fehlt.
-BLOCKED bedeutet: Wir wissen, was wir brauchen, kommen aber aktuell nicht daran.
+If a required owner, security or risk decision is missing, name it as BLOCKED instead of silently passing it on.
 
-Stoppe nach dem L1-Auftrag. Noch keine Störung beheben.`,
-    promptEN: `Create an L1 missingness-audit contract from the current incident ticket, logs, affected configuration and available operating knowledge. Only where the current case makes it relevant, identify missing causal evidence, reproduction, negative paths, rollback/recovery, observability, permissions or owner decisions. Every claimed gap needs a concrete anchor in the current case. Do not create a generic best-practice backlog. Stop before remediation.`,
-  },
-  {
-    id: 'incident-plan',
-    sourceRecipe: 'plan-as-draft',
-    category: 'PLAN',
-    title: 'Störungsplan als Entwurf behandeln',
-    prompt: `Erzeuge aus dem vorhandenen Plan zur Störungsbehebung und der aktuellen Evidenz einen konkreten L1-Planungsauftrag.
-
-Behandle den vorhandenen Plan als brauchbaren Entwurf, nicht als fertige Wahrheit.
-
-Prüfe gezielt:
-- Stimmen Ursache und aktueller Ist-Zustand noch mit der Evidenz überein?
-- Sind die Schritte in einer sicheren Reihenfolge?
-- Bleiben Scope und Befugnisse erhalten?
-- Gibt es pro kritischem Schritt eine beobachtbare Prüfung?
-- Sind Negativpfad und Rollback dort geklärt, wo sie wirklich relevant sind?
-
-Kennzeichne Änderungen am Plan als:
-KEEP | STÄRKEN | ERGÄNZEN | AUSSERHALB_SCOPE
-
-Nur evidenzgestützte Änderungen übernehmen. Keine zusätzlichen Aufgaben erfinden, nur um den Plan umfangreicher wirken zu lassen.
-
-Wenn der Plan nach der Prüfung ausreicht, ist PLAN_SUFFICIENT ein gültiges Ergebnis.
-
-Stoppe nach dem verbesserten L1-Plan.`,
-    categoryDE: 'PLAN',
-    categoryEN: 'PLAN',
-    titleDE: 'Störungsplan als Entwurf behandeln',
-    titleEN: 'Treat the incident plan as a draft',
-    descriptionDE: 'Einen plausiblen Plan nicht einfach abnicken. Gegen aktuellen Zustand und echte Prüfwege härten.',
-    descriptionEN: 'Do not rubber-stamp a plausible plan. Strengthen it against current state and real verification paths.',
-    promptDE: `Erzeuge aus dem vorhandenen Plan zur Störungsbehebung und der aktuellen Evidenz einen konkreten L1-Planungsauftrag.
-
-Behandle den vorhandenen Plan als brauchbaren Entwurf, nicht als fertige Wahrheit.
-
-Prüfe gezielt:
-- Stimmen Ursache und aktueller Ist-Zustand noch mit der Evidenz überein?
-- Sind die Schritte in einer sicheren Reihenfolge?
-- Bleiben Scope und Befugnisse erhalten?
-- Gibt es pro kritischem Schritt eine beobachtbare Prüfung?
-- Sind Negativpfad und Rollback dort geklärt, wo sie wirklich relevant sind?
-
-Kennzeichne Änderungen am Plan als:
-KEEP | STÄRKEN | ERGÄNZEN | AUSSERHALB_SCOPE
-
-Nur evidenzgestützte Änderungen übernehmen. Keine zusätzlichen Aufgaben erfinden, nur um den Plan umfangreicher wirken zu lassen.
-
-Wenn der Plan nach der Prüfung ausreicht, ist PLAN_SUFFICIENT ein gültiges Ergebnis.
-
-Stoppe nach dem verbesserten L1-Plan.`,
-    promptEN: `Create a concrete L1 planning contract from the current incident-remediation plan and current evidence. Treat the plan as a useful draft, not established truth. Check current-state evidence, ordering, scope/authority, executable verification, negative paths and rollback where relevant. Classify revisions as KEEP, STRENGTHEN, ADD or OUT_OF_SCOPE. Only make evidence-backed changes. PLAN_SUFFICIENT is valid. Stop after the improved plan.`,
-  },
-  {
-    id: 'support-handoff',
-    sourceRecipe: 'production-ready-handoff',
-    category: 'ÜBERGABE',
-    title: 'Schichtwechsel ohne Chat-Gedächtnis',
-    prompt: `Erzeuge aus dem aktuellen Support-/Störungsfall einen eigenständigen L1-Übergabeauftrag für jemanden, der den bisherigen Chat nicht kennt.
-
-Die Übergabe muss aus der aktuellen Evidenz rekonstruierbar sein und mindestens enthalten:
-- Ziel und aktueller Scope,
-- VERIFIED Ist-Zustand mit konkreten Quellen/Proben,
-- bereits ausgeführte Schritte und deren beobachtete Ergebnisse,
-- widerlegte Hypothesen, damit sie nicht ohne neue Evidenz erneut aufgemacht werden,
-- UNKNOWN / BLOCKED / CONTRADICTED,
-- bestehende Befugnisse und echte Entscheidungsgrenzen,
-- kleinster sinnvoller nächster Schritt,
-- dazugehörige Prüfung und Fertig-wenn-Kriterium.
-
-Alte Chat-Annahmen nicht als Fakten übernehmen.
-Keine Zugangsdaten, Secrets oder irrelevante Gesprächshistorie in die Übergabe kopieren.
-
-Wenn eine notwendige Owner-/Security-/Risikoentscheidung fehlt, benenne sie als BLOCKED statt sie dem nächsten Bearbeiter still unterzuschieben.
-
-Das Ergebnis ist ein kopierfertiger L1-Übergabeauftrag, keine Erfolgsmeldung.`,
-    categoryDE: 'ÜBERGABE',
-    categoryEN: 'HANDOFF',
-    titleDE: 'Schichtwechsel ohne Chat-Gedächtnis',
-    titleEN: 'Shift handoff without chat memory',
-    descriptionDE: 'Der nächste Admin oder Agent bekommt nur belegten Stand, offene Lücken, Befugnisse und den nächsten sicheren Schritt.',
-    descriptionEN: 'Give the next admin or agent only grounded state, open gaps, authority and the next safe step.',
-    promptDE: `Erzeuge aus dem aktuellen Support-/Störungsfall einen eigenständigen L1-Übergabeauftrag für jemanden, der den bisherigen Chat nicht kennt.
-
-Die Übergabe muss aus der aktuellen Evidenz rekonstruierbar sein und mindestens enthalten:
-- Ziel und aktueller Scope,
-- VERIFIED Ist-Zustand mit konkreten Quellen/Proben,
-- bereits ausgeführte Schritte und deren beobachtete Ergebnisse,
-- widerlegte Hypothesen, damit sie nicht ohne neue Evidenz erneut aufgemacht werden,
-- UNKNOWN / BLOCKED / CONTRADICTED,
-- bestehende Befugnisse und echte Entscheidungsgrenzen,
-- kleinster sinnvoller nächster Schritt,
-- dazugehörige Prüfung und Fertig-wenn-Kriterium.
-
-Alte Chat-Annahmen nicht als Fakten übernehmen.
-Keine Zugangsdaten, Secrets oder irrelevante Gesprächshistorie in die Übergabe kopieren.
-
-Wenn eine notwendige Owner-/Security-/Risikoentscheidung fehlt, benenne sie als BLOCKED statt sie dem nächsten Bearbeiter still unterzuschieben.
-
-Das Ergebnis ist ein kopierfertiger L1-Übergabeauftrag, keine Erfolgsmeldung.`,
-    promptEN: `Create a self-contained L1 handoff contract for the current support/incident case for someone who has no access to the previous chat. Include grounded goal/scope, VERIFIED current state with evidence anchors, completed steps and observed results, disproved hypotheses, UNKNOWN/BLOCKED/CONTRADICTED items, current authority, real decision boundaries, the smallest useful next step, its verification and Done When. Do not copy secrets or irrelevant chat history. Missing owner/security/risk decisions remain BLOCKED. The result is a copy-ready handoff contract, not a success claim.`,
+The result is a copy-ready handoff, not a success report.`,
+    },
   },
 ];

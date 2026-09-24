@@ -1,88 +1,60 @@
-# From Plausible Answers to Reliable Work
+# Prompt Engineering in der Praxis
 
-Interactive React + TypeScript presentation about **why LLMs behave the way they do** and how that should change the way we use them for real IT Support/Admin work.
+> **Von plausiblen Antworten zu belastbarer Arbeit:** Wie wir aufhören, den Computer anzuschreien, und anfangen, echte Ergebnisse zu erzielen.
 
 🔗 **Live:** https://voku.github.io/Prompt_Intro/
 
-## Story
+## Übersicht & Storyline
 
-The deck starts by reconnecting to the previous [`voku/LLM`](https://github.com/voku/LLM) talk instead of assuming everybody still remembers it.
+Die interaktive React + TypeScript Präsentation verbindet ein **praktisches mentales Modell von LLMs** mit **konkreten Arbeitsweisen für den Alltag**: klare Aufträge, passende Werkzeuge, überprüfbare Aussagen und wiederverwendbare Vorlagen.
 
-1. **Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt …** — visual recall of the previous talk
-2. **Dann bekam der Chatbot plötzlich Hände** — from answer generation to tool-using / agentic work
-3. **Von plausiblen Antworten zu belastbarer Arbeit** — today's actual question
-4. **50 Meter? Laufen klingt super. Falsche Aufgabe.** — explicit clue vs. implicit goal
-5. **Da war nichts. Beide Modelle fanden trotzdem etwas.** — hallucinated observation
-6. **Buchstaben, Wörter, Tokens: nicht dasselbe** — tokenisation vs. exact character work
-7. **Plausible Fortsetzung ist keine Wahrheitsdatenbank** — contextual fit vs. truth
-8. **Darum bauen wir einen Auftrag – keinen Zauberspruch** — `L2 + current context/evidence → L1`
-9. **Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.** — CSV import
-10. **Benutzer sagt: „VPN geht wieder.“ Ticket zu?** — user report vs. acceptance evidence
-11. **Kontext ist keine Erlaubnis** — analysis context vs. edit authority
-12. **Unsicherheit braucht einen Namen** — evidence states
-13. **Bestell keine drei Fehler** — adversarial review without finding quotas
-14. **Auto-Agent ohne Selbstfreigabe** — autonomous continuation inside current authority
-15. **Kleine L2-Toolbox statt Mega-Prompt** — clickable German IT examples adapted from Recall recipes
-16. **Bessere Arbeit, nicht hübschere Prompts** — decision rule
+### 1. Brücke & Einstieg
+1. **Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt …** — Rückblick auf die Grundlagen
+2. **Dann bekam der Chatbot plötzlich Hände** — Der Sprung zu Werkzeugen, Datei-Inspektion, Code & Agents
 
-## Bridge from the previous talk
+### 2. Titelfolie & Kernproblem
+3. **Prompt Engineering in der Praxis** — persönliche Haltung: Vertrauen entsteht durch prüfbare Schritte
+4. **Das LLM-Problem** — Modell-Output ist nicht automatisch Beobachtung oder Wahrheit
 
-The first two slides deliberately reuse reaction GIFs from the old `voku/LLM` presentation. They are loaded from that repository and serve as a visual callback, not as random decoration.
+### 3. Mentales Modell
+5. **50 Meter? Laufen klingt super. Falsche Aufgabe.** — expliziter Hinweis vs. implizites Ziel
+6. **Da war nichts. Beide Modelle fanden trotzdem etwas.** — Halluzination vs. Ground Truth
+7. **Buchstaben, Wörter, Tokens: nicht dasselbe** — Tokenisierung vs. deterministische Werkzeuge
+8. **Plausible Fortsetzung ist keine Wahrheitsdatenbank** — Kontextpassung vs. Evidenz
 
-The transition is:
+### 4. Werkzeuge statt Raten
+9. **Beispiel: Logik & Mathe** — reproduzierbare Berechnung mit Code
+10. **Beispiel: Fakten & Wissen** — aktuelle Fakten mit Suche und überprüfbaren Quellen
 
-```text
-THEN
-What is an LLM and what can it do?
-        ↓
-NOW
-Models use tools and execute multi-step work
-        ↓
-BUT
-Plausibility is still not ground truth
-        ↓
-TODAY'S QUESTION
-How do we give an LLM work so the result is controllable and verifiable?
-```
+### 5. Führung nach Bedarf & Kerntechniken
+11. **Wie viel Führung braucht die Aufgabe?** — direkt fragen → Kontext → Struktur → Werkzeuge & Prüfung
+12. **Technik: Erst analysieren, dann Ergebnis erstellen** — Wartungsplan strukturiert erarbeiten
+13. **Technik: Persona & Kontext** — Rolle, Ziel, Kontext und Ton explizit machen
+14. **Technik: Strukturierte Ausgabe** — Chat-Format vs. echtes Schema per API
 
-## Mental-model examples
+### 6. Belastbare Praxis
+15. **Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.** — CSV-Import als überprüfbarer Arbeitsauftrag
+16. **Benutzer sagt: „VPN geht wieder.“ Ticket zu?** — Benutzeraussage vs. beobachtete Prüfung
+17. **Bestell keine drei Fehler** — ernsthafte Falsifikationsversuche statt Fundquote
+18. **Kleine Vorlagen-Toolbox statt Mega-Prompt** — Vorlage + heutiger Fall → konkreter Arbeitsauftrag
 
-The car-wash, noisy-image, token and next-token slides are not there to argue that LLMs are stupid. They explain four useful failure modes: implicit goals can be missed, model output is not observation, tokens are not characters, and plausible continuation is not the same thing as truth.
+### 7. Sicherheit & Abschluss
+19. **Sicherheit & Compliance** — freigegebener Dienst + zulässige Daten
+20. **Zusammenfassung & Takeaways** — sechs Kernregeln für bessere, überprüfbare Arbeit
 
-That makes the later practices feel like engineering rather than prompt superstition.
+---
 
-## L1 / L2
+## Interaktive Features
 
-The concrete L1 shape follows the current `voku/agent-recall-compiler` contract:
+- **Retro HUD & Keyboard-Navigation:** Vor/Zurück (Pfeiltasten, Leertaste), Touch-Swipe, Vollbild und Grid-Übersicht.
+- **Bilingual (DE / EN):** Vollständig umschaltbar zwischen Deutsch und Englisch im HUD.
+- **Interaktive Vorher/Nachher-Vergleiche:** Standard-Prompt vs. optimierter Prompt mit aufklappbaren Arbeitsaufträgen.
+- **Klickbare Vorlagen-Toolbox:** Auf Folie 18 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
+- **Visuelle Diagramme & Animationen:** Integrierte visuelle Panels für Waschanlage, Rauschbild, Tokens, Next-Token, Vorlage → Arbeitsauftrag, Scope-Map, Evidenzzustände und Agent-Loops.
 
-```text
-Goal
-Context
-Constraints
-Verification
-Done When
-```
+---
 
-L2 holds the reusable construction method; current ticket/file/system details belong in the generated L1 contract.
-
-## Clickable L2 toolbox
-
-Slide 15 uses German, presentation-specific IT examples adapted from current Recall recipe shapes:
-
-- CSV import → `discovery-first`
-- VPN reproduction → `reproduce-before-fix`
-- production change review → `adversarial-review`
-- incident missingness → `missingness-audit`
-- incident plan review → `plan-as-draft`
-- shift handoff → `production-ready-handoff`
-
-Clicking a card opens a copyable concrete L2 example. The recipe name remains visible as provenance, but the prompt itself is intentionally adapted to the Support/Admin cases used in this talk.
-
-## Removed on purpose
-
-There is no prompt generator, regex evaluator, prompt score or pseudo-objective quality meter. Prompt quality is not responsibly reducible to keyword matches.
-
-## Run locally
+## Lokal ausführen
 
 ```bash
 npm install
@@ -90,25 +62,24 @@ npm run typecheck
 npm run dev
 ```
 
-Production:
+Production Build:
 
 ```bash
 npm run typecheck
 npm run build
 ```
 
-`main` is published to GitHub Pages only after typecheck + build succeed.
+---
 
-## Relevant files
+## Relevante Dateien
 
-| File | Purpose |
+| Datei | Zweck |
 |---|---|
-| `introSlides.ts` | two-slide bridge from the previous LLM talk |
-| `constants.ts` | 14-slide main deck |
-| `components/LegacyBridge.tsx` | reused old GIFs + then/now transition |
-| `l2Prompts.ts` | German IT-specific L2 examples adapted from Recall recipes |
-| `components/L2ToolboxPanel.tsx` | clickable L2 toolbox |
-| `components/VisualPanel.tsx` | LLM mental-model and IT diagrams |
-| `components/PromptComparison.tsx` | direct-case prompt vs. reusable method |
-| `components/SlideLayout.tsx` | visual-first slide renderer |
-| `PRESENTATION-NOTES-DE.md` | German speaker notes |
+| `introSlides.ts` | 2-Folien-Brücke mit Reaction-GIFs aus dem vorherigen Vortrag |
+| `constants.ts` | 18-Folien-Hauptdeck (Mentales Modell, Praxisfälle, IT-Methoden, Compliance) |
+| `components/PromptComparison.tsx` | Gegenüberstellung von Standard-Prompt vs. optimiertem Prompt / Arbeitsauftrag |
+| `components/SlideLayout.tsx` | Layout-Renderer für Titel, Visual Panels, leveled Content Cards und Comparisons |
+| `components/VisualPanel.tsx` | Visuelle Render-Panels für Waschanlage, Rauschen, Tokens, Scope, etc. |
+| `components/L2ToolboxPanel.tsx` | Animierte Vorlagen-Toolbox (Vorlage + Fall → Arbeitsauftrag) |
+| `App.tsx` | Präsentationssteuerung, Progress-Tracking, Timer und Modals |
+| `PRESENTATION-NOTES-DE.md` | Umfassende deutsche Vortragsnotizen für den Sprecher |

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowDown, ChevronDown, ChevronUp, FileClock, Recycle, Wrench } from 'lucide-react';
+import { ArrowDown, ChevronDown, ChevronUp, FileClock, Sparkles, Wrench } from 'lucide-react';
 import { Lang } from '../types';
 
 interface PromptComparisonProps {
@@ -16,18 +16,26 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
   const de = lang === 'de';
 
   const labels = {
-    caseLabel: de ? 'DIREKTER PROMPT · DIESER FALL' : 'DIRECT PROMPT · THIS CASE',
-    methodLabel: de ? 'L2 · WIEDERVERWENDBAR' : 'L2 · REUSABLE',
-    caseTags: de ? ['Ticket-ID', 'Datei', 'Zahlen'] : ['ticket ID', 'file', 'numbers'],
-    methodTags: de ? ['Regeln', 'Evidenz', 'Stop-Grenze'] : ['rules', 'evidence', 'stop boundary'],
-    showWorkOrder: de ? 'Daraus erzeugten L1-Auftrag zeigen' : 'Show generated L1 contract',
-    hideWorkOrder: de ? 'L1-Auftrag ausblenden' : 'Hide L1 contract',
-    workOrderLabel: de ? 'L2 + aktueller Fall → L1' : 'L2 + current case → L1',
-    workOrderNote: de ? 'Das ist der konkrete Auftrag, der tatsächlich ausgeführt wird.' : 'This is the concrete contract that is actually executed.',
+    standardLabel: workOrder
+      ? (de ? 'DIREKTER PROMPT · DIESER FALL' : 'DIRECT PROMPT · THIS CASE')
+      : (de ? 'STANDARD-PROMPT' : 'STANDARD PROMPT'),
+    optimizedLabel: workOrder
+      ? (de ? 'WIEDERVERWENDBARE VORLAGE' : 'REUSABLE TEMPLATE')
+      : (de ? 'OPTIMIERTER PROMPT' : 'OPTIMIZED PROMPT'),
+    standardTags: workOrder
+      ? (de ? ['Ticket-ID', 'Datei', 'Zahlen'] : ['ticket ID', 'file', 'numbers'])
+      : (de ? ['Naiv', 'Ohne Führung'] : ['Naive', 'Unguided']),
+    optimizedTags: workOrder
+      ? (de ? ['Regeln', 'Evidenz', 'Stop-Grenze'] : ['rules', 'evidence', 'stop boundary'])
+      : (de ? ['Mit Methode', 'Leitplanken'] : ['With Method', 'Guardrails']),
+    showWorkOrder: de ? 'Daraus entstandenen Arbeitsauftrag zeigen' : 'Show generated work order',
+    hideWorkOrder: de ? 'Arbeitsauftrag ausblenden' : 'Hide work order',
+    workOrderLabel: de ? 'Vorlage + heutiger Fall → Arbeitsauftrag' : 'Template + current case → work order',
+    workOrderNote: de ? 'Das ist der konkrete Auftrag, der dann wirklich ausgeführt wird.' : 'This is the concrete contract that is actually executed.',
   };
 
   const tag = (value: string, tone: 'amber' | 'cyan') => (
-    <span key={value} className={`border px-2 py-1 font-mono text-[11px] ${tone === 'amber' ? 'border-amber-700 bg-amber-950/30 text-amber-200' : 'border-cyan-700 bg-cyan-950/30 text-cyan-200'}`}>{value}</span>
+    <span key={value} className={`border px-2 py-1 font-mono text-xs ${tone === 'amber' ? 'border-amber-700 bg-amber-950/30 text-amber-200' : 'border-cyan-700 bg-cyan-950/30 text-cyan-200'}`}>{value}</span>
   );
 
   return (
@@ -42,23 +50,23 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
         <div className="flex flex-col overflow-hidden border-2 border-amber-700 bg-slate-950/90 shadow-[5px_5px_0_#020617]">
           <div className="border-b-2 border-amber-800 bg-amber-950/35 px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              <span className="pixel-font text-[8px] text-amber-300">{labels.caseLabel}</span>
+              <span className="pixel-font text-[8px] text-amber-300">{labels.standardLabel}</span>
               <FileClock size={20} className="text-amber-300" />
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">{labels.caseTags.map((value) => tag(value, 'amber'))}</div>
+            <div className="mt-3 flex flex-wrap gap-2">{labels.standardTags.map((value) => tag(value, 'amber'))}</div>
           </div>
-          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-[13px] leading-6 text-slate-200">{standard}</pre>
+          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{standard}</pre>
         </div>
 
         <div className="flex flex-col overflow-hidden border-2 border-cyan-700 bg-slate-950/90 shadow-[5px_5px_0_#020617]">
           <div className="border-b-2 border-cyan-800 bg-cyan-950/30 px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              <span className="pixel-font text-[8px] text-cyan-300">{labels.methodLabel}</span>
-              <Recycle size={20} className="text-cyan-300" />
+              <span className="pixel-font text-[8px] text-cyan-300">{labels.optimizedLabel}</span>
+              <Sparkles size={20} className="text-cyan-300" />
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">{labels.methodTags.map((value) => tag(value, 'cyan'))}</div>
+            <div className="mt-3 flex flex-wrap gap-2">{labels.optimizedTags.map((value) => tag(value, 'cyan'))}</div>
           </div>
-          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-[13px] leading-6 text-slate-200">{optimized}</pre>
+          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{optimized}</pre>
         </div>
       </div>
 
@@ -81,7 +89,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
                 <span className="pixel-font text-[8px] text-emerald-300">{labels.workOrderLabel}</span>
                 <p className="mt-2 text-xs text-slate-400">{labels.workOrderNote}</p>
               </div>
-              <pre className="whitespace-pre-wrap p-5 font-mono text-[13px] leading-6 text-slate-200">{workOrder}</pre>
+              <pre className="whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{workOrder}</pre>
             </div>
           )}
         </div>
