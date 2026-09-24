@@ -20,7 +20,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
       ? (de ? 'DIREKTER PROMPT · DIESER FALL' : 'DIRECT PROMPT · THIS CASE')
       : (de ? 'STANDARD-PROMPT' : 'STANDARD PROMPT'),
     optimizedLabel: workOrder
-      ? (de ? 'L2 · WIEDERVERWENDBAR' : 'L2 · REUSABLE')
+      ? (de ? 'WIEDERVERWENDBARE VORLAGE' : 'REUSABLE TEMPLATE')
       : (de ? 'OPTIMIERTER PROMPT' : 'OPTIMIZED PROMPT'),
     standardTags: workOrder
       ? (de ? ['Ticket-ID', 'Datei', 'Zahlen'] : ['ticket ID', 'file', 'numbers'])
@@ -28,9 +28,9 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
     optimizedTags: workOrder
       ? (de ? ['Regeln', 'Evidenz', 'Stop-Grenze'] : ['rules', 'evidence', 'stop boundary'])
       : (de ? ['Mit Methode', 'Leitplanken'] : ['With Method', 'Guardrails']),
-    showWorkOrder: de ? 'Daraus entstandenen Arbeitsauftrag (L1) zeigen' : 'Show generated L1 contract',
-    hideWorkOrder: de ? 'Arbeitsauftrag ausblenden' : 'Hide L1 contract',
-    workOrderLabel: de ? 'Vorlage (L2) + heutiger Fall → Arbeitsauftrag (L1)' : 'L2 + current case → L1',
+    showWorkOrder: de ? 'Daraus entstandenen Arbeitsauftrag zeigen' : 'Show generated work order',
+    hideWorkOrder: de ? 'Arbeitsauftrag ausblenden' : 'Hide work order',
+    workOrderLabel: de ? 'Vorlage + heutiger Fall → Arbeitsauftrag' : 'Template + current case → work order',
     workOrderNote: de ? 'Das ist der konkrete Auftrag, der dann wirklich ausgeführt wird.' : 'This is the concrete contract that is actually executed.',
   };
 
