@@ -21,7 +21,7 @@ export type VisualKind =
   | 'evidence-board'
   | 'agent-loop'
   | 'toolbox'
-  | 'library';
+  | 'desk-takeaways';
 
 export interface SlideData {
   id: number;

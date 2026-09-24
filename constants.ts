@@ -5,13 +5,34 @@ export const SLIDES: SlideData[] = [
     id: 1,
     type: SlideType.TITLE,
     icon: 'BrainCircuit',
-    title: 'From Plausible Answers to Reliable Work',
-    titleDE: 'Von plausiblen Antworten zu belastbarer Arbeit',
-    subtitle: 'Before prompt techniques: why LLMs behave the way they do — and what that means for real IT work.',
-    subtitleDE: 'Bevor wir über Prompt-Techniken reden: warum LLMs so arbeiten, wie sie arbeiten – und was das für echte IT-Arbeit bedeutet.',
+    title: 'Prompt Engineering in der Praxis',
+    titleDE: 'Prompt Engineering in der Praxis',
+    subtitle: 'I work with LLMs every day and hand them real work. But trust comes from verifiable steps — not from a convincing answer.',
+    subtitleDE: 'Ich arbeite jeden Tag mit LLMs und vertraue ihnen echte Arbeit an. Vertrauen entsteht aber durch prüfbare Schritte – nicht durch eine überzeugende Antwort.',
   },
   {
     id: 2,
+    type: SlideType.CONTENT,
+    icon: 'AlertTriangle',
+    title: 'The LLM Problem',
+    titleDE: 'Das LLM-Problem',
+    subtitle: 'Why ChatGPT sometimes acts like an overly confident, clueless intern',
+    subtitleDE: 'Warum ChatGPT manchmal wie ein sehr selbstbewusster, aber ahnungsloser Praktikant wirkt',
+    content: [
+      'LLMs do not look things up. They continue text plausibly.',
+      'Classic weaknesses: arithmetic (math), up-to-date facts (news), citations.',
+      'The risk: hallucinations. The model sounds just as convincing when it is wrong – instead of saying "I don\'t know".',
+      'Our solution: We must give the model tools and guardrails.',
+    ],
+    contentDE: [
+      'LLMs schlagen nichts nach. Sie setzen Text plausibel fort.',
+      'Klassische Schwächen: Rechnen (Mathe), aktuelle Fakten (News), Zitate.',
+      'Das Risiko: Halluzinationen. Das Modell klingt auch dann überzeugend, wenn es falsch liegt – statt „Ich weiß es nicht“ zu sagen.',
+      'Unsere Lösung: Wir müssen dem Modell Werkzeuge und Leitplanken geben.',
+    ],
+  },
+  {
+    id: 3,
     type: SlideType.CONTENT,
     visual: 'carwash',
     icon: 'CarFront',
@@ -29,7 +50,7 @@ export const SLIDES: SlideData[] = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     type: SlideType.CONTENT,
     visual: 'noise-hallucination',
     icon: 'ScanSearch',
@@ -47,7 +68,7 @@ export const SLIDES: SlideData[] = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     type: SlideType.CONTENT,
     visual: 'tokens',
     icon: 'Binary',
@@ -65,7 +86,7 @@ export const SLIDES: SlideData[] = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     type: SlideType.CONTENT,
     visual: 'next-token',
     icon: 'Sparkles',
@@ -83,25 +104,175 @@ export const SLIDES: SlideData[] = [
     ],
   },
   {
-    id: 6,
+    id: 7,
+    type: SlideType.COMPARISON,
+    icon: 'Calculator',
+    title: 'Example: Logic & Math',
+    titleDE: 'Beispiel: Logik & Mathe',
+    subtitle: 'Mental math cannot be checked. Code can.',
+    subtitleDE: 'Kopfrechnen kann man nicht nachprüfen. Code schon.',
+    technique: 'Code-Aided Reasoning (PoT)',
+    techniqueDE: 'Code-Aided Reasoning (PoT)',
+    codeStandard: 'A waste collection truck consumes 32L/100km. It runs 2 routes of 45km daily. Diesel costs €1.70. What are the costs in November (excluding Sundays) in 2024?',
+    codeStandardDE: 'Ein Müllwagen verbraucht 32L/100km. Er fährt täglich 2 Touren à 45km. Diesel kostet 1,70€. Wie hoch sind die Kosten im November (ohne Sonntage) im Jahr 2024?',
+    codeOptimized: `Goal: Calculate fuel costs.
+Constraint: Do NOT calculate manually.
+Action: Write a Python script that:
+1. Determines the number of working days (Mon-Sat) in November 2024.
+2. Calculates consumption based on 90km/day.
+3. Outputs the total costs.`,
+    codeOptimizedDE: `Ziel: Berechne Treibstoffkosten.
+Constraint: Rechne NICHT selbst.
+Action: Schreibe ein Python-Skript, das:
+1. Die Anzahl der Werktage (Mo-Sa) im November 2024 ermittelt.
+2. Den Verbrauch basierend auf 90km/Tag berechnet.
+3. Die Gesamtkosten ausgibt.`,
+    content: 'The standard prompt often leads to careless errors (e.g. wrong number of Sundays). The optimized prompt forces the model to use exact Python logic.',
+    contentDE: 'Der Standard-Prompt führt oft zu Flüchtigkeitsfehlern (z.B. falsche Anzahl Sonntage). Der optimierte Prompt zwingt das Modell, Python-Logik zu nutzen, die exakt ist.',
+  },
+  {
+    id: 8,
+    type: SlideType.COMPARISON,
+    icon: 'Globe',
+    title: 'Example: Facts & Knowledge',
+    titleDE: 'Beispiel: Fakten & Wissen',
+    subtitle: 'Facts need sources, not creativity.',
+    subtitleDE: 'Fakten brauchen Quellen, keine Kreativität.',
+    technique: 'Fact Grounding & Tool Use',
+    techniqueDE: 'Fact Grounding & Tool Use',
+    codeStandard: 'Who is currently on the managing board of Siemens AG?',
+    codeStandardDE: 'Wer sitzt aktuell im Vorstand der Siemens AG?',
+    codeOptimized: `Use Google Search to find the current board members on the official Siemens website.
+List the names and functions.
+Cite the source (URL) for each person.`,
+    codeOptimizedDE: `Nutze Google Search, um die aktuelle Vorstandsliste auf der offiziellen Siemens-Website zu finden.
+Liste Namen und Funktionen auf.
+Nenne für jede Person die Quelle (URL).`,
+    content: 'Without a search tool, the model often names board members from 2021 or invents names. With search plus a source for every name, we get current data we can check ourselves.',
+    contentDE: 'Ohne Search-Tool nennt das Modell oft Vorstände von 2021 oder erfindet Namen. Mit Suche und Quellenpflicht bekommen wir aktuelle Angaben, die wir selbst nachprüfen können.',
+  },
+  {
+    id: 9,
+    type: SlideType.CONTENT,
+    icon: 'Layers',
+    title: 'The Prompt Hierarchy',
+    titleDE: 'Die Prompt-Hierarchie',
+    subtitle: 'From beginner to pro',
+    subtitleDE: 'Vom Anfänger zum Profi',
+    content: [
+      'Level 1: Zero-Shot (Simple question without context)',
+      'Level 2: Few-Shot (Question with 2-3 examples)',
+      'Level 3: Chain of Thought ("Think step by step")',
+      'Level 4: Agentic (Use tools, Python, search)',
+    ],
+    contentDE: [
+      'Level 1: Zero-Shot (Einfache Frage ohne Kontext)',
+      'Level 2: Few-Shot (Frage mit 2-3 Beispielen)',
+      'Level 3: Chain of Thought (\'Denk Schritt für Schritt\')',
+      'Level 4: Agentic (Nutze Tools, Python, Search)',
+    ],
+  },
+  {
+    id: 10,
+    type: SlideType.COMPARISON,
+    icon: 'ListOrdered',
+    title: 'Technique: Chain of Thought (CoT)',
+    titleDE: 'Technik: Chain of Thought (CoT)',
+    subtitle: 'Breaking complex tasks into steps',
+    subtitleDE: 'Komplexe Aufgaben in Schritte zerlegen',
+    technique: 'Chain of Thought',
+    techniqueDE: 'Chain of Thought',
+    codeStandard: 'Create a plan for the maintenance of sorting plant X.',
+    codeStandardDE: 'Erstelle einen Plan für die Wartung der Sortieranlage X.',
+    codeOptimized: `1. Analysis: What components does plant X have (conveyor belts, sensors...)?
+2. Risks: Where do failures occur most frequently?
+3. Schedule: Based on this, create a maintenance plan (daily, weekly, monthly).`,
+    codeOptimizedDE: `1. Analyse: Welche Komponenten hat Anlage X (Förderbänder, Sensoren...)?
+2. Risiken: Wo sind die häufigsten Ausfälle?
+3. Zeitplan: Erstelle basierend darauf einen Wartungsplan (Täglich, Wöchentlich, Monatlich).`,
+    content: 'Force the model to "think" (plan) first before it "acts" (writes). This usually makes answers noticeably more concrete.',
+    contentDE: 'Lass das Modell erst planen und dann schreiben. Das macht Antworten meist deutlich konkreter.',
+  },
+  {
+    id: 11,
+    type: SlideType.COMPARISON,
+    icon: 'UserCog',
+    title: 'Technique: Persona & Context',
+    titleDE: 'Technik: Persona & Kontext',
+    subtitle: 'Who am I and what do I want?',
+    subtitleDE: 'Wer bin ich und was will ich?',
+    technique: 'North Star & Context',
+    techniqueDE: 'North Star & Context',
+    codeStandard: 'Write an email to the municipality that the bins were not emptied.',
+    codeStandardDE: 'Schreib eine Mail an die Kommune, dass die Tonnen nicht geleert wurden.',
+    codeOptimized: `Role: Operations manager at a waste-management company.
+Context: Black ice prevented access to Street X.
+Goal: Inform them that we will make a second attempt tomorrow.
+Tone: Professional, safety-conscious, cooperative.`,
+    codeOptimizedDE: `Rolle: Betriebsleiter eines Entsorgungsbetriebs.
+Kontext: Glatteis verhinderte Zufahrt in Straße X.
+Ziel: Informieren, dass wir morgen einen zweiten Versuch starten.
+Ton: Professionell, sicherheitsbewusst, kooperativ.`,
+    content: 'Context is king. Without context, the model writes a generic apology. With context ("black ice", "safety"), it sounds professional.',
+    contentDE: 'Kontext ist King. Ohne Kontext schreibt das Modell eine Standard-Entschuldigung. Mit Kontext (\'Glatteis\', \'Sicherheit\') wirkt es professionell.',
+  },
+  {
+    id: 12,
+    type: SlideType.COMPARISON,
+    icon: 'Code',
+    title: 'Technique: Structured Output',
+    titleDE: 'Technik: Structured Output',
+    subtitle: 'Data instead of prose',
+    subtitleDE: 'Daten statt Prosa',
+    technique: 'XML Delimiters & JSON',
+    techniqueDE: 'XML Delimiters & JSON',
+    codeStandard: 'Read this accident report and tell me what happened.',
+    codeStandardDE: 'Lies diesen Unfallbericht und sag mir, was passiert ist.',
+    codeOptimized: `<task>Extract accident data</task>
+<format>
+Respond ONLY in JSON format:
+{
+  "date": "ISO-8601",
+  "accident_type": "string",
+  "injured": "integer",
+  "measures": []
+}
+</format>
+<report>...</report>`,
+    codeOptimizedDE: `<task>Extrahiere Unfalldaten</task>
+<format>
+Antworte NUR im JSON-Format:
+{
+  "datum": "ISO-8601",
+  "unfallart": "string",
+  "verletzte": "integer",
+  "maßnahmen": []
+}
+</format>
+<bericht>...</bericht>`,
+    content: 'Ideal for downstream processing. Prevents the model from writing novels when we only need structured data.',
+    contentDE: 'Ideal für die Weiterverarbeitung. Verhindert, dass das Modell Romane schreibt, wenn wir nur Daten brauchen.',
+  },
+  {
+    id: 13,
     type: SlideType.CONTENT,
     visual: 'compiler',
     icon: 'Workflow',
     title: 'So We Build a Contract, Not a Magic Spell',
     titleDE: 'Darum bauen wir einen Auftrag – keinen Zauberspruch',
-    subtitle: 'L2 describes how to build a concrete L1 contract from current context and evidence.',
-    subtitleDE: 'L2 beschreibt, wie aus aktuellem Kontext und Evidenz ein konkreter L1-Auftrag entsteht.',
+    subtitle: 'Reusable way of working + today’s case → concrete work order. (I call these two levels L2 and L1.)',
+    subtitleDE: 'Wiederverwendbare Arbeitsweise + heutiger Fall → konkreter Arbeitsauftrag. (Bei mir heißen die beiden Ebenen L2 und L1.)',
     content: [
       'L2 holds the reusable method. Today’s ticket, file and system belong in L1.',
       'The construction pass stops before execution. First understand the contract, then act.',
     ],
     contentDE: [
-      'L2 enthält die wiederverwendbare Methode. Ticket, Datei und System von heute gehören in L1.',
-      'Der Bau-Durchgang stoppt vor der Ausführung. Erst Auftrag verstehen, dann handeln.',
+      'Die Vorlage (L2) beschreibt das Vorgehen. Ticket, Datei und System von heute stehen erst im Arbeitsauftrag (L1).',
+      'Beim Erstellen des Auftrags wird noch nichts ausgeführt. Erst den Auftrag verstehen, dann handeln.',
     ],
   },
   {
-    id: 7,
+    id: 14,
     type: SlideType.COMPARISON,
     icon: 'FileSpreadsheet',
     title: 'Friday, 16:47. 742 Users. One Suspicious Mapping.',
@@ -141,15 +312,15 @@ Missing evidence stays UNKNOWN/BLOCKED.
 Keep Verification separate from Done When.
 
 Stop after L1. Do not import yet.`,
-    codeOptimizedDE: `Baue aus aktuellem Ticket, CSV, Mapping-Doku, Zielsystem-Doku und Runbook den L1-Auftrag für den Import.
+    codeOptimizedDE: `Erstelle aus Ticket, CSV-Datei, Mapping-Doku, Zielsystem-Doku und Runbook einen konkreten Arbeitsauftrag für den Import.
 
-Konkrete Dateien, Mappings, Werkzeuge und Prüfwege aus dieser Evidenz ableiten.
-Identitäten erhalten.
+Dateien, Mappings, Werkzeuge und Prüfwege aus diesen Unterlagen ableiten.
+Bestehende Benutzerkonten nicht überschreiben.
 Keine IDs, Mappings, Befehle oder Berechtigungen erfinden.
-Fehlende Evidenz bleibt UNKNOWN/BLOCKED.
-Prüfung und Fertig-wenn trennen.
+Was nicht belegt ist, bleibt UNKNOWN/BLOCKED.
+„Prüfung“ und „Erledigt, wenn“ getrennt aufführen.
 
-Nach L1 stoppen. Noch nichts importieren.`,
+Nach dem Arbeitsauftrag aufhören. Noch nichts importieren.`,
     codeWorkOrder: `Goal: validate SD-18427 before the import runs.
 Context: users_2026-08-28.csv → Portal-Test; 742 rows; new cost_center → department mapping.
 Constraints: no identity overwrite; no invented employee IDs or mapping assumptions.
@@ -157,14 +328,14 @@ Verification: documented dry-run + reconcile 742/742 rows + verify the new mappi
 Done When: every row is explained; zero unintended writes; the new mapping is VERIFIED or explicitly BLOCKED.`,
     codeWorkOrderDE: `Ziel: SD-18427 prüfen, bevor der Import läuft.
 Kontext: users_2026-08-28.csv → Portal-Test; 742 Zeilen; neues Mapping cost_center → department.
-Grenzen: keine Identität überschreiben; keine Personalnummer oder Mapping-Annahme erfinden.
+Grenzen: keine bestehenden Konten überschreiben; keine Personalnummer oder Mapping-Annahme erfinden.
 Prüfung: dokumentierter Dry-Run + 742/742 Zeilen abgleichen + neues Mapping gegen aktuelle Doku prüfen.
-Fertig, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; neues Mapping VERIFIED oder ausdrücklich BLOCKED.`,
+Erledigt, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; neues Mapping VERIFIED oder ausdrücklich BLOCKED.`,
     content: 'The direct prompt is fine for this ticket. L2 is useful when the same quality bar should survive the next import.',
     contentDE: 'Der direkte Prompt ist für dieses Ticket völlig okay. L2 lohnt sich, wenn derselbe Qualitätsmaßstab auch beim nächsten Import gelten soll.',
   },
   {
-    id: 8,
+    id: 15,
     type: SlideType.COMPARISON,
     icon: 'TicketCheck',
     title: 'User Says “VPN Works Again”. Can We Close It?',
@@ -198,20 +369,20 @@ VERIFIED only with observed evidence.
 No result = UNKNOWN.
 Required probe unavailable = BLOCKED.
 Close only when Done When is supported by the observed results.`,
-    codeOptimizedDE: `Benutzeraussage und Ticket-Checkliste sind Input, kein Beweis.
+    codeOptimizedDE: `Aussage des Benutzers und Ticket-Checkliste sind Hinweise, kein Beweis.
 
 Pro notwendigem Kriterium festhalten:
-Probe → beobachtetes Ergebnis → Evidenzzustand.
+Test → beobachtetes Ergebnis → Belegstatus.
 
 VERIFIED nur mit beobachtetem Nachweis.
 Kein Ergebnis = UNKNOWN.
-Notwendige Probe nicht möglich = BLOCKED.
-Erst schließen, wenn die beobachteten Ergebnisse Done When tragen.`,
+Notwendiger Test nicht möglich = BLOCKED.
+Erst schließen, wenn die beobachteten Ergebnisse das Abschlusskriterium belegen.`,
     content: '“Works for me” can be useful evidence. It is still not automatically the whole acceptance test.',
-    contentDE: '„Geht bei mir wieder“ kann wertvolle Evidenz sein. Es ist nur nicht automatisch die komplette Abnahme.',
+    contentDE: '„Geht bei mir wieder“ ist ein wertvoller Hinweis – aber noch keine vollständige Abnahme.',
   },
   {
-    id: 9,
+    id: 16,
     type: SlideType.CONTENT,
     visual: 'authority-map',
     icon: 'FileLock2',
@@ -225,11 +396,11 @@ Erst schließen, wenn die beobachteten Ergebnisse Done When tragen.`,
     ],
     contentDE: [
       'Relevanz beantwortet „muss ich das ansehen?“. Befugnis beantwortet „darf ich das ändern?“.',
-      'Zeigt die Lösung aus dem freigegebenen Scope heraus: fehlende Entscheidung benennen, nicht Scope heimlich erweitern.',
+      'Liegt die Lösung außerhalb des freigegebenen Umfangs: fehlende Entscheidung benennen, statt den Umfang heimlich zu erweitern.',
     ],
   },
   {
-    id: 10,
+    id: 17,
     type: SlideType.CONTENT,
     visual: 'evidence-board',
     icon: 'BadgeCheck',
@@ -241,7 +412,7 @@ Erst schließen, wenn die beobachteten Ergebnisse Done When tragen.`,
     contentDE: 'Selbstsicherheit ist kein siebter Evidenzzustand.',
   },
   {
-    id: 11,
+    id: 18,
     type: SlideType.COMPARISON,
     icon: 'SearchCheck',
     title: 'Don’t Order Three Bugs',
@@ -265,16 +436,16 @@ Do not manufacture a finding to fill the list.`,
     codeOptimizedDE: `Versuche den Plan auf mindestens drei unterschiedliche ernsthafte Arten zu widerlegen.
 
 Pro Versuch:
-Hypothese → konkreter Trigger → bestätigende/widerlegende Evidenz → kleinste sinnvolle Probe.
+Vermutung → konkreter Auslöser → Beleg dafür oder dagegen → kleinster sinnvoller Test.
 
-Eine widerlegte Hypothese ist ein erfolgreicher Review-Versuch.
+Eine widerlegte Vermutung ist ein erfolgreicher Prüfversuch.
 CLEAN ist erlaubt.
 Keinen Fund erfinden, nur damit die Liste voll ist.`,
     content: 'The number belongs to the investigation effort, not to the number of defects reality is required to provide.',
     contentDE: 'Die Zahl gehört zur Prüfleistung – nicht zur Anzahl der Fehler, die die Realität gefälligst liefern soll.',
   },
   {
-    id: 12,
+    id: 19,
     type: SlideType.CONTENT,
     visual: 'agent-loop',
     icon: 'Bot',
@@ -287,40 +458,67 @@ Keinen Fund erfinden, nur damit die Liste voll ist.`,
       'Owner, security, accepted-risk, destructive and irreversible decisions are never self-approved.',
     ],
     contentDE: [
-      'Nach jedem Slice: billigste sinnvolle Prüfung, dann automatisch weiter, solange Evidenz und Befugnis tragen.',
-      'Owner-, Security-, Risiko-, destruktive und irreversible Entscheidungen niemals selbst bestätigen.',
+      'Nach jedem Arbeitsschritt kurz und sinnvoll prüfen – dann automatisch weiter, solange Belege und Freigabe reichen.',
+      'Entscheidungen zu Zuständigkeit, Sicherheit und Risiko – und alles, was löscht oder sich nicht rückgängig machen lässt – nie selbst freigeben.',
     ],
   },
   {
-    id: 13,
+    id: 20,
     type: SlideType.CONTENT,
     visual: 'toolbox',
     icon: 'Library',
     title: 'Small L2 Toolbox, Not One Mega-Prompt',
     titleDE: 'Kleine L2-Toolbox statt Mega-Prompt',
-    subtitle: 'Click a method to open the actual current source prompt from agent-recall-compiler.',
-    subtitleDE: 'Auf eine Methode klicken: darunter öffnet sich der konkrete aktuelle Source-Prompt aus agent-recall-compiler.',
-    content: 'Pick a construction method because it changes how the task should be approached — not because every task needs every technique.',
-    contentDE: 'Eine Methode auswählen, weil sie das Vorgehen sinnvoll verändert – nicht weil jede Aufgabe jede Technik braucht.',
+    subtitle: 'Three everyday situations. The template stays the same, the case changes – out comes a concrete work order.',
+    subtitleDE: 'Drei typische Situationen. Die Vorlage bleibt gleich, der Fall wechselt – heraus kommt ein konkreter Arbeitsauftrag.',
+    content: 'Use a template when it actually changes how you approach the task — not every task needs every technique.',
+    contentDE: 'Eine Vorlage lohnt sich nur, wenn sie das Vorgehen wirklich verändert – nicht jede Aufgabe braucht jede Technik.',
   },
   {
-    id: 14,
-    type: SlideType.END,
-    visual: 'library',
-    icon: 'Boxes',
-    title: 'The Goal Is Better Work, Not Better-Looking Prompts',
-    titleDE: 'Das Ziel ist bessere Arbeit, nicht hübschere Prompts',
-    subtitle: 'Use the smallest technique that buys real reliability.',
-    subtitleDE: 'Nimm die kleinste Technik, die tatsächlich mehr Verlässlichkeit bringt.',
+    id: 21,
+    type: SlideType.CONTENT,
+    icon: 'ShieldAlert',
+    title: 'Security & Compliance',
+    titleDE: 'Sicherheit & Compliance',
+    subtitle: 'Using AI responsibly',
+    subtitleDE: 'KI verantwortungsvoll nutzen',
     content: [
-      'One-off: direct prompt.',
-      'Recurring: reusable L2 construction method.',
-      'Consequential: explicit evidence, verification and authority.',
+      'Do not enter personal data (GDPR) into public prompts.',
+      'Do not upload sensitive business secrets (prices, strategy).',
+      'Always verify results ("Human in the Loop").',
+      'When in doubt: consult internal IT Security.',
     ],
     contentDE: [
-      'Einmalig: direkter Prompt.',
-      'Wiederkehrend: wiederverwendbare L2-Bauanleitung.',
-      'Kritisch: Evidenz, Prüfung und Befugnis explizit machen.',
+      'Keine personenbezogenen Daten (DSGVO) in öffentliche Prompts eingeben.',
+      'Keine sensiblen Betriebsgeheimnisse (Preise, Strategie) hochladen.',
+      'Ergebnisse immer prüfen (\'Human in the Loop\').',
+      'Im Zweifel: Die interne IT-Security konsultieren.',
+    ],
+  },
+  {
+    id: 22,
+    type: SlideType.END,
+    visual: 'desk-takeaways',
+    icon: 'CheckCircle',
+    title: 'Summary & Takeaways',
+    titleDE: 'Zusammenfassung & Takeaways',
+    subtitle: 'The same methods work beyond IT tickets: six sentences for everyday desk work. The goal is better work, not better-looking prompts.',
+    subtitleDE: 'Die Vorlagen funktionieren nicht nur bei IT-Tickets: sechs Sätze für die tägliche Schreibtischarbeit. Das Ziel ist bessere Arbeit, nicht hübschere Prompts.',
+    content: [
+      'Brief it like a smart new colleague: role, context, goal.',
+      'Calculate with code, facts with sources, plan step by step.',
+      'Name uncertainty: proven, assumed or open.',
+      'First understand or reproduce, then change.',
+      'Going in circles? Do not regenerate — add new information or start fresh.',
+      'Recurring task? Keep the sentence as a template. The case changes, the template stays.',
+    ],
+    contentDE: [
+      'Briefen wie einen klugen neuen Kollegen: Rolle, Kontext, Ziel.',
+      'Rechnen mit Code, Fakten mit Quelle, Planen Schritt für Schritt.',
+      'Unsicherheit benennen: belegt, vermutet oder offen.',
+      'Erst verstehen oder nachstellen, dann ändern.',
+      'Dreht sich die KI im Kreis? Nicht neu würfeln – neue Infos geben oder neu anfangen.',
+      'Wiederkehrende Aufgabe? Den Satz als Vorlage aufheben. Der Fall wechselt, die Vorlage bleibt.',
     ],
   },
 ];

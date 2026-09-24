@@ -1,31 +1,26 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import {
   ArrowRight,
   Ban,
   Binary,
   Bot,
   CarFront,
-  Check,
   CheckCircle2,
   CircleHelp,
-  Copy,
   Cpu,
   Eye,
   FileCode2,
   FileLock2,
-  FileSpreadsheet,
   Footprints,
   GitBranch,
   KeyRound,
   Route,
   ServerCog,
-  ShieldCheck,
   Sparkles,
   TicketCheck,
   TriangleAlert,
   XCircle,
 } from 'lucide-react';
-import { L2_TOOLBOX_PROMPTS } from '../l2Prompts';
 import { Lang, VisualKind } from '../types';
 
 interface VisualPanelProps { kind: VisualKind; lang: Lang; }
@@ -40,12 +35,6 @@ const Label: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ clas
 
 const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
   const de = lang === 'de';
-  const [selectedToolId, setSelectedToolId] = useState<string | null>(null);
-  const [copiedToolId, setCopiedToolId] = useState<string | null>(null);
-  const selectedTool = useMemo(
-    () => L2_TOOLBOX_PROMPTS.find((tool) => tool.id === selectedToolId) ?? null,
-    [selectedToolId],
-  );
 
   if (kind === 'carwash') {
     return (
@@ -161,14 +150,14 @@ const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
     return (
       <div className="space-y-5">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
-          <Box className="border-fuchsia-700 bg-fuchsia-950/20"><Label className="text-fuchsia-300">L2</Label><div className="mt-3 text-lg font-black text-white">{de ? 'Bauanleitung' : 'Construction recipe'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Wie aus Kontext ein Auftrag entsteht.' : 'How context becomes a contract.'}</div></Box>
+          <Box className="border-fuchsia-700 bg-fuchsia-950/20"><Label className="text-fuchsia-300">{de ? 'WIEDERVERWENDBAR · L2' : 'REUSABLE · L2'}</Label><div className="mt-3 text-lg font-black text-white">{de ? 'Arbeitsweise' : 'Way of working'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Wie aus Kontext ein Auftrag entsteht.' : 'How context becomes a contract.'}</div></Box>
           <div className="flex justify-center text-3xl font-black text-slate-500">+</div>
           <Box className="border-cyan-700 bg-cyan-950/20"><Label className="text-cyan-300">{de ? 'AKTUELLER KONTEXT' : 'CURRENT CONTEXT'}</Label><div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-300"><span>Ticket</span><span>Files</span><span>Runbook</span><span>State</span></div></Box>
           <ArrowRight className="mx-auto rotate-90 text-amber-300 lg:rotate-0" size={34} />
-          <Box className="border-emerald-700 bg-emerald-950/20"><Label className="text-emerald-300">L1</Label><div className="mt-3 text-lg font-black text-white">{de ? 'Konkreter Auftrag' : 'Concrete contract'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Jetzt ausführbar und prüfbar.' : 'Executable and verifiable now.'}</div></Box>
+          <Box className="border-emerald-700 bg-emerald-950/20"><Label className="text-emerald-300">{de ? 'NUR FÜR HEUTE · L1' : 'JUST FOR TODAY · L1'}</Label><div className="mt-3 text-lg font-black text-white">{de ? 'Arbeitsauftrag' : 'Work order'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Jetzt ausführbar und prüfbar.' : 'Executable and verifiable now.'}</div></Box>
         </div>
         <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
-          {(de ? ['Ziel', 'Kontext', 'Grenzen', 'Prüfung', 'Fertig, wenn'] : ['Goal', 'Context', 'Constraints', 'Verification', 'Done When']).map((value, index) => <div key={value} className={`border px-3 py-3 text-center text-xs font-bold ${index === 3 ? 'border-cyan-700 text-cyan-200' : index === 4 ? 'border-emerald-700 text-emerald-200' : 'border-indigo-800 text-slate-300'}`}>{value}</div>)}
+          {(de ? ['Ziel', 'Kontext', 'Grenzen', 'Prüfung', 'Erledigt, wenn'] : ['Goal', 'Context', 'Constraints', 'Verification', 'Done When']).map((value, index) => <div key={value} className={`border px-3 py-3 text-center text-xs font-bold ${index === 3 ? 'border-cyan-700 text-cyan-200' : index === 4 ? 'border-emerald-700 text-emerald-200' : 'border-indigo-800 text-slate-300'}`}>{value}</div>)}
         </div>
       </div>
     );
@@ -176,10 +165,10 @@ const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
 
   if (kind === 'authority-map') {
     const nodes = [
-      { icon: TicketCheck, title: 'Ticket', role: de ? 'Scope / Anforderung' : 'Scope / requirement', tone: 'text-amber-300 border-amber-700' },
+      { icon: TicketCheck, title: 'Ticket', role: de ? 'Umfang / Anforderung' : 'Scope / requirement', tone: 'text-amber-300 border-amber-700' },
       { icon: FileCode2, title: 'nginx.conf', role: de ? 'Kontext, evtl. Änderung' : 'Context, maybe edit', tone: 'text-cyan-300 border-cyan-700' },
-      { icon: ServerCog, title: 'Logs', role: de ? 'Evidenz, nur lesen' : 'Evidence, read only', tone: 'text-emerald-300 border-emerald-700' },
-      { icon: FileLock2, title: 'deploy.sh', role: de ? 'Abhängigkeit, kein Scope' : 'Dependency, no scope', tone: 'text-fuchsia-300 border-fuchsia-700' },
+      { icon: ServerCog, title: 'Logs', role: de ? 'Beleg, nur lesen' : 'Evidence, read only', tone: 'text-emerald-300 border-emerald-700' },
+      { icon: FileLock2, title: 'deploy.sh', role: de ? 'Abhängigkeit, nicht freigegeben' : 'Dependency, no scope', tone: 'text-fuchsia-300 border-fuchsia-700' },
     ];
     return <div><div className="grid gap-3 md:grid-cols-4">{nodes.map(({ icon: Icon, title, role, tone }) => <Box key={title} className={tone}><Icon size={28} className="mb-3" /><div className="font-bold text-white">{title}</div><div className="mt-1 text-xs text-slate-400">{role}</div></Box>)}</div><div className="mt-4 flex items-center justify-center gap-3 border-2 border-rose-900 bg-rose-950/20 px-4 py-3 text-center text-sm text-rose-100"><Ban size={18} className="text-rose-300" />{de ? 'Relevant ≠ zum Ändern freigegeben' : 'Relevant ≠ approved for editing'}</div></div>;
   }
@@ -197,50 +186,8 @@ const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
   }
 
   if (kind === 'agent-loop') {
-    const steps = de ? ['Slice wählen', 'arbeiten', 'kleinste sinnvolle Prüfung', 'Befugnis + Evidenz prüfen'] : ['Choose slice', 'work', 'cheapest useful check', 'check authority + evidence'];
-    return <div><div className="grid gap-3 md:grid-cols-4">{steps.map((step, index) => <Box key={step} className={index === 3 ? 'border-emerald-700' : 'border-indigo-800'}><Label className="text-fuchsia-300">0{index + 1}</Label><div className="mt-3 font-bold text-white">{step}</div></Box>)}</div><div className="mt-4 grid gap-3 md:grid-cols-2"><div className="flex items-center gap-3 border-2 border-emerald-800 bg-emerald-950/20 px-4 py-3 text-emerald-100"><Bot size={22} />{de ? 'Befugnis gilt: automatisch weiter.' : 'Authority still holds: continue.'}</div><div className="flex items-center gap-3 border-2 border-amber-800 bg-amber-950/20 px-4 py-3 text-amber-100"><TriangleAlert size={22} />{de ? 'Neue Entscheidung nötig: BLOCKED.' : 'New decision required: BLOCKED.'}</div></div></div>;
-  }
-
-  if (kind === 'toolbox') {
-    const copyPrompt = (id: string, prompt: string): void => {
-      void navigator.clipboard.writeText(prompt);
-      setCopiedToolId(id);
-      window.setTimeout(() => setCopiedToolId((current) => current === id ? null : current), 1400);
-    };
-
-    return (
-      <div className="space-y-4">
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {L2_TOOLBOX_PROMPTS.map((tool) => {
-            const active = selectedToolId === tool.id;
-            return (
-              <button key={tool.id} type="button" onClick={() => setSelectedToolId(active ? null : tool.id)} className={`retro-button min-h-36 p-4 text-left transition ${active ? 'border-cyan-400 bg-cyan-950/35' : 'border-indigo-800 bg-slate-950/90 hover:border-fuchsia-500'}`}>
-                <div className="flex items-center justify-between gap-3"><Label className={active ? 'text-cyan-300' : 'text-fuchsia-300'}>{tool.category} // L2</Label><FileCode2 size={20} className={active ? 'text-cyan-300' : 'text-slate-500'} /></div>
-                <div className="mt-3 font-mono text-sm font-black text-white">{tool.title}</div>
-                <div className="mt-2 text-xs leading-relaxed text-slate-400">{de ? tool.descriptionDE : tool.descriptionEN}</div>
-              </button>
-            );
-          })}
-        </div>
-
-        {selectedTool ? (
-          <div className="border-2 border-cyan-700 bg-[#050816] shadow-[6px_6px_0_#020617]">
-            <div className="flex items-center justify-between gap-4 border-b-2 border-cyan-900 bg-cyan-950/25 px-4 py-3">
-              <div><Label className="text-cyan-300">{selectedTool.category} // L2 // SOURCE PROMPT</Label><div className="mt-2 font-mono text-sm font-black text-white">{selectedTool.title}</div></div>
-              <button type="button" onClick={() => copyPrompt(selectedTool.id, selectedTool.prompt)} className="retro-button flex items-center gap-2 bg-slate-900 px-3 py-2 text-xs font-bold text-slate-200">{copiedToolId === selectedTool.id ? <Check size={16} className="text-emerald-300" /> : <Copy size={16} className="text-cyan-300" />}{copiedToolId === selectedTool.id ? (de ? 'KOPIERT' : 'COPIED') : (de ? 'KOPIEREN' : 'COPY')}</button>
-            </div>
-            <pre className="max-h-80 overflow-auto whitespace-pre-wrap p-5 font-mono text-[12px] leading-6 text-slate-200">{selectedTool.prompt}</pre>
-            <div className="border-t border-indigo-900 px-4 py-2 text-xs text-slate-500">{de ? 'Quelle: aktueller agent-recall-compiler Katalog. Der Prompt bleibt hier absichtlich im Original.' : 'Source: current agent-recall-compiler catalog. The source prompt is intentionally shown verbatim.'}</div>
-          </div>
-        ) : (
-          <div className="border-2 border-dashed border-indigo-800 px-4 py-5 text-center text-sm text-slate-500">{de ? 'Auf eine Methode klicken → konkreten L2-Source-Prompt anzeigen.' : 'Click a method → show the concrete L2 source prompt.'}</div>
-        )}
-      </div>
-    );
-  }
-
-  if (kind === 'library') {
-    return <div className="grid gap-4 md:grid-cols-3"><Box className="border-cyan-700"><FileSpreadsheet className="text-cyan-300" size={30} /><div className="mt-3 text-lg font-black text-white">{de ? 'Einmalig?' : 'One-off?'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Direkter Prompt reicht.' : 'Use a direct prompt.'}</div></Box><Box className="border-fuchsia-700"><GitBranch className="text-fuchsia-300" size={30} /><div className="mt-3 text-lg font-black text-white">{de ? 'Wiederkehrend?' : 'Recurring?'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Methode bauen, Fall ableiten.' : 'Build a method, derive the case.'}</div></Box><Box className="border-emerald-700"><ShieldCheck className="text-emerald-300" size={30} /><div className="mt-3 text-lg font-black text-white">{de ? 'Kritisch?' : 'Consequential?'}</div><div className="mt-2 text-sm text-slate-400">{de ? 'Evidenz und Befugnis explizit machen.' : 'Make evidence and authority explicit.'}</div></Box></div>;
+    const steps = de ? ['Arbeitsschritt wählen', 'umsetzen', 'kurz prüfen', 'Freigabe + Belege prüfen'] : ['Choose slice', 'work', 'cheapest useful check', 'check authority + evidence'];
+    return <div><div className="grid gap-3 md:grid-cols-4">{steps.map((step, index) => <Box key={step} className={index === 3 ? 'border-emerald-700' : 'border-indigo-800'}><Label className="text-fuchsia-300">0{index + 1}</Label><div className="mt-3 font-bold text-white">{step}</div></Box>)}</div><div className="mt-4 grid gap-3 md:grid-cols-2"><div className="flex items-center gap-3 border-2 border-emerald-800 bg-emerald-950/20 px-4 py-3 text-emerald-100"><Bot size={22} />{de ? 'Freigabe reicht: automatisch weiter.' : 'Authority still holds: continue.'}</div><div className="flex items-center gap-3 border-2 border-amber-800 bg-amber-950/20 px-4 py-3 text-amber-100"><TriangleAlert size={22} />{de ? 'Neue Entscheidung nötig: BLOCKED.' : 'New decision required: BLOCKED.'}</div></div></div>;
   }
 
   return null;
