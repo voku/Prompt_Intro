@@ -150,9 +150,9 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
                 <div className="mx-auto flex h-44 w-44 items-center justify-center border-4 border-indigo-700 bg-indigo-950 shadow-[8px_8px_0_#020617,0_0_50px_rgba(217,70,239,.28)]"><IconComponent size={92} className="text-cyan-300" strokeWidth={1.5} /></div>
                 <div className="grid grid-cols-2 gap-3 font-mono text-xs">
                   <div className="border border-cyan-800 bg-cyan-950/20 p-3 text-cyan-200">{lang === 'de' ? 'ROLLE & KONTEXT' : 'ROLE & CONTEXT'}</div>
-                  <div className="border border-emerald-800 bg-emerald-950/20 p-3 text-emerald-200">{lang === 'de' ? 'CHAIN OF THOUGHT' : 'CHAIN OF THOUGHT'}</div>
+                  <div className="border border-emerald-800 bg-emerald-950/20 p-3 text-emerald-200">{lang === 'de' ? 'ERST ANALYSIEREN' : 'ANALYSE FIRST'}</div>
                   <div className="border border-fuchsia-800 bg-fuchsia-950/20 p-3 text-fuchsia-200">{lang === 'de' ? 'TOOLS & CODE' : 'TOOLS & CODE'}</div>
-                  <div className="border border-amber-800 bg-amber-950/20 p-3 text-amber-200">{lang === 'de' ? 'STRUKTUR & SICHERHEIT' : 'STRUCTURE & SAFETY'}</div>
+                  <div className="border border-amber-800 bg-amber-950/20 p-3 text-amber-200">{lang === 'de' ? 'BELEGE & SICHERHEIT' : 'EVIDENCE & SAFETY'}</div>
                 </div>
               </div>
             </div>

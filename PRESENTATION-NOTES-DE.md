@@ -85,29 +85,32 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * Optimierter Prompt: Google Search auf der offiziellen Firmenwebsite + URL-Quellenpflicht für jede Person.
 * **Takeaway:** Suche allein ist noch kein Beleg. Erst die Quelle pro Aussage macht das Ergebnis nachprüfbar.
 
-### 11 – Die Prompt-Hierarchie (Folie 11)
+### 11 – Wie viel Führung braucht die Aufgabe? (Folie 11)
+* Ausdrücklich **keine** Leiter vom Anfänger zum Profi. Wer Level 4 für alles nutzt, verschwendet Zeit.
 * Die 4 Stufen:
-  1. **Level 1 (Zero-Shot):** Frage ohne Kontext.
-  2. **Level 2 (Few-Shot):** Frage mit 2–3 Beispielen.
-  3. **Level 3 (Chain of Thought):** Schrittweise Anleitung („Denk Schritt für Schritt“).
-  4. **Level 4 (Agentic):** Tools, Python, Search, APIs.
+  1. **Direkt fragen:** einfache, unkritische Fragen.
+  2. **Kontext und Beispiele:** Rolle, Ziel, gewünschter Stil.
+  3. **Aufgabe strukturieren:** erst analysieren, dann Ergebnis erstellen.
+  4. **Werkzeuge und Prüfung:** Code, Suche, Quellen – wenn das Ergebnis halten muss.
 
-### 12 – Technik: Chain of Thought (CoT) (Folie 12)
+### 12 – Technik: Erst analysieren, dann Ergebnis erstellen (Folie 12)
 * **Szenario:** Wartungsplan für Sortieranlage X.
 * Standard-Prompt liefert beliebige, oberflächliche Tabellen.
-* CoT teilt auf: 1. Analyse der Komponenten → 2. Häufigste Ausfallrisiken → 3. Zeitplan.
-* **Takeaway:** Erst denken und analysieren, dann handeln.
+* Die Struktur teilt auf: 1. Analyse der Komponenten → 2. Häufigste Ausfallrisiken → 3. Zeitplan.
+* **Wichtig:** „Denk Schritt für Schritt“ ist kein Zauberspruch mehr – aktuelle Modelle denken ohnehin mit. Der Gewinn kommt daraus, dass *wir* festlegen, was zuerst geklärt werden muss.
+* **Takeaway:** Erst analysieren, dann Ergebnis erstellen.
 
 ### 13 – Technik: Persona & Kontext (Folie 13)
 * **Szenario:** Tonnen nicht geleert wegen Glatteis – Mitteilung an die Kommune.
 * Ohne Kontext: Generische Standard-Entschuldigung.
 * Mit Rolle (Betriebsleiter), Kontext (Glatteis), Ziel (Zweitversuch morgen) und Ton (sicherheitsbewusst): Professionelle, kooperative Lösung.
 
-### 14 – Technik: Structured Output (Folie 14)
+### 14 – Technik: Strukturierte Ausgabe (Folie 14)
 * **Szenario:** Unfallbericht auswerten.
 * Standard liefert Fließtext.
 * Optimiert nutzt `<task>`, `<format>`, `<bericht>` und erzwingt reines JSON.
-* **Takeaway:** Ideal für Schnittstellen und IT-Weiterverarbeitung ohne Nacharbeit.
+* **Im Chat** reicht das Format im Prompt. **Per API** besser ein echtes JSON-Schema (Structured Output) – dann erzwingt das System das Format, statt es nur zu erbitten.
+* **Takeaway:** Ideal für Schnittstellen und Weiterverarbeitung ohne Nacharbeit.
 
 ### 15 – Darum bauen wir einen Auftrag – keinen Zauberspruch (Folie 15)
 * `Vorlage (L2) + heutiger Fall → Arbeitsauftrag (L1)`
@@ -131,8 +134,8 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * Befugnis beantwortet: „Darf ich das ändern?“
 
 ### 19 – Unsicherheit braucht einen Namen (Folie 19)
-* Evidenzzustände: `VERIFIED`, `UNKNOWN`, `BLOCKED`.
-* Selbstsicherheit ist kein Evidenzzustand. Eine Lücke darf eine Lücke bleiben.
+* Für den Vortrag drei Zustände: **belegt / vermutet / offen**. Die englischen Labels (`VERIFIED`, `UNKNOWN`, `BLOCKED` …) stehen nur klein darunter, weil sie auf anderen Folien auftauchen.
+* Selbstsicherheit ist kein vierter Zustand. Eine Lücke darf eine Lücke bleiben.
 
 ### 20 – Bestell keine drei Fehler (Folie 20)
 * Change-Review um 18:00 Uhr: Drei ernsthafte Falsifikationsversuche statt Fundquote. `CLEAN` ist ein gültiges Ergebnis.
@@ -147,11 +150,12 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * Botschaft: Die Vorlage bleibt gleich, nur der Fall wechselt. „Nochmal abspielen“ für die Wiederholung, „Vollständige Vorlage“ zeigt/kopiert den ganzen Prompt.
 
 ### 23 – Sicherheit & Compliance (Folie 23)
-* **Wichtige Regeln für den Arbeitsalltag:**
-  1. Keine personenbezogenen Daten (DSGVO) in öffentliche Prompts.
-  2. Keine vertraulichen Geschäftsgeheimnisse (Preise, Kalkulationen, Verträge).
-  3. Ergebnisse immer gegenprüfen („Human in the Loop“).
-  4. Im Zweifel die interne IT-Security konsultieren.
+* **Kernformel:** freigegebener Dienst + zulässige Daten.
+  1. Nur freigegebene KI-Dienste – ein privater Account ist kein Arbeitswerkzeug.
+  2. Nur Daten, die für diesen Dienst zulässig sind; personenbezogene Daten und Betriebsgeheimnisse nur, wo ausdrücklich erlaubt.
+  3. Ergebnisse immer gegenprüfen („Human in the Loop“) – die Verantwortung bleibt bei uns.
+  4. Im Zweifel vor dem Einfügen IT-Security oder Datenschutz fragen.
+* **Mündlich ergänzen (nicht auf der Folie, weil Open Source):** Welche Dienste bei uns konkret freigegeben sind und für welche Daten.
 
 ### 24 – Zusammenfassung & Takeaways (Folie 24)
 * **Brücke:** Die L2-Vorlagen gelten nicht nur für IT-Tickets. Links stehen sechs Sätze für die Schreibtischarbeit, jeweils aus einem Rezept in `agent-recall-compiler` abgeleitet. Ein Klick kopiert den Satz.

@@ -26,24 +26,24 @@ Die interaktive React + TypeScript Präsentation vereint das **fundierte mentale
 9. **Beispiel: Logik & Mathe** — *Code-Aided Reasoning (PoT)*: Müllwagen-Dieselkosten mit Python berechnen
 10. **Beispiel: Fakten & Wissen** — *Fact Grounding & Tool Use*: Vorstand einer Firma mit Google Search & Quellen-URLs
 
-### 5. Die Prompt-Hierarchie & Kerntechniken
-11. **Die Prompt-Hierarchie** — Vom Anfänger zum Profi: Zero-Shot → Few-Shot → Chain of Thought → Agentic
-12. **Technik: Chain of Thought (CoT)** — Wartungsplan für Sortieranlage X in Teilschritte zerlegen
+### 5. Führung nach Bedarf & Kerntechniken
+11. **Wie viel Führung braucht die Aufgabe?** — Direkt fragen → Kontext & Beispiele → Aufgabe strukturieren → Werkzeuge & Prüfung
+12. **Technik: Erst analysieren, dann Ergebnis erstellen** — Wartungsplan für Sortieranlage X strukturieren
 13. **Technik: Persona & Kontext** — Glatteis-Mail an Kommune aus Sicht der Betriebsleitung eines Entsorgungsbetriebs
-14. **Technik: Structured Output** — Unfallbericht mit XML-Delimitern in valides JSON extrahieren
+14. **Technik: Strukturierte Ausgabe** — Unfallbericht als JSON; im Chat per Prompt, per API per Schema
 
 ### 6. Robuste IT-Methoden (Auftrag, Evidenz, Agents)
 15. **Darum bauen wir einen Auftrag – keinen Zauberspruch** — `Vorlage (L2) + heutiger Fall → Arbeitsauftrag (L1)`
 16. **Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping.** — CSV-Benutzerimport mit konkretem Arbeitsauftrag
 17. **Benutzer sagt: „VPN geht wieder.“ Ticket zu?** — Benutzeraussage vs. beobachtete Evidenz
 18. **Kontext ist keine Erlaubnis** — Relevanz („Ansehen?“) vs. Befugnis („Ändern?“)
-19. **Unsicherheit braucht einen Namen** — Evidenzzustände (`VERIFIED`, `UNKNOWN`, `BLOCKED`)
+19. **Unsicherheit braucht einen Namen** — belegt / vermutet / offen
 20. **Bestell keine drei Fehler** — Change-Review: Ernsthafte Falsifikation statt Fundquote
 21. **Auto-Agent ohne Selbstfreigabe** — Autonomes Weiterarbeiten innerhalb der Freigabe
 22. **Kleine L2-Toolbox statt Mega-Prompt** — Drei Alltagsfälle mit Animation: Vorlage + Fall → Arbeitsauftrag
 
 ### 7. Sicherheit & Abschluss
-23. **Sicherheit & Compliance** — DSGVO, Betriebsgeheimnisse, Human in the Loop, IT-Security
+23. **Sicherheit & Compliance** — Freigegebener Dienst + zulässige Daten, Human in the Loop
 24. **Zusammenfassung & Takeaways** — Sechs kopierbare Sätze für die Schreibtischarbeit (aus den L2-Rezepten abgeleitet) plus Kernregeln
 
 ---

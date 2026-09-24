@@ -13,13 +13,11 @@ import {
   FileLock2,
   Footprints,
   GitBranch,
-  KeyRound,
   Route,
   ServerCog,
   Sparkles,
   TicketCheck,
   TriangleAlert,
-  XCircle,
 } from 'lucide-react';
 import { Lang, VisualKind } from '../types';
 
@@ -174,15 +172,13 @@ const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
   }
 
   if (kind === 'evidence-board') {
+    // Three mental states for the talk; the finer technical labels used on other slides are shown as tags.
     const states = [
-      { label: 'VERIFIED', icon: CheckCircle2, note: de ? 'belegt' : 'proven', cls: 'border-emerald-700 text-emerald-300' },
-      { label: 'INFERRED', icon: GitBranch, note: de ? 'abgeleitet' : 'derived', cls: 'border-cyan-700 text-cyan-300' },
-      { label: 'ASSUMED', icon: CircleHelp, note: de ? 'Annahme' : 'assumption', cls: 'border-indigo-700 text-indigo-300' },
-      { label: 'UNKNOWN', icon: CircleHelp, note: de ? 'Beleg fehlt' : 'evidence missing', cls: 'border-slate-600 text-slate-300' },
-      { label: 'BLOCKED', icon: KeyRound, note: de ? 'Zugriff/Befugnis fehlt' : 'access/authority missing', cls: 'border-amber-700 text-amber-300' },
-      { label: 'CONTRADICTED', icon: XCircle, note: de ? 'Quellen widersprechen sich' : 'sources disagree', cls: 'border-rose-700 text-rose-300' },
+      { label: de ? 'BELEGT' : 'PROVEN', icon: CheckCircle2, note: de ? 'Wir haben es gesehen, gemessen oder nachgelesen.' : 'We saw, measured or looked it up.', tags: ['VERIFIED'], cls: 'border-emerald-700 text-emerald-300' },
+      { label: de ? 'VERMUTET' : 'ASSUMED', icon: GitBranch, note: de ? 'Klingt plausibel, ist aber nicht geprüft.' : 'Sounds plausible, but is not checked.', tags: ['INFERRED', 'ASSUMED'], cls: 'border-cyan-700 text-cyan-300' },
+      { label: de ? 'OFFEN' : 'OPEN', icon: CircleHelp, note: de ? 'Beleg fehlt, Zugriff fehlt oder Quellen widersprechen sich.' : 'Evidence missing, access missing or sources disagree.', tags: ['UNKNOWN', 'BLOCKED', 'CONTRADICTED'], cls: 'border-amber-700 text-amber-300' },
     ];
-    return <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{states.map(({ label, icon: Icon, note, cls }) => <Box key={label} className={cls}><div className="flex items-center gap-3"><Icon size={24} /><strong>{label}</strong></div><div className="mt-2 text-sm text-slate-400">{note}</div></Box>)}</div>;
+    return <div className="grid gap-4 md:grid-cols-3">{states.map(({ label, icon: Icon, note, tags, cls }) => <Box key={label} className={cls}><div className="flex items-center gap-3"><Icon size={28} /><strong className="text-2xl">{label}</strong></div><div className="mt-3 text-base text-slate-300">{note}</div><div className="mt-4 flex flex-wrap gap-2">{tags.map((tag) => <span key={tag} className="border border-slate-700 px-2 py-1 font-mono text-[11px] text-slate-400">{tag}</span>)}</div></Box>)}</div>;
   }
 
   if (kind === 'agent-loop') {
