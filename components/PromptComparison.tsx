@@ -35,7 +35,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
   };
 
   const tag = (value: string, tone: 'amber' | 'cyan') => (
-    <span key={value} className={`border px-2 py-1 font-mono text-[11px] ${tone === 'amber' ? 'border-amber-700 bg-amber-950/30 text-amber-200' : 'border-cyan-700 bg-cyan-950/30 text-cyan-200'}`}>{value}</span>
+    <span key={value} className={`border px-2 py-1 font-mono text-xs ${tone === 'amber' ? 'border-amber-700 bg-amber-950/30 text-amber-200' : 'border-cyan-700 bg-cyan-950/30 text-cyan-200'}`}>{value}</span>
   );
 
   return (
@@ -55,7 +55,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
             </div>
             <div className="mt-3 flex flex-wrap gap-2">{labels.standardTags.map((value) => tag(value, 'amber'))}</div>
           </div>
-          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-[13px] leading-6 text-slate-200">{standard}</pre>
+          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{standard}</pre>
         </div>
 
         <div className="flex flex-col overflow-hidden border-2 border-cyan-700 bg-slate-950/90 shadow-[5px_5px_0_#020617]">
@@ -66,7 +66,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
             </div>
             <div className="mt-3 flex flex-wrap gap-2">{labels.optimizedTags.map((value) => tag(value, 'cyan'))}</div>
           </div>
-          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-[13px] leading-6 text-slate-200">{optimized}</pre>
+          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{optimized}</pre>
         </div>
       </div>
 
@@ -89,7 +89,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
                 <span className="pixel-font text-[8px] text-emerald-300">{labels.workOrderLabel}</span>
                 <p className="mt-2 text-xs text-slate-400">{labels.workOrderNote}</p>
               </div>
-              <pre className="whitespace-pre-wrap p-5 font-mono text-[13px] leading-6 text-slate-200">{workOrder}</pre>
+              <pre className="whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{workOrder}</pre>
             </div>
           )}
         </div>
