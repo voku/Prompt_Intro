@@ -35,7 +35,7 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * Ein eigenes Beispiel erzählen: wo mir ein LLM zuletzt richtig Arbeit abgenommen hat – und wo es mich reingelegt hätte.
 * Die 4 Bausteine im Retro-HUD rechts:
   1. **Rolle & Kontext**
-  2. **Chain of Thought**
+  2. **Erst analysieren**
   3. **Tools & Code**
   4. **Struktur & Sicherheit**
 
