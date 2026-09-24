@@ -36,7 +36,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               ? 'LLM // MENTAL MODEL'
               : data.visual === 'toolbox'
                 ? (lang === 'de' ? 'METHODEN // L2' : 'METHODS // L2')
-                : (lang === 'de' ? 'GRUNDLAGEN // KONZEPT' : 'FOUNDATIONS // CONCEPT');
+                : (lang === 'de' ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');
   const compareLabel = lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER';
   const readyLabel = lang === 'de' ? 'BEREIT' : 'READY';
 
