@@ -9,6 +9,7 @@ import { resolveIcon } from './iconUtils';
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isGridOpen, setIsGridOpen] = useState(false);
+  const [isRevealVisible, setIsRevealVisible] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('de');
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
@@ -17,16 +18,35 @@ const App: React.FC = () => {
   const safeSlideCount = Math.max(slides.length, 1);
   const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
   const currentSlide = slides[safeCurrentSlideIndex];
+  const hasCurrentReveal = currentSlide?.visual === 'carwash';
   const progress = slides.length > 0 ? ((safeCurrentSlideIndex + 1) / slides.length) * 100 : 0;
-  const nextSlide = (): void => { if (safeCurrentSlideIndex < slides.length - 1) setCurrentSlideIndex((v) => v + 1); };
-  const prevSlide = (): void => { if (safeCurrentSlideIndex > 0) setCurrentSlideIndex((v) => v - 1); };
+  const nextSlide = (): void => {
+    if (hasCurrentReveal && !isRevealVisible) {
+      setIsRevealVisible(true);
+      return;
+    }
+    if (safeCurrentSlideIndex < slides.length - 1) {
+      setIsRevealVisible(false);
+      setCurrentSlideIndex((v) => v + 1);
+    }
+  };
+  const prevSlide = (): void => {
+    if (hasCurrentReveal && isRevealVisible) {
+      setIsRevealVisible(false);
+      return;
+    }
+    if (safeCurrentSlideIndex > 0) {
+      setIsRevealVisible(false);
+      setCurrentSlideIndex((v) => v - 1);
+    }
+  };
   const handleTouchStart = (event: React.TouchEvent<HTMLElement>): void => { if (isGridOpen || event.touches.length !== 1) { touchStartRef.current = null; touchEndRef.current = null; return; } const t = event.touches[0]; touchStartRef.current = { x: t.clientX, y: t.clientY }; touchEndRef.current = null; };
   const handleTouchMove = (event: React.TouchEvent<HTMLElement>): void => { if (!touchStartRef.current || event.touches.length !== 1) return; const t = event.touches[0]; touchEndRef.current = { x: t.clientX, y: t.clientY }; };
   const handleTouchEnd = (): void => { if (!touchStartRef.current || !touchEndRef.current) { touchStartRef.current = null; touchEndRef.current = null; return; } const dx = touchEndRef.current.x - touchStartRef.current.x; const dy = touchEndRef.current.y - touchStartRef.current.y; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) dx < 0 ? nextSlide() : prevSlide(); touchStartRef.current = null; touchEndRef.current = null; };
   const toggleFullscreen = (): void => { if (!document.fullscreenElement) { void document.documentElement.requestFullscreen(); return; } if (document.exitFullscreen) void document.exitFullscreen(); };
   useEffect(() => { const interval = window.setInterval(() => setElapsedSeconds((s) => s + 1), 1000); return () => window.clearInterval(interval); }, []);
   useEffect(() => { setCurrentSlideIndex((i) => Math.min(i, Math.max(slides.length - 1, 0))); }, [slides.length]);
-  useEffect(() => { const handleKeyDown = (event: KeyboardEvent): void => { const tag = document.activeElement?.tagName.toLowerCase(); if (tag === 'input' || tag === 'textarea') return; if (event.key === 'ArrowRight') nextSlide(); if (event.key === 'ArrowLeft') prevSlide(); if (event.key === ' ' && !isGridOpen) { event.preventDefault(); nextSlide(); } if (event.key === 'Escape' && isGridOpen) setIsGridOpen(false); }; window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [currentSlideIndex, isGridOpen, slides.length]);
+  useEffect(() => { const handleKeyDown = (event: KeyboardEvent): void => { const tag = document.activeElement?.tagName.toLowerCase(); if (tag === 'input' || tag === 'textarea') return; if (event.key === 'ArrowRight') nextSlide(); if (event.key === 'ArrowLeft') prevSlide(); if (event.key === ' ' && !isGridOpen) { event.preventDefault(); nextSlide(); } if (event.key === 'Escape' && isGridOpen) setIsGridOpen(false); }; window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [currentSlideIndex, isGridOpen, isRevealVisible, slides.length]);
   const formatTime = (seconds: number): string => `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
   const prevLabel = lang === 'de' ? 'ZURÜCK' : 'BACK';
   const nextLabel = lang === 'de' ? 'WEITER' : 'NEXT';
@@ -58,9 +78,9 @@ const App: React.FC = () => {
 
       <main className="relative flex flex-grow items-center justify-center overflow-hidden px-3 pb-24 pt-4 md:px-7 md:pb-28 md:pt-6" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
         <div className={`flex h-full w-full justify-center transition-opacity duration-200 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
-          {currentSlide && <SlideLayout key={safeCurrentSlideIndex} data={currentSlide} isActive={!isGridOpen} lang={lang} />}
+          {currentSlide && <SlideLayout key={safeCurrentSlideIndex} data={currentSlide} isActive={!isGridOpen} isRevealed={isRevealVisible} lang={lang} />}
         </div>
-        {isGridOpen && <div className="absolute inset-0 z-40 overflow-y-auto bg-[#050816]/95 p-6 backdrop-blur-sm animate-fadeIn"><div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{slides.map((slide, index) => { const Icon = resolveIcon(slide.icon); const title = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title; return <button key={slide.id} type="button" onClick={() => { setCurrentSlideIndex(index); setIsGridOpen(false); }} className={`retro-panel group relative flex min-h-44 flex-col items-start p-5 text-left transition ${safeCurrentSlideIndex === index ? 'bg-indigo-950 text-white' : 'bg-slate-950/90 text-slate-400 hover:bg-slate-900'}`}><div className="mb-4 border-2 border-indigo-800 bg-slate-900 p-2 text-cyan-300"><Icon size={22} /></div><span className="pixel-font mb-3 text-[8px] text-fuchsia-400">{slideLabel} {String(index + 1).padStart(2, '0')}</span><h3 className="font-bold leading-tight">{title}</h3>{safeCurrentSlideIndex === index && <span className="pixel-pulse absolute right-3 top-3 h-2 w-2 bg-emerald-400" />}</button>; })}</div></div>}
+        {isGridOpen && <div className="absolute inset-0 z-40 overflow-y-auto bg-[#050816]/95 p-6 backdrop-blur-sm animate-fadeIn"><div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{slides.map((slide, index) => { const Icon = resolveIcon(slide.icon); const title = lang === 'de' && slide.titleDE ? slide.titleDE : slide.title; return <button key={slide.id} type="button" onClick={() => { setCurrentSlideIndex(index); setIsRevealVisible(false); setIsGridOpen(false); }} className={`retro-panel group relative flex min-h-44 flex-col items-start p-5 text-left transition ${safeCurrentSlideIndex === index ? 'bg-indigo-950 text-white' : 'bg-slate-950/90 text-slate-400 hover:bg-slate-900'}`}><div className="mb-4 border-2 border-indigo-800 bg-slate-900 p-2 text-cyan-300"><Icon size={22} /></div><span className="pixel-font mb-3 text-[8px] text-fuchsia-400">{slideLabel} {String(index + 1).padStart(2, '0')}</span><h3 className="font-bold leading-tight">{title}</h3>{safeCurrentSlideIndex === index && <span className="pixel-pulse absolute right-3 top-3 h-2 w-2 bg-emerald-400" />}</button>; })}</div></div>}
       </main>
 
       <footer className="fixed bottom-0 left-0 z-50 w-full border-t-2 border-indigo-900 bg-[#070a19]/95 p-3 shadow-[0_-4px_0_#020617] backdrop-blur md:p-4">
