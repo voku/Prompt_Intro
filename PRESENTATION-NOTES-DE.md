@@ -13,6 +13,13 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 > **LLMs sind extrem mächtig darin, Muster zu erkennen, Kontext fortzusetzen und Tools zu bedienen.**
 > Aber sie kennen unsere Gedanken nicht. Wer vage fragt, bekommt leicht plausible, aber unzuverlässige Antworten. Wer Ziel, Kontext, passende Werkzeuge und Prüfwege vorgibt, bekommt bessere Ergebnisse – und kann wichtige Aussagen nachvollziehen.
 
+### Pointen-Kette (Follow the white rabbit 🐇)
+Auf den Folien 5–10, 16 und 17 blendet der nächste Klick erst eine **Pointe** ein, bevor es weitergeht (← nimmt sie wieder weg). Jede Pointe beantwortet das *Warum* der Folie; die 🐇-Zeile darunter stellt die Frage, die die nächste Folie beantwortet:
+
+Waschanlage (Muster überlagert Ziel) → Rauschbild (Muster ohne Beobachtung) → Tokens (warum das Modell anders „sieht“) → Next Token (gemeinsame Wurzel: plausibel ≠ belegt) → Mathe (Rechnen an Code abgeben) → Fakten (Quelle pro Aussage) → … → VPN (Waschanlagen-Muster im Ticket) → Drei Fehler (wir schreiben das Muster selbst in die Frage) → zurück zur Waschanlage.
+
+Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklären.
+
 ---
 
 ## Ablauf & Notizen pro Folie
@@ -53,8 +60,8 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * Zwei Mini-Beispiele, je ein Satz Beispiel + ein Satz Pointe, dann weiter (beide kommen später ausführlich):
   - *„Finde drei Fehler in diesem Code.“* – Die Zahl in der Formulierung lenkt die Suche. Vielleicht gibt es zwei, vielleicht sieben. (→ Folie 17)
   - *„Der Benutzer sagt, VPN geht wieder. Ticket schließen?“* – Klingt gelöst, ist aber noch kein technischer Nachweis. (→ Folie 16)
-* **Klick → Merksatz erscheint:**
-  > „Starke Muster in Fragen können das eigentliche Ziel überlagern.“
+* **Klick → Pointe:** „Starke Muster in Fragen können das eigentliche Ziel überlagern.“
+  🐇 *„Und wenn es gar kein Ziel gibt – nur Rauschen?“*
 * **Überleitung:**
   > „Ein LLM versucht nicht automatisch herauszufinden, was ich wirklich gemeint habe. Es erzeugt eine passende Fortsetzung aus dem Kontext, den ich ihm gebe. Deshalb müssen Ziel, Prüfkriterien und benötigte Belege sichtbar werden.“
 * **Formulierung:** Nicht „das LLM macht nur Pattern Matching“ sagen – zu grob. Besser:
@@ -66,17 +73,23 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * GPT und Claude halluzinieren trotzdem („I love you“, „Geheime Rose“).
 * **Merksatz:**
   > „Eine überzeugende Beschreibung ist keine Beobachtung. Wenn Belege fehlen, ist UNKNOWN die richtige Antwort – nicht die schönere Geschichte.“
+* **Klick → Pointe:** „Da war gar keine Nachricht. Beide Modelle haben ein Muster vervollständigt – beobachtet hat keins.“ (Die Ground-Truth-Box ist bis dahin versteckt.)
+  🐇 *„Warum sieht es Dinge, die nicht da sind – und übersieht Buchstaben, die da sind?“*
 
 ### 7 – Buchstaben, Wörter, Tokens: nicht dasselbe (Folie 7)
 * Auf `strawberry` und die drei `r` hinweisen.
 * LLMs sehen Text in Token-Slices, nicht als Buchstabengitter.
 * **Merksatz:**
   > „Wenn exaktes Zählen, String-Operationen oder Rechnen wichtig sind: Deterministische Tools (Python, Regex) nutzen.“
+* **Klick → Pointe:** „Das Modell arbeitet mit Tokens, nicht mit Buchstaben. Exakte Zeichenarbeit gehört in Code.“
+  🐇 *„Wenn es keine Buchstaben sieht – was macht es dann eigentlich mit dem Text?“*
 
 ### 8 – Plausible Fortsetzung ist keine Wahrheitsdatenbank (Folie 8)
 * Plausibilität belohnt, was in den Kontext passt. Wahrheit braucht Evidenz.
 * **Überleitung:**
   > „Genau hier kommen unsere ersten konkreten Werkzeuge ins Spiel: Mathe und Fakten.“
+* **Klick → Pointe:** „Es wählt, was zum Kontext passt – nicht, was belegt ist. Das ist die gemeinsame Wurzel aller drei Fallen.“ (Waschanlage, Rauschbild, strawberry – hier laufen die Fäden zusammen.)
+  🐇 *„Wie kommt dann Wahrheit rein? Wir geben die Teile ab, bei denen ‚plausibel‘ nicht reicht.“*
 
 ### 9 – Beispiel: Logik & Mathe (Code-Aided Reasoning / PoT) (Folie 9)
 * **Szenario:** Müllwagen mit 32L/100km, 2 Touren à 45km/Tag, Diesel 1,70€ im November 2024 ohne Sonntage.
@@ -86,12 +99,16 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
   - `Action: Schreibe ein Python-Skript...`
 * **Takeaway:** Nicht „LLMs können nicht rechnen“, sondern: Code ist nachprüfbar, Kopfrechnen nicht.
 * **Vorher testen:** Aktuelle Reasoning-Modelle rechnen das Beispiel oft richtig. Wenn es live klappt, ist das kein Problem – die Botschaft bleibt die Nachprüfbarkeit.
+* **Klick → Pointe:** „Nicht dem Kopfrechnen des Modells vertrauen – den Rechenweg prüfbar machen.“
+  🐇 *„Rechnen lässt sich an Code abgeben. Und Fakten?“*
 
 ### 10 – Beispiel: Fakten & Wissen (Fact Grounding & Tool Use) (Folie 10)
 * **Szenario:** „Wer sitzt aktuell im Vorstand der Siemens AG?“
 * Standard-Prompt: Nennt Vorstände von 2021 oder erfindet Namen.
 * Optimierter Prompt: Google Search auf der offiziellen Firmenwebsite + URL-Quellenpflicht für jede Person.
 * **Takeaway:** Suche allein ist noch kein Beleg. Erst die Quelle pro Aussage macht das Ergebnis nachprüfbar.
+* **Klick → Pointe:** „Suche allein ist kein Beleg. Erst die Quelle pro Aussage macht die Antwort prüfbar.“
+  🐇 *„Code, Suche, Quellen – braucht jede Frage das alles?“*
 
 ### 11 – Wie viel Führung braucht die Aufgabe? (Folie 11)
 * Ausdrücklich **keine** Leiter vom Anfänger zum Profi. Die vier Punkte sind kombinierbare Bausteine; je nach Aufgabe reicht schon der erste.
@@ -129,10 +146,14 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * Drei Ebenen unterscheiden: Was das Ticket fordert, was der User sagt, was nachweisbar geprüft wurde.
 * Benutzeraussage ist Input, kein Beweis.
 * Rückbezug auf Folie 5: „Klingt gelöst → schließen“ ist genau so ein starkes Muster.
+* **Klick → Pointe:** „‚Klingt gelöst → schließen‘ ist wieder das Waschanlagen-Muster: plausibel, aber nicht geprüft.“
+  🐇 *„Und was, wenn wir das Muster selbst in die Frage schreiben?“*
 
 ### 17 – Bestell keine drei Fehler (Folie 17)
 * Change-Review um 18:00 Uhr: Drei ernsthafte Falsifikationsversuche statt Fundquote. `CLEAN` ist ein gültiges Ergebnis.
 * Rückbezug auf Folie 5: „Finde drei Fehler“ lenkt die Suche – das Modell liefert sonst eben drei.
+* **Klick → Pointe:** „Wer drei Fehler bestellt, bekommt drei – ob es sie gibt oder nicht. Die Frage formt die Antwort.“
+  🐇 *„Zurück zur Waschanlage: Ziel, Prüfkriterien und Belege sichtbar machen – und als Vorlage wiederverwenden.“* – der Kreis schließt sich, weiter zur Toolbox.
 
 ### 18 – Kleine Vorlagen-Toolbox statt Mega-Prompt (Folie 18)
 * Drei Karten: VPN-Fehler erst nachstellen · Volle Platte: erst Lücken klären · Schichtwechsel ohne Chatverlauf.

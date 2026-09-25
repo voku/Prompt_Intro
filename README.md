@@ -50,6 +50,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 - **Bilingual (DE / EN):** Vollständig umschaltbar zwischen Deutsch und Englisch im HUD.
 - **Interaktive Vorher/Nachher-Vergleiche:** Standard-Prompt vs. optimierter Prompt mit aufklappbaren Arbeitsaufträgen.
 - **Klickbare Vorlagen-Toolbox:** Auf Folie 18 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
+- **Pointen-Kette:** Auf den Folien 5–10, 16 und 17 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
 - **Visuelle Diagramme & Animationen:** Integrierte visuelle Panels für Waschanlage, Rauschbild, Tokens, Next-Token, Vorlage → Arbeitsauftrag, Scope-Map, Evidenzzustände und Agent-Loops.
 
 ---
