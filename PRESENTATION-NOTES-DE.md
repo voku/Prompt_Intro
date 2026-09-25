@@ -86,12 +86,13 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 * **Takeaway:** Suche allein ist noch kein Beleg. Erst die Quelle pro Aussage macht das Ergebnis nachprüfbar.
 
 ### 11 – Wie viel Führung braucht die Aufgabe? (Folie 11)
-* Ausdrücklich **keine** Leiter vom Anfänger zum Profi. Wer Level 4 für alles nutzt, verschwendet Zeit.
-* Die 4 Stufen:
+* Ausdrücklich **keine** Leiter vom Anfänger zum Profi. Die vier Punkte sind kombinierbare Bausteine; je nach Aufgabe reicht schon der erste.
+* Die 4 Bausteine:
   1. **Direkt fragen:** einfache, unkritische Fragen.
   2. **Kontext und Beispiele:** Rolle, Ziel, gewünschter Stil.
   3. **Aufgabe strukturieren:** erst analysieren, dann Ergebnis erstellen.
   4. **Werkzeuge und Prüfung:** Code, Suche, Quellen – wenn das Ergebnis halten muss.
+* **Merksatz:** Nicht jeder Prompt braucht alle vier Bausteine. Mehr Prompt ist nicht automatisch besser.
 
 ### 12 – Technik: Erst analysieren, dann Ergebnis erstellen (Folie 12)
 * **Szenario:** Wartungsplan für Sortieranlage X.
