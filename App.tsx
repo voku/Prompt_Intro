@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const safeSlideCount = Math.max(slides.length, 1);
   const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
   const currentSlide = slides[safeCurrentSlideIndex];
-  const hasCurrentReveal = currentSlide?.visual === 'carwash';
+  const hasCurrentReveal = Boolean(currentSlide?.punchline);
   const progress = slides.length > 0 ? ((safeCurrentSlideIndex + 1) / slides.length) * 100 : 0;
   const nextSlide = (): void => {
     if (hasCurrentReveal && !isRevealVisible) {

@@ -3,6 +3,7 @@ import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
 import L2ToolboxPanel from './L2ToolboxPanel';
 import LegacyBridge from './LegacyBridge';
+import { Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
 
@@ -19,6 +20,8 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
   const content = tArr(data.content, data.contentDE);
   const technique = t(data.technique, data.techniqueDE);
   const topic = t(data.topic, data.topicDE);
+  const punchline = t(data.punchline, data.punchlineDE);
+  const punchlineNext = t(data.punchlineNext, data.punchlineNextDE);
   const thanksLabel = lang === 'de' ? 'ENDE // VIELEN DANK // FRAGEN & DISKUSSION' : 'END // THANK YOU // QUESTIONS & DISCUSSION';
   const trainingLabel = 'PROMPT ENGINEERING · TRAINING';
   const mentalModelVisuals = ['carwash', 'noise-hallucination', 'tokens', 'next-token'];
@@ -115,6 +118,24 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
     return <p className="text-lg font-medium leading-relaxed text-slate-300 md:text-xl">{content}</p>;
   };
 
+  const renderPunchline = (className = '') => {
+    if (!punchline || !isRevealed) return null;
+    return (
+      <div
+        ref={(el) => el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })}
+        className={`animate-fadeIn border-2 border-fuchsia-700 bg-fuchsia-950/35 px-5 py-4 shadow-[4px_4px_0_#020617] ${className}`}>
+        <div className="pixel-font text-[8px] text-fuchsia-300">{lang === 'de' ? 'POINTE' : 'PUNCHLINE'}</div>
+        <div className="mt-2 text-lg font-black leading-snug text-white md:text-xl">{punchline}</div>
+        {punchlineNext && (
+          <div className="mt-3 flex items-center gap-2 border-t border-fuchsia-900 pt-3 text-base font-semibold text-cyan-200">
+            <Rabbit size={18} className="shrink-0 text-cyan-300" />
+            <span>{punchlineNext}</span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderVisual = () => {
     if (data.visual === 'legacy-recap' || data.visual === 'legacy-timejump') {
       return <LegacyBridge kind={data.visual} lang={lang} />;
@@ -186,18 +207,10 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               </div>
             ) : data.visual ? (
               <div className="grid flex-grow gap-6 lg:grid-cols-[1.55fr_.72fr] lg:items-center">
-                <div className={`retro-panel bg-[#080d20]/75 p-5 md:p-7 ${data.visual === 'carwash' ? '[&>div>div:last-child]:hidden' : ''}`}>
+                {/* The visual's own closing line is hidden here; the Pointe replaces it on click. */}
+                <div className={`retro-panel bg-[#080d20]/75 p-5 md:p-7 ${punchline ? '[&>div>div:last-child]:hidden' : ''}`}>
                   {renderVisual()}
-                  {data.visual === 'carwash' && isRevealed && (
-                    <div className="mt-4 animate-fadeIn border-2 border-fuchsia-700 bg-fuchsia-950/35 px-5 py-4 shadow-[4px_4px_0_#020617]">
-                      <div className="pixel-font text-[8px] text-fuchsia-300">{lang === 'de' ? 'MERKSATZ' : 'TAKEAWAY'}</div>
-                      <div className="mt-2 text-lg font-black leading-snug text-white md:text-xl">
-                        {lang === 'de'
-                          ? 'Starke Muster in Fragen können das eigentliche Ziel überlagern.'
-                          : 'Strong patterns in questions can overshadow the actual goal.'}
-                      </div>
-                    </div>
-                  )}
+                  {renderPunchline('mt-4')}
                 </div>
                 <div>{renderTextBlock()}</div>
               </div>
@@ -230,6 +243,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
                 workOrder={lang === 'de' && data.codeWorkOrderDE ? data.codeWorkOrderDE : data.codeWorkOrder}
               />
             </div>
+            {renderPunchline('mt-5')}
           </div>
         );
 

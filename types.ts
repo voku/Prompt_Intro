@@ -32,11 +32,17 @@ export interface SlideData {
   content?: string | string[];
   technique?: string;
   topic?: string;
+  /** Pointe revealed on the next click before advancing. */
+  punchline?: string;
+  /** Question that leads into the next slide ("follow the white rabbit"). */
+  punchlineNext?: string;
   titleDE?: string;
   subtitleDE?: string;
   contentDE?: string | string[];
   techniqueDE?: string;
   topicDE?: string;
+  punchlineDE?: string;
+  punchlineNextDE?: string;
   codeStandard?: string;
   codeOptimized?: string;
   codeStandardDE?: string;
