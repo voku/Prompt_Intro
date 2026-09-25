@@ -34,7 +34,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
           : data.visual && legacyVisuals.includes(data.visual)
             ? (lang === 'de' ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
             : data.visual && mentalModelVisuals.includes(data.visual)
-              ? 'LLM // MENTAL MODEL'
+              ? `LLM // ${topic ?? 'MENTAL MODEL'}`
               : data.visual === 'toolbox'
                 ? (lang === 'de' ? 'METHODEN // VORLAGEN' : 'METHODS // TEMPLATES')
                 : (lang === 'de' ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');

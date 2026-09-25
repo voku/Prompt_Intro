@@ -38,6 +38,8 @@ export const SLIDES: SlideData[] = [
     icon: 'CarFront',
     title: '50 Metres? Walking Sounds Great. Wrong Task.',
     titleDE: '50 Meter? Laufen klingt super. Falsche Aufgabe.',
+    topic: 'Make the real goal visible',
+    topicDE: 'Das echte Ziel sichtbar machen',
     subtitle: 'A model can optimise the explicit clue and miss the implicit goal.',
     subtitleDE: 'Ein Modell kann die sichtbare Information sauber verarbeiten und trotzdem das unausgesprochene Ziel verfehlen.',
     content: [
@@ -56,6 +58,8 @@ export const SLIDES: SlideData[] = [
     icon: 'ScanSearch',
     title: 'Nothing Was There. Both Models Found Something.',
     titleDE: 'Da war nichts. Beide Modelle fanden trotzdem etwas.',
+    topic: 'Observation needs evidence',
+    topicDE: 'Beobachtung braucht Belege',
     subtitle: 'Pattern completion can look exactly like observation when nobody checks the ground truth.',
     subtitleDE: 'Mustererkennung kann exakt wie Beobachtung klingen – solange niemand gegen die Realität prüft.',
     content: [
@@ -74,6 +78,8 @@ export const SLIDES: SlideData[] = [
     icon: 'Binary',
     title: 'Characters, Words, Tokens: Different Layers',
     titleDE: 'Buchstaben, Wörter, Tokens: nicht dasselbe',
+    topic: 'Exactness needs tools',
+    topicDE: 'Exaktheit braucht Werkzeuge',
     subtitle: 'Language models do not natively see text as the neat character grid we see.',
     subtitleDE: 'Ein Sprachmodell sieht Text nicht automatisch als die saubere Buchstabenfolge, die wir vor Augen haben.',
     content: [
@@ -92,6 +98,8 @@ export const SLIDES: SlideData[] = [
     icon: 'Sparkles',
     title: 'Plausible Continuation Is Not a Truth Database',
     titleDE: 'Plausible Fortsetzung ist keine Wahrheitsdatenbank',
+    topic: 'Plausibility ≠ truth',
+    topicDE: 'Plausibilität ≠ Wahrheit',
     subtitle: 'Generation rewards contextual fit. Truth needs evidence, retrieval or tools.',
     subtitleDE: 'Generation belohnt, was zum Kontext passt. Wahrheit braucht Evidenz, Retrieval oder Tools.',
     content: [
