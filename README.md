@@ -17,7 +17,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 4. **Das LLM-Problem** — Modell-Output ist nicht automatisch Beobachtung oder Wahrheit
 
 ### 3. Mentales Modell
-5. **50 Meter? Laufen klingt super. Falsche Aufgabe.** — expliziter Hinweis vs. implizites Ziel
+5. **50 Meter? Laufen klingt super. Falsche Aufgabe.** — starkes Muster überlagert das implizite Ziel
 6. **Da war nichts. Beide Modelle fanden trotzdem etwas.** — Halluzination vs. Ground Truth
 7. **Buchstaben, Wörter, Tokens: nicht dasselbe** — Tokenisierung vs. deterministische Werkzeuge
 8. **Plausible Fortsetzung ist keine Wahrheitsdatenbank** — Kontextpassung vs. Evidenz

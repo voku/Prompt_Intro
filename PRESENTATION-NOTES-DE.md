@@ -49,9 +49,17 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 
 ### 5 – 50 Meter? Laufen klingt super. Falsche Aufgabe. (Folie 5)
 * Prompt: *„Ich will mein Auto waschen. Die Waschanlage ist 50 Meter entfernt. Laufen oder fahren?“*
-* Die Falle: „50 Meter“ triggert das Muster „kurze Strecke → laufen“. Aber die implizite Bedingung war: Das Auto muss gewaschen werden!
-* **Merksatz:**
-  > „Wichtige Ziele und Randbedingungen dürfen nicht nur in unserem Kopf existieren.“
+* Muster benennen, nicht erklären, wie ein LLM funktioniert: „50 Meter“ triggert „kurze Strecke → laufen“. Das eigentliche Ziel steckt im Kontext: Das Auto muss in die Waschanlage.
+* Zwei Mini-Beispiele, je ein Satz Beispiel + ein Satz Pointe, dann weiter (beide kommen später ausführlich):
+  - *„Finde drei Fehler in diesem Code.“* – Die Zahl in der Formulierung lenkt die Suche. Vielleicht gibt es zwei, vielleicht sieben. (→ Folie 17)
+  - *„Der Benutzer sagt, VPN geht wieder. Ticket schließen?“* – Klingt gelöst, ist aber noch kein technischer Nachweis. (→ Folie 16)
+* **Klick → Merksatz erscheint:**
+  > „Starke Muster in Fragen können das eigentliche Ziel überlagern.“
+* **Überleitung:**
+  > „Ein LLM versucht nicht automatisch herauszufinden, was ich wirklich gemeint habe. Es erzeugt eine passende Fortsetzung aus dem Kontext, den ich ihm gebe. Deshalb müssen Ziel, Prüfkriterien und benötigte Belege sichtbar werden.“
+* **Formulierung:** Nicht „das LLM macht nur Pattern Matching“ sagen – zu grob. Besser:
+  > „Das Modell arbeitet stark über gelernte sprachliche Muster. Ein starkes Muster in der Frage kann dabei das eigentliche Ziel überlagern.“
+* **Zeitbudget:** ein bis zwei Minuten für alle drei Beispiele.
 
 ### 6 – Da war nichts. Beide Modelle fanden trotzdem etwas. (Folie 6)
 * Das Rauschbild wirken lassen: Es enthält reines Rauschen.
@@ -120,9 +128,11 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 ### 16 – Benutzer sagt: „VPN geht wieder.“ Ticket zu? (Folie 16)
 * Drei Ebenen unterscheiden: Was das Ticket fordert, was der User sagt, was nachweisbar geprüft wurde.
 * Benutzeraussage ist Input, kein Beweis.
+* Rückbezug auf Folie 5: „Klingt gelöst → schließen“ ist genau so ein starkes Muster.
 
 ### 17 – Bestell keine drei Fehler (Folie 17)
 * Change-Review um 18:00 Uhr: Drei ernsthafte Falsifikationsversuche statt Fundquote. `CLEAN` ist ein gültiges Ergebnis.
+* Rückbezug auf Folie 5: „Finde drei Fehler“ lenkt die Suche – das Modell liefert sonst eben drei.
 
 ### 18 – Kleine Vorlagen-Toolbox statt Mega-Prompt (Folie 18)
 * Drei Karten: VPN-Fehler erst nachstellen · Volle Platte: erst Lücken klären · Schichtwechsel ohne Chatverlauf.
