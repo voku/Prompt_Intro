@@ -31,10 +31,12 @@ export interface SlideData {
   subtitle?: string;
   content?: string | string[];
   technique?: string;
+  topic?: string;
   titleDE?: string;
   subtitleDE?: string;
   contentDE?: string | string[];
   techniqueDE?: string;
+  topicDE?: string;
   codeStandard?: string;
   codeOptimized?: string;
   codeStandardDE?: string;
