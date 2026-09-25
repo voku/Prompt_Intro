@@ -6,9 +6,9 @@ import LegacyBridge from './LegacyBridge';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
 
-interface SlideLayoutProps { data: SlideData; isActive: boolean; lang: Lang; }
+interface SlideLayoutProps { data: SlideData; isActive: boolean; isRevealed?: boolean; lang: Lang; }
 
-const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
+const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = false, lang }) => {
   const IconComponent = resolveIcon(data.icon);
   if (!isActive) return null;
 
@@ -186,7 +186,19 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               </div>
             ) : data.visual ? (
               <div className="grid flex-grow gap-6 lg:grid-cols-[1.55fr_.72fr] lg:items-center">
-                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7">{renderVisual()}</div>
+                <div className={`retro-panel bg-[#080d20]/75 p-5 md:p-7 ${data.visual === 'carwash' ? '[&>div>div:last-child]:hidden' : ''}`}>
+                  {renderVisual()}
+                  {data.visual === 'carwash' && isRevealed && (
+                    <div className="mt-4 animate-fadeIn border-2 border-fuchsia-700 bg-fuchsia-950/35 px-5 py-4 shadow-[4px_4px_0_#020617]">
+                      <div className="pixel-font text-[8px] text-fuchsia-300">{lang === 'de' ? 'MERKSATZ' : 'TAKEAWAY'}</div>
+                      <div className="mt-2 text-lg font-black leading-snug text-white md:text-xl">
+                        {lang === 'de'
+                          ? 'Starke Muster in Fragen können das eigentliche Ziel überlagern.'
+                          : 'Strong patterns in questions can overshadow the actual goal.'}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div>{renderTextBlock()}</div>
               </div>
             ) : (
