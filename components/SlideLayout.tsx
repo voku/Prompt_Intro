@@ -18,6 +18,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const subtitle = t(data.subtitle, data.subtitleDE);
   const content = tArr(data.content, data.contentDE);
   const technique = t(data.technique, data.techniqueDE);
+  const topic = t(data.topic, data.topicDE);
   const thanksLabel = lang === 'de' ? 'ENDE // VIELEN DANK // FRAGEN & DISKUSSION' : 'END // THANK YOU // QUESTIONS & DISCUSSION';
   const trainingLabel = 'PROMPT ENGINEERING · TRAINING';
   const mentalModelVisuals = ['carwash', 'noise-hallucination', 'tokens', 'next-token'];
@@ -37,7 +38,9 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
               : data.visual === 'toolbox'
                 ? (lang === 'de' ? 'METHODEN // VORLAGEN' : 'METHODS // TEMPLATES')
                 : (lang === 'de' ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');
-  const compareLabel = lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER';
+  const compareLabel = topic
+    ? `${lang === 'de' ? 'PRAXIS' : 'PRACTICE'} // ${topic}`
+    : (lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER');
   const readyLabel = lang === 'de' ? 'BEREIT' : 'READY';
 
   const renderTextBlock = () => {
@@ -200,7 +203,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
             <div className="mb-4 flex items-center gap-4">
               <div className="border-2 border-fuchsia-700 bg-fuchsia-950/50 p-2 text-cyan-300"><IconComponent size={28} /></div>
               <div>
-                <div className="pixel-font mb-2 text-[8px] text-fuchsia-400">{compareLabel}</div>
+                <div className="pixel-font mb-2 text-[8px] uppercase text-fuchsia-400">{compareLabel}</div>
                 <h2 className="text-3xl font-black uppercase text-white md:text-4xl">{title}</h2>
               </div>
             </div>
