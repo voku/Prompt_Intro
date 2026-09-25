@@ -26,7 +26,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const contentLabel = data.type === SlideType.END
     ? (lang === 'de' ? 'FAZIT // TAKEAWAYS' : 'SUMMARY // TAKEAWAYS')
     : data.icon === 'Layers'
-      ? (lang === 'de' ? 'HIERARCHIE // STUFEN' : 'HIERARCHY // LEVELS')
+      ? (lang === 'de' ? 'PRAXIS // FÜHRUNG NACH BEDARF' : 'PRACTICE // GUIDANCE AS NEEDED')
       : data.icon === 'ShieldAlert'
         ? (lang === 'de' ? 'COMPLIANCE // REGELN' : 'COMPLIANCE // RULES')
         : data.icon === 'AlertTriangle'
@@ -46,12 +46,12 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
   const renderTextBlock = () => {
     if (!content) return null;
     if (Array.isArray(content)) {
-      const isHierarchy = content.some((p) => p.startsWith('Level '));
+      const isGuidanceBlocks = content.some((p) => p.startsWith('Baustein ') || p.startsWith('Building block '));
       return (
         <div className="grid gap-3">
           {content.map((point, index) => {
-            const levelMatch = point.match(/^Level\s+(\d+):\s*([^(]+)(\(.*\))?$/);
-            if (isHierarchy && levelMatch) {
+            const levelMatch = point.match(/^(?:Baustein|Building block)\s+(\d+):\s*([^(]+)(\(.*\))?$/);
+            if (isGuidanceBlocks && levelMatch) {
               const [, levelNum, levelName, levelDesc] = levelMatch;
               const levelColors = [
                 'border-slate-600 bg-slate-950/70 text-slate-300',
@@ -73,7 +73,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, lang }) => {
                 >
                   <div className="flex items-center gap-3">
                     <span className={`pixel-font border px-2.5 py-1 text-[9px] font-bold ${badgeColors[colorIdx]}`}>
-                      LVL {levelNum}
+                      {String(levelNum).padStart(2, '0')}
                     </span>
                     <span className="text-lg font-bold text-white md:text-xl">{levelName.trim()}</span>
                   </div>
