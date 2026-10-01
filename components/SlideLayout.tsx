@@ -8,6 +8,7 @@ import ChapterSlide from './ChapterSlide';
 import StatementSlide from './StatementSlide';
 import EndSlide from './EndSlide';
 import StepIndicator from './StepIndicator';
+import LevelLoader from './LevelLoader';
 import { CheckCircle2, ChevronsDown, Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
@@ -205,9 +206,8 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               </div>
               <div className="flex justify-center text-fuchsia-400"><ChevronsDown size={30} className="pixel-pulse" /></div>
               <div className="relative overflow-hidden border border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/70 p-6 shadow-[0_0_44px_-8px_rgba(217,70,239,.5)]">
-                <div className="flex items-center justify-between"><span className="pixel-font text-fuchsia-300">{lang === 'de' ? 'LEVEL 2 // LÄDT …' : 'LEVEL 2 // LOADING …'}</span><IconComponent size={26} className="text-cyan-300" /></div>
-                <div className="mt-3 text-3xl font-bold leading-tight text-white">{title}</div>
-                <div className="mt-5 h-3 border border-slate-600 bg-slate-950 p-[2px]"><div className="h-full w-[12%] bg-gradient-to-r from-fuchsia-500 to-cyan-300 pixel-pulse" /></div>
+                <LevelLoader lang={lang} />
+                <div className="mt-4 flex items-center gap-3"><IconComponent size={26} className="shrink-0 text-cyan-300" /><div className="text-3xl font-bold leading-tight text-white">{title}</div></div>
                 <div className="mt-5 grid grid-cols-2 gap-2 font-mono text-xs">
                   <span className="border border-cyan-800 bg-cyan-950/30 px-3 py-2 text-cyan-200">{lang === 'de' ? 'ROLLE & KONTEXT' : 'ROLE & CONTEXT'}</span>
                   <span className="border border-emerald-800 bg-emerald-950/30 px-3 py-2 text-emerald-200">{lang === 'de' ? 'ERST ANALYSIEREN' : 'ANALYSE FIRST'}</span>

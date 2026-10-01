@@ -28,13 +28,27 @@ const ChapterSlide: React.FC<ChapterSlideProps> = ({ chapter, icon, title, subti
       <div className="pixel-font text-fuchsia-400">{de ? "KAPITEL" : "CHAPTER"} {chapter} / {SPINE.length}</div>
 
       <div className="grid items-center gap-8 lg:grid-cols-[auto_1fr]">
-        <div
-          aria-hidden
-          className="display select-none text-[9rem] font-bold leading-none text-transparent md:text-[14rem]"
-          style={{ WebkitTextStroke: '2px rgba(217,70,239,.7)', textShadow: '0 0 60px rgba(217,70,239,.35)' }}
-        >
-          {String(chapter).padStart(2, '0')}
-        </div>
+        <svg aria-hidden viewBox="0 0 300 220" className="h-36 w-auto select-none overflow-visible md:h-56" style={{ filter: 'drop-shadow(0 0 30px rgba(217,70,239,.45))' }}>
+          <text
+            x="0"
+            y="190"
+            className="display"
+            fontSize="230"
+            fontWeight="700"
+            fill="transparent"
+            stroke="url(#chapterStroke)"
+            strokeWidth="2.5"
+            style={{ strokeDasharray: 1400, strokeDashoffset: 1400, animation: 'drawStroke 2.2s cubic-bezier(.4,0,.2,1) .1s forwards' }}
+          >
+            {String(chapter).padStart(2, '0')}
+          </text>
+          <defs>
+            <linearGradient id="chapterStroke" x1="0" x2="1">
+              <stop offset="0%" stopColor="#f0abfc" />
+              <stop offset="100%" stopColor="#22d3ee" />
+            </linearGradient>
+          </defs>
+        </svg>
         <div>
           <div className="mb-4 flex h-16 w-16 items-center justify-center border border-cyan-300/50 bg-gradient-to-br from-cyan-950/60 to-indigo-950 text-cyan-300 shadow-[0_0_28px_rgba(34,211,238,.3)]"><Icon size={32} /></div>
           <h2 className="text-gradient text-balance text-5xl font-bold uppercase leading-[.95] tracking-[-.03em] md:text-7xl xl:text-[6.5rem]">{title}</h2>

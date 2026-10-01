@@ -98,3 +98,5 @@ h1, h2, h3, .display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
 .anim-glow { animation: glowPulse 1.8s ease-in-out infinite; }
 .caret::after { content: '▌'; margin-left: 2px; color: #22d3ee; animation: caret 1s steps(1) infinite; }
 .bar-grow { transform-origin: left; animation: growX .9s var(--ease) both; }
+@keyframes drawStroke { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { text[style*="drawStroke"] { stroke-dashoffset: 0 !important; } }
