@@ -1,9 +1,13 @@
 import React from 'react';
+import { useFitToBox } from './useFitToBox';
 import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
 import L2ToolboxPanel from './L2ToolboxPanel';
 import LegacyBridge from './LegacyBridge';
 import ChapterSlide from './ChapterSlide';
+import StatementSlide from './StatementSlide';
+import EndSlide from './EndSlide';
+import StepIndicator from './StepIndicator';
 import { CheckCircle2, ChevronsDown, Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
@@ -12,6 +16,7 @@ interface SlideLayoutProps { data: SlideData; isActive: boolean; isRevealed?: bo
 
 const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = false, lang }) => {
   const IconComponent = resolveIcon(data.icon);
+  const fitRef = useFitToBox<HTMLDivElement>([data.id, isRevealed, lang, isActive]);
   if (!isActive) return null;
 
   const t = (en: string | undefined, de: string | undefined): string | undefined => lang === 'de' && de ? de : en;
@@ -23,28 +28,27 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
   const topic = t(data.topic, data.topicDE);
   const punchline = t(data.punchline, data.punchlineDE);
   const punchlineNext = t(data.punchlineNext, data.punchlineNextDE);
-  const thanksLabel = lang === 'de' ? 'ENDE // VIELEN DANK // FRAGEN & DISKUSSION' : 'END // THANK YOU // QUESTIONS & DISCUSSION';
   const trainingLabel = 'PROMPT ENGINEERING · TRAINING';
-  const mentalModelVisuals = ['carwash', 'unpuzzle', 'noise-hallucination', 'tokens', 'next-token'];
+  const de = lang === 'de';
   const legacyVisuals = ['legacy-recap', 'legacy-timejump'];
-  const contentLabel = data.type === SlideType.END
-    ? (lang === 'de' ? 'FAZIT // TAKEAWAYS' : 'SUMMARY // TAKEAWAYS')
-    : data.icon === 'Layers'
-      ? (lang === 'de' ? 'PRAXIS // FÜHRUNG NACH BEDARF' : 'PRACTICE // GUIDANCE AS NEEDED')
-      : data.icon === 'ShieldAlert'
-        ? (lang === 'de' ? 'COMPLIANCE // REGELN' : 'COMPLIANCE // RULES')
-        : data.icon === 'AlertTriangle'
-          ? (lang === 'de' ? 'PROBLEM // ANALYSE' : 'PROBLEM // ANALYSIS')
-          : data.visual && legacyVisuals.includes(data.visual)
-            ? (lang === 'de' ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
-            : data.visual && mentalModelVisuals.includes(data.visual)
-              ? `LLM // ${topic ?? 'MENTAL MODEL'}`
-              : data.visual === 'toolbox'
-                ? (lang === 'de' ? 'METHODEN // VORLAGEN' : 'METHODS // TEMPLATES')
-                : (lang === 'de' ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');
+  // Visuals that need the full width; their text runs as a strip underneath.
+  const wideVisuals = ['guidance-ladder', 'compliance-gates', 'evidence-board', 'bug-quota'];
+  const visualPrefix: Record<string, string> = {
+    carwash: 'LLM', unpuzzle: 'LLM', 'noise-hallucination': 'LLM', tokens: 'LLM', 'next-token': 'LLM',
+    'guidance-ladder': de ? 'FÜHREN' : 'GUIDE',
+    'vpn-status': de ? 'PRÜFEN' : 'VERIFY', 'bug-quota': de ? 'PRÜFEN' : 'VERIFY',
+    'compliance-gates': 'COMPLIANCE', 'evidence-board': 'BONUS',
+  };
+  const contentLabel = data.visual && legacyVisuals.includes(data.visual)
+    ? (de ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
+    : data.visual === 'toolbox'
+      ? (de ? 'METHODEN // VORLAGEN' : 'METHODS // TEMPLATES')
+      : data.visual && visualPrefix[data.visual]
+        ? `${visualPrefix[data.visual]} // ${topic ?? ''}`
+        : (de ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');
   const isToolbox = data.visual === 'toolbox';
   const compareLabel = topic
-    ? `${lang === 'de' ? 'PRAXIS' : 'PRACTICE'} // ${topic}`
+    ? `${data.step ? (de ? 'FÜHREN' : 'GUIDE') : (de ? 'PRÜFEN' : 'VERIFY')} // ${topic}`
     : (lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER');
 
   const renderTextBlock = () => {
@@ -216,8 +220,13 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
           </div>
         );
 
-      case SlideType.CONTENT:
+      case SlideType.STATEMENT:
+        return <StatementSlide icon={data.icon} kicker={title} statement={subtitle ?? ''} points={Array.isArray(content) ? content : []} lang={lang} />;
+
       case SlideType.END:
+        return <EndSlide title={title} subtitle={subtitle} points={Array.isArray(content) ? content : []} action={technique} lang={lang} />;
+
+      case SlideType.CONTENT:
         return (
           <div className="flex min-h-full flex-col animate-fadeIn">
             <div className={`flex items-center gap-5 border-b border-indigo-500/25 ${isToolbox ? "mb-4 pb-3" : "mb-6 pb-5"}`}>
@@ -240,10 +249,17 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
                 <div className="flex flex-grow flex-col [&>*]:flex-1">{renderVisual()}</div>
                 {renderTakeaways()}
               </div>
+            ) : data.visual && wideVisuals.includes(data.visual) ? (
+              <div className="flex flex-grow flex-col justify-center gap-5">
+                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7">
+                  {renderVisual()}
+                  {renderPunchline('mt-4')}
+                </div>
+                {renderTakeaways()}
+              </div>
             ) : data.visual ? (
-              <div className="grid flex-grow gap-6 lg:grid-cols-[1.55fr_.72fr] lg:items-center">
-                {/* The visual's own closing line is hidden here; the Pointe replaces it on click. */}
-                <div className={`retro-panel bg-[#080d20]/75 p-5 md:p-7 ${punchline ? '[&>div>div:last-child]:hidden' : ''}`}>
+              <div className="grid flex-grow gap-6 lg:grid-cols-[1.6fr_.7fr] lg:items-center">
+                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7">
                   {renderVisual()}
                   {renderPunchline('mt-4')}
                 </div>
@@ -253,7 +269,6 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               <div className="flex-grow">{renderTextBlock()}</div>
             )}
 
-            {data.type === SlideType.END && <div className="pixel-font mt-auto pt-7 text-center text-emerald-300">{thanksLabel}</div>}
           </div>
         );
 
@@ -264,14 +279,15 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
         return (
           <div className="flex min-h-full flex-col animate-fadeIn">
             <div className="mb-5 flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center border border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-950/70 to-indigo-950 text-cyan-300 shadow-[0_0_24px_rgba(217,70,239,.25)]"><IconComponent size={28} /></div>
-              <div>
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center border border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-950/70 to-indigo-950 text-cyan-300 shadow-[0_0_24px_rgba(217,70,239,.25)]"><IconComponent size={30} /></div>
+              <div className="min-w-0 flex-1">
                 <div className="pixel-font mb-2 uppercase text-fuchsia-400">{compareLabel}</div>
                 <h2 className="text-balance text-3xl font-bold tracking-tight text-white md:text-5xl">{title}</h2>
               </div>
+              {data.step && <StepIndicator step={data.step} lang={lang} />}
             </div>
-            {subtitle && <p className="mb-5 text-lg font-semibold text-cyan-100">{subtitle}</p>}
-            <div className="flex-grow">
+            {subtitle && <p className="lead-rule mb-5 pl-5 text-lg font-medium text-cyan-100/90 md:text-xl">{subtitle}</p>}
+            <div className="flex flex-grow flex-col justify-center">
               <PromptComparison
                 standard={(lang === 'de' && data.codeStandardDE ? data.codeStandardDE : data.codeStandard) ?? ''}
                 optimized={(lang === 'de' && data.codeOptimizedDE ? data.codeOptimizedDE : data.codeOptimized) ?? ''}
@@ -279,9 +295,10 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
                 description={typeof content === 'string' ? content : ''}
                 lang={lang}
                 workOrder={lang === 'de' && data.codeWorkOrderDE ? data.codeWorkOrderDE : data.codeWorkOrder}
+                result={lang === 'de' && data.codeResultDE ? data.codeResultDE : data.codeResult}
               />
+              {renderPunchline('mt-5')}
             </div>
-            {renderPunchline('mt-5')}
           </div>
         );
 
@@ -291,9 +308,9 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
   };
 
   return (
-    <section className="retro-panel hud relative mx-auto h-full min-h-0 w-full overflow-y-auto bg-[#0a0f22]/90 p-6 backdrop-blur-sm md:p-9 lg:px-12 lg:py-10">
+    <section className="retro-panel hud relative mx-auto h-full min-h-0 w-full overflow-hidden bg-[#0a0f22]/90 p-6 backdrop-blur-sm md:p-9 lg:px-12 lg:py-10">
       <div className="pointer-events-none absolute right-5 top-4 pixel-font text-indigo-500/70">SYS://PROMPT_INTRO</div>
-      {renderContent()}
+      <div ref={fitRef} className="h-full overflow-hidden">{renderContent()}</div>
     </section>
   );
 };

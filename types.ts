@@ -5,10 +5,12 @@ export enum SlideType {
   CONTENT = 'CONTENT',
   COMPARISON = 'COMPARISON',
   CHAPTER = 'CHAPTER',
+  STATEMENT = 'STATEMENT',
   END = 'END'
 }
 
-export type IconName = keyof typeof import('lucide-react');
+export type { IconName } from './iconUtils';
+import type { IconName } from './iconUtils';
 
 export type VisualKind =
   | 'legacy-recap'
@@ -18,11 +20,12 @@ export type VisualKind =
   | 'noise-hallucination'
   | 'tokens'
   | 'next-token'
-  | 'compiler'
-  | 'authority-map'
   | 'evidence-board'
-  | 'agent-loop'
-  | 'toolbox';
+  | 'toolbox'
+  | 'guidance-ladder'
+  | 'vpn-status'
+  | 'bug-quota'
+  | 'compliance-gates';
 
 export interface SlideData {
   id: number;
@@ -31,6 +34,8 @@ export interface SlideData {
   visual?: VisualKind;
   /** 1-based chapter number, only used by CHAPTER slides. */
   chapter?: number;
+  /** Step on the guidance staircase (1–4) a comparison slide illustrates. */
+  step?: number;
   title: string;
   subtitle?: string;
   content?: string | string[];
@@ -51,6 +56,11 @@ export interface SlideData {
   codeOptimized?: string;
   codeStandardDE?: string;
   codeOptimizedDE?: string;
+  /** Output of the optimised prompt (e.g. script result or a `| table |`), shown under it. */
+  codeResult?: string;
+  codeResultDE?: string;
+  /** Stable deep-link anchor, e.g. `#vorlagen`. */
+  anchor?: string;
   codeWorkOrder?: string;
   codeWorkOrderDE?: string;
 }

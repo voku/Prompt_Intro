@@ -6,8 +6,20 @@ import { INTRO_SLIDES } from './introSlides';
 import { Lang, SlideType } from './types';
 import { resolveIcon } from './iconUtils';
 
+const ALL_SLIDES = [...INTRO_SLIDES, ...SLIDES];
+
+/** `#vorlagen` → slide with that anchor, `#12` → slide 12; anything else → first slide. */
+const slideIndexFromHash = (hash: string): number => {
+  const key = decodeURIComponent(hash.replace(/^#/, ''));
+  if (!key) return 0;
+  const byAnchor = ALL_SLIDES.findIndex((slide) => slide.anchor === key);
+  if (byAnchor >= 0) return byAnchor;
+  const n = Number(key);
+  return Number.isInteger(n) && n >= 1 && n <= ALL_SLIDES.length ? n - 1 : 0;
+};
+
 const App: React.FC = () => {
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(() => slideIndexFromHash(window.location.hash));
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [isRevealVisible, setIsRevealVisible] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -18,7 +30,7 @@ const App: React.FC = () => {
   const [showPresentHint, setShowPresentHint] = useState(false);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchEndRef = useRef<{ x: number; y: number } | null>(null);
-  const slides = [...INTRO_SLIDES, ...SLIDES];
+  const slides = ALL_SLIDES;
   const safeSlideCount = Math.max(slides.length, 1);
   const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
   const currentSlide = slides[safeCurrentSlideIndex];
@@ -71,6 +83,17 @@ const App: React.FC = () => {
     window.addEventListener('mousemove', onMove);
     return () => { window.removeEventListener('mousemove', onMove); window.clearTimeout(hintTimer); window.clearTimeout(cursorTimer); };
   }, [isPresenting]);
+  // Keep the address bar in sync so every slide can be linked (and the QR code can point at the templates).
+  useEffect(() => {
+    const slide = slides[safeCurrentSlideIndex];
+    const hash = `#${slide?.anchor ?? safeCurrentSlideIndex + 1}`;
+    if (window.location.hash !== hash) window.history.replaceState(null, '', hash);
+  }, [safeCurrentSlideIndex, slides]);
+  useEffect(() => {
+    const onHash = (): void => { setCurrentSlideIndex(slideIndexFromHash(window.location.hash)); setIsRevealVisible(false); };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
   useEffect(() => { setCurrentSlideIndex((i) => Math.min(i, Math.max(slides.length - 1, 0))); }, [slides.length]);
   useEffect(() => { const handleKeyDown = (event: KeyboardEvent): void => { const tag = document.activeElement?.tagName.toLowerCase(); if (tag === 'input' || tag === 'textarea') return; if (event.key === 'ArrowRight') nextSlide(); if (event.key === 'ArrowLeft') prevSlide(); if (event.key === ' ' && !isGridOpen) { event.preventDefault(); nextSlide(); } if ((event.key === 'p' || event.key === 'P') && !event.metaKey && !event.ctrlKey) setIsPresenting((v) => !v); if (event.key === 'Escape') { if (isGridOpen) setIsGridOpen(false); else if (isPresenting) setIsPresenting(false); } }; window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [currentSlideIndex, isGridOpen, isRevealVisible, isPresenting, slides.length]);
   const formatTime = (seconds: number): string => `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;

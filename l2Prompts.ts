@@ -35,7 +35,7 @@ export const L2_TOOLBOX_PROMPTS: L2ToolboxPrompt[] = [
       recipe: [
         'Den Ablauf in einzelne, prüfbare Schritte zerlegen.',
         'Pro Schritt den kleinsten sinnvollen Test festlegen.',
-        'Nicht nachstellbar? Dann bleibt die Ursache UNKNOWN.',
+        'Nicht nachstellbar? Dann bleibt die Ursache offen.',
       ],
       caseFacts: [
         'Ticket #4711: VPN bricht nach ca. 2 Min. ab',
@@ -47,7 +47,7 @@ export const L2_TOOLBOX_PROMPTS: L2ToolboxPrompt[] = [
         { label: 'Kontext', text: '#4711 · Abbruch nach ca. 2 Min. · nur im Homeoffice · Client-Log vorhanden.' },
         { label: 'Grenzen', text: 'Keine Änderung an VPN-Gateway oder Profil.' },
         { label: 'Prüfung', text: 'DNS → Gateway → Anmeldung → MFA → Dateiserver einzeln testen.' },
-        { label: 'Erledigt, wenn', text: 'Der fehlerhafte Schritt belegt ist – oder alle Tests grün sind und die Ursache offen (UNKNOWN) bleibt.' },
+        { label: 'Erledigt, wenn', text: 'Der fehlerhafte Schritt belegt ist – oder alle Tests grün sind und die Ursache offen bleibt.' },
       ],
       prompt: `Erstelle aus dem aktuellen Ticket, den vorhandenen Logs und den freigegebenen Diagnosemöglichkeiten einen konkreten Arbeitsauftrag, um den Fehler nachzustellen.
 
@@ -73,7 +73,7 @@ Hör nach dem Arbeitsauftrag auf.`,
       recipe: [
         'Break the flow into separate, testable steps.',
         'Define the smallest useful test for each step.',
-        'Cannot reproduce? Then the cause stays UNKNOWN.',
+        'Cannot reproduce? Then the cause stays open.',
       ],
       caseFacts: [
         'Ticket #4711: VPN drops after ~2 min',
@@ -85,7 +85,7 @@ Hör nach dem Arbeitsauftrag auf.`,
         { label: 'Context', text: '#4711 · drops after ~2 min · home office only · client log available.' },
         { label: 'Constraints', text: 'No changes to VPN gateway or profile.' },
         { label: 'Verification', text: 'Test DNS → gateway → login → MFA → file server one by one.' },
-        { label: 'Done when', text: 'The failing step is proven – or all tests pass and the cause stays UNKNOWN.' },
+        { label: 'Done when', text: 'The failing step is proven – or all tests pass and the cause stays open.' },
       ],
       prompt: `Using the current ticket, available logs and approved diagnostic options, create a concrete work order to reproduce the failure.
 
@@ -114,7 +114,7 @@ Stop after the work order.`,
       quickFix: '„Platte voll? Archiv-Ordner löschen, Alarm ist weg.“',
       recipe: [
         'Nur Lücken nennen, die zu diesem Fall gehören.',
-        'Beleg fehlt → UNKNOWN. Kein Zugriff → BLOCKED.',
+        'Beleg fehlt → offen. Kein Zugriff → blockiert.',
         'Noch nichts löschen oder reparieren.',
       ],
       caseFacts: [
@@ -127,7 +127,7 @@ Stop after the work order.`,
         { label: 'Kontext', text: 'FS02 · D: 97 % · Wachstum seit Montag · Löschvorschlag liegt vor.' },
         { label: 'Grenzen', text: 'Nichts löschen, solange eine der Fragen offen ist.' },
         { label: 'Prüfung', text: 'Gilt eine Aufbewahrungsfrist? Gibt es ein Backup? Was schreibt seit Montag so viel?' },
-        { label: 'Erledigt, wenn', text: 'Jede Frage belegt beantwortet ist – oder als BLOCKED bei der verantwortlichen Person liegt.' },
+        { label: 'Erledigt, wenn', text: 'Jede Frage belegt beantwortet ist – oder blockiert bei der verantwortlichen Person liegt.' },
       ],
       prompt: `Erstelle aus dem aktuellen Störungsticket, den Logs, der betroffenen Konfiguration und dem vorhandenen Betriebswissen einen Arbeitsauftrag, der klärt, was uns vor der Behebung noch fehlt.
 
@@ -152,7 +152,7 @@ Hör nach dem Arbeitsauftrag auf. Noch nichts beheben.`,
       quickFix: '“Disk full? Delete the archive folder, alert gone.”',
       recipe: [
         'Only name gaps that belong to this case.',
-        'Evidence missing → UNKNOWN. No access → BLOCKED.',
+        'Evidence missing → open. No access → blocked.',
         'Do not delete or fix anything yet.',
       ],
       caseFacts: [
@@ -165,7 +165,7 @@ Hör nach dem Arbeitsauftrag auf. Noch nichts beheben.`,
         { label: 'Context', text: 'FS02 · D: 97 % · growth since Monday · deletion proposed.' },
         { label: 'Constraints', text: 'Delete nothing while any question is still open.' },
         { label: 'Verification', text: 'Is there a retention period? Is there a backup? What has been writing so much since Monday?' },
-        { label: 'Done when', text: 'Every question is answered with evidence – or sits BLOCKED with the responsible owner.' },
+        { label: 'Done when', text: 'Every question is answered with evidence – or sits blocked with the responsible owner.' },
       ],
       prompt: `Using the current incident ticket, logs, affected configuration and available operating knowledge, create a work order that clarifies what we are still missing before remediation.
 
@@ -195,7 +195,7 @@ Stop after the work order. Do not fix anything yet.`,
       recipe: [
         'Nur belegten Stand übergeben, keine Vermutungen als Fakten.',
         'Verworfene Ideen mitgeben, damit niemand sie wiederholt.',
-        'Offene Entscheidungen als BLOCKED benennen.',
+        'Offene Entscheidungen als blockiert benennen.',
       ],
       caseFacts: [
         'Druck-Warteschlange Halle 3 hängt immer wieder',
@@ -206,7 +206,7 @@ Stop after the work order. Do not fix anything yet.`,
         { label: 'Ziel', text: 'Drucken in Halle 3 wieder stabil.' },
         { label: 'Stand (belegt)', text: 'Neustart des Druckdienstes hilft jeweils ca. 20 Min.' },
         { label: 'Verworfen', text: 'Netzwerkproblem – Ping und Port-Test waren ok.' },
-        { label: 'BLOCKED', text: 'Treiber-Update braucht Freigabe durch das Client-Team.' },
+        { label: 'Blockiert', text: 'Treiber-Update braucht Freigabe durch das Client-Team.' },
         { label: 'Nächster Schritt', text: 'Den Druckauftrag finden, der die Warteschlange blockiert.' },
         { label: 'Erledigt, wenn', text: '2 Std. ohne Hänger nach der Maßnahme.' },
       ],
@@ -237,7 +237,7 @@ Das Ergebnis ist eine kopierfertige Übergabe, keine Erfolgsmeldung.`,
       recipe: [
         'Hand over proven state only, no guesses as facts.',
         'Include discarded ideas so nobody repeats them.',
-        'Name open decisions as BLOCKED.',
+        'Name open decisions as blocked.',
       ],
       caseFacts: [
         'Print queue in hall 3 keeps hanging',
@@ -248,7 +248,7 @@ Das Ergebnis ist eine kopierfertige Übergabe, keine Erfolgsmeldung.`,
         { label: 'Goal', text: 'Printing in hall 3 is stable again.' },
         { label: 'State (proven)', text: 'Restarting the print spooler helps for ~20 min each time.' },
         { label: 'Ruled out', text: 'Network issue – ping and port test were fine.' },
-        { label: 'BLOCKED', text: 'Driver update needs approval from the client team.' },
+        { label: 'Blocked', text: 'Driver update needs approval from the client team.' },
         { label: 'Next step', text: 'Find the print job that blocks the queue.' },
         { label: 'Done when', text: '2 h without a hang after the fix.' },
       ],
