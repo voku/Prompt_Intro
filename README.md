@@ -46,6 +46,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 
 ## Interaktive Features
 
+- **Präsentationsmodus:** Taste `P` (oder Button im Header, oder `?present` an der URL) blendet Header und Fußleiste aus, vergrößert die Schrift auf großen Screens und versteckt den Mauszeiger. Maus an den oberen/unteren Rand blendet die Steuerung ein, eine dünne Linie unten zeigt den Fortschritt. `P` oder `Esc` beendet den Modus.
 - **Retro HUD & Keyboard-Navigation:** Vor/Zurück (Pfeiltasten, Leertaste), Touch-Swipe, Vollbild und Grid-Übersicht.
 - **Bilingual (DE / EN):** Vollständig umschaltbar zwischen Deutsch und Englisch im HUD.
 - **Interaktive Vorher/Nachher-Vergleiche:** Standard-Prompt vs. optimierter Prompt mit aufklappbaren Arbeitsaufträgen.

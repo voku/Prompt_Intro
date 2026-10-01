@@ -25,6 +25,8 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 
 ---
 
+**Vor dem Vortrag:** `P` drücken (Präsentationsmodus, kein Header) und – falls gewünscht – zusätzlich Vollbild. Steuerung erscheint, wenn die Maus den oberen oder unteren Rand berührt; `Esc` beendet den Modus.
+
 ## Ablauf & Notizen pro Folie
 
 ### 1 – Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt … (Folie 1)
