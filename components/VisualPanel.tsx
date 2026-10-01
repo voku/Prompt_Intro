@@ -28,7 +28,7 @@ const Box: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ classN
 );
 
 const Label: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = '', children }) => (
-  <div className={`pixel-font text-[8px] uppercase tracking-wider ${className}`}>{children}</div>
+  <div className={`pixel-font uppercase tracking-wider ${className}`}>{children}</div>
 );
 
 const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {

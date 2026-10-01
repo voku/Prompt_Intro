@@ -3,7 +3,7 @@ import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
 import L2ToolboxPanel from './L2ToolboxPanel';
 import LegacyBridge from './LegacyBridge';
-import { Rabbit } from 'lucide-react';
+import { CheckCircle2, ChevronsDown, Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
 
@@ -41,17 +41,17 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               : data.visual === 'toolbox'
                 ? (lang === 'de' ? 'METHODEN // VORLAGEN' : 'METHODS // TEMPLATES')
                 : (lang === 'de' ? 'PRAXIS // METHODE' : 'PRACTICE // METHOD');
+  const isToolbox = data.visual === 'toolbox';
   const compareLabel = topic
     ? `${lang === 'de' ? 'PRAXIS' : 'PRACTICE'} // ${topic}`
     : (lang === 'de' ? 'PRAXIS // VORHER & NACHHER' : 'PRACTICE // BEFORE & AFTER');
-  const readyLabel = lang === 'de' ? 'BEREIT' : 'READY';
 
   const renderTextBlock = () => {
     if (!content) return null;
     if (Array.isArray(content)) {
       const isGuidanceBlocks = content.some((p) => p.startsWith('Baustein ') || p.startsWith('Building block '));
       return (
-        <div className="grid gap-3">
+        <div className={`grid ${isGuidanceBlocks ? 'gap-5' : 'gap-3'}`}>
           {content.map((point, index) => {
             const levelMatch = point.match(/^(?:Baustein|Building block)\s+(\d+):\s*([^(]+)(\(.*\))?$/);
             if (isGuidanceBlocks && levelMatch) {
@@ -72,16 +72,16 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               return (
                 <div
                   key={index}
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 ${levelColors[colorIdx]} px-5 py-4 transition hover:translate-x-1`}
+                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 ${levelColors[colorIdx]} px-6 py-7 transition hover:translate-x-1`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={`pixel-font border px-2.5 py-1 text-[9px] font-bold ${badgeColors[colorIdx]}`}>
+                    <span className={`pixel-font border px-2.5 py-1 font-bold ${badgeColors[colorIdx]}`}>
                       {String(levelNum).padStart(2, '0')}
                     </span>
-                    <span className="text-lg font-bold text-white md:text-xl">{levelName.trim()}</span>
+                    <span className="text-xl font-bold text-white md:text-3xl">{levelName.trim()}</span>
                   </div>
                   {levelDesc && (
-                    <span className="font-mono text-sm text-slate-300 sm:text-right">{levelDesc.trim()}</span>
+                    <span className="font-mono text-sm text-slate-300 md:text-base sm:text-right">{levelDesc.trim()}</span>
                   )}
                 </div>
               );
@@ -93,7 +93,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
             return (
               <div
                 key={index}
-                className={`flex items-start gap-3 border-l-4 px-4 py-3.5 transition ${
+                className={`flex items-start gap-3 border-l-4 px-5 py-4 transition ${
                   isSolution
                     ? 'border-emerald-500 bg-emerald-950/30'
                     : isWarning
@@ -102,7 +102,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
                 }`}
               >
                 <span
-                  className={`pixel-font mt-1 text-[8px] ${
+                  className={`pixel-font mt-1 ${
                     isSolution ? 'text-emerald-300' : isWarning ? 'text-rose-400' : 'text-amber-300'
                   }`}
                 >
@@ -124,7 +124,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
       <div
         ref={(el) => el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })}
         className={`animate-fadeIn border-2 border-fuchsia-700 bg-fuchsia-950/35 px-5 py-4 shadow-[4px_4px_0_#020617] ${className}`}>
-        <div className="pixel-font text-[8px] text-fuchsia-300">{lang === 'de' ? 'POINTE' : 'PUNCHLINE'}</div>
+        <div className="pixel-font text-fuchsia-300">{lang === 'de' ? 'POINTE' : 'PUNCHLINE'}</div>
         <div className="mt-2 text-lg font-black leading-snug text-white md:text-xl">{punchline}</div>
         {punchlineNext && (
           <div className="mt-3 flex items-center gap-2 border-t border-fuchsia-900 pt-3 text-base font-semibold text-cyan-200">
@@ -132,6 +132,27 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
             <span>{punchlineNext}</span>
           </div>
         )}
+      </div>
+    );
+  };
+
+  /** Horizontal strip of short takeaways under a legacy visual; the last one is the hook to the next slide. */
+  const renderTakeaways = () => {
+    if (!Array.isArray(content)) return null;
+    return (
+      <div className="stagger grid gap-3 md:grid-cols-3">
+        {content.map((point, index) => {
+          const isLast = index === content.length - 1;
+          return (
+            <div
+              key={index}
+              className={`relative flex items-center gap-4 border px-5 py-4 ${isLast ? 'border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/60 shadow-[0_0_30px_-6px_rgba(217,70,239,.45)]' : 'border-indigo-500/30 bg-slate-950/60'}`}
+            >
+              <span className={`pixel-font mt-1 ${isLast ? 'text-fuchsia-300' : 'text-amber-300'}`}>{String(index + 1).padStart(2, '0')}</span>
+              <p className={`text-base leading-snug md:text-lg ${isLast ? 'font-semibold text-white' : 'font-medium text-slate-200'}`}>{point}</p>
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -148,35 +169,48 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
     switch (data.type) {
       case SlideType.TITLE:
         return (
-          <div className="grid h-full min-h-[620px] items-center gap-10 lg:grid-cols-[1.12fr_.88fr]">
+          <div className="grid min-h-full items-center gap-10 lg:grid-cols-[1.15fr_.85fr]">
             <div className="animate-fadeIn">
-              <div className="pixel-font mb-8 inline-block border-2 border-fuchsia-500 bg-fuchsia-950/70 px-4 py-3 text-[10px] leading-5 text-fuchsia-300 shadow-[4px_4px_0_#2e1065]">{trainingLabel}</div>
-              <h1 className="max-w-4xl text-5xl font-black uppercase leading-[.96] tracking-[-.045em] text-white md:text-7xl lg:text-8xl">{title}</h1>
+              <div className="mb-8 flex flex-wrap items-center gap-3">
+                <span className="pixel-font border border-fuchsia-400/60 bg-fuchsia-950/70 px-4 py-3 text-fuchsia-300">{trainingLabel}</span>
+                <span className="pixel-font border border-cyan-400/40 bg-cyan-950/40 px-3 py-3 text-cyan-300">{lang === 'de' ? 'TEIL 2 // DAS SEQUEL' : 'PART 2 // THE SEQUEL'}</span>
+              </div>
+              <h1 className="max-w-4xl text-balance text-5xl font-bold uppercase leading-[.98] tracking-[-.03em] text-white md:text-7xl xl:text-[5.5rem]">
+                Prompt <span className="text-gradient">Engineering</span> {lang === 'de' ? 'in der Praxis' : 'in practice'}
+              </h1>
               <div className="my-8 h-1 w-48 bg-gradient-to-r from-fuchsia-500 via-amber-400 to-cyan-400" />
-              <h2 className="max-w-3xl text-xl font-semibold leading-relaxed text-cyan-100 md:text-2xl">{subtitle}</h2>
-              <div className="mt-10 flex flex-wrap gap-3 font-mono text-sm">
-                <span className="border-2 border-slate-700 bg-slate-950 px-4 py-2 text-slate-300">{lang === 'de' ? 'PROMPT' : 'PROMPT'}</span>
-                <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-amber-700 bg-amber-950/30 px-4 py-2 text-amber-200">{lang === 'de' ? 'LEITPLANKEN' : 'GUARDRAILS'}</span>
-                <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-emerald-700 bg-emerald-950/30 px-4 py-2 text-emerald-200">{lang === 'de' ? 'WERKZEUGE' : 'TOOLS'}</span>
-                <span className="self-center text-fuchsia-400">→</span>
-                <span className="border-2 border-cyan-700 bg-cyan-950/30 px-4 py-2 text-cyan-200">{lang === 'de' ? 'ERGEBNISSE' : 'RESULTS'}</span>
+              <h2 className="lead-rule max-w-3xl pl-5 text-xl font-medium leading-relaxed text-cyan-100/90 md:text-2xl">{subtitle}</h2>
+              <div className="mt-9 flex flex-wrap items-center gap-3 font-mono text-sm">
+                <span className="border border-slate-600 bg-slate-950 px-4 py-2 text-slate-300">PROMPT</span>
+                <span className="text-fuchsia-400">→</span>
+                <span className="border border-amber-600/70 bg-amber-950/30 px-4 py-2 text-amber-200">{lang === 'de' ? 'LEITPLANKEN' : 'GUARDRAILS'}</span>
+                <span className="text-fuchsia-400">→</span>
+                <span className="border border-emerald-600/70 bg-emerald-950/30 px-4 py-2 text-emerald-200">{lang === 'de' ? 'WERKZEUGE' : 'TOOLS'}</span>
+                <span className="text-fuchsia-400">→</span>
+                <span className="border border-cyan-600/70 bg-cyan-950/30 px-4 py-2 text-cyan-200">{lang === 'de' ? 'ERGEBNISSE' : 'RESULTS'}</span>
               </div>
             </div>
 
-            <div className="retro-panel relative hidden min-h-[500px] overflow-hidden bg-[#080d20] p-8 lg:block">
-              <div className="absolute inset-0 opacity-50" style={{backgroundImage:'linear-gradient(rgba(34,211,238,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.08) 1px,transparent 1px)',backgroundSize:'24px 24px'}} />
-              <div className="relative flex h-full min-h-[430px] flex-col justify-between">
-                <div className="flex justify-between"><span className="pixel-font text-[9px] text-fuchsia-400">PROMPT // AI</span><span className="pixel-font text-[9px] text-amber-300">{readyLabel}</span></div>
-                <div className="mx-auto flex h-44 w-44 items-center justify-center border-4 border-indigo-700 bg-indigo-950 shadow-[8px_8px_0_#020617,0_0_50px_rgba(217,70,239,.28)]"><IconComponent size={92} className="text-cyan-300" strokeWidth={1.5} /></div>
-                <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                  <div className="border border-cyan-800 bg-cyan-950/20 p-3 text-cyan-200">{lang === 'de' ? 'ROLLE & KONTEXT' : 'ROLE & CONTEXT'}</div>
-                  <div className="border border-emerald-800 bg-emerald-950/20 p-3 text-emerald-200">{lang === 'de' ? 'ERST ANALYSIEREN' : 'ANALYSE FIRST'}</div>
-                  <div className="border border-fuchsia-800 bg-fuchsia-950/20 p-3 text-fuchsia-200">{lang === 'de' ? 'TOOLS & CODE' : 'TOOLS & CODE'}</div>
-                  <div className="border border-amber-800 bg-amber-950/20 p-3 text-amber-200">{lang === 'de' ? 'BELEGE & SICHERHEIT' : 'EVIDENCE & SAFETY'}</div>
+            {/* Save-game card: the previous talk is cleared, this one is loading. */}
+            <div className="stagger hidden flex-col gap-4 lg:flex">
+              <div className="border border-emerald-400/40 bg-emerald-950/20 p-5">
+                <div className="flex items-center justify-between"><span className="pixel-font text-emerald-300">{lang === 'de' ? 'LEVEL 1 // GESCHAFFT' : 'LEVEL 1 // CLEARED'}</span><CheckCircle2 size={22} className="text-emerald-300" /></div>
+                <div className="mt-3 text-2xl font-bold leading-tight text-white">{lang === 'de' ? '„Willkommen in der Welt der LLMs!“' : '“Welcome to the world of LLMs!”'}</div>
+                <p className="mt-2 text-sm leading-snug text-slate-400">{lang === 'de' ? 'Wie Maschinen Sprache verstehen, generieren und unterstützen.' : 'How machines understand, generate and support language.'}</p>
+              </div>
+              <div className="flex justify-center text-fuchsia-400"><ChevronsDown size={30} className="pixel-pulse" /></div>
+              <div className="relative overflow-hidden border border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/70 p-6 shadow-[0_0_44px_-8px_rgba(217,70,239,.5)]">
+                <div className="flex items-center justify-between"><span className="pixel-font text-fuchsia-300">{lang === 'de' ? 'LEVEL 2 // LÄDT …' : 'LEVEL 2 // LOADING …'}</span><IconComponent size={26} className="text-cyan-300" /></div>
+                <div className="mt-3 text-3xl font-bold leading-tight text-white">{title}</div>
+                <div className="mt-5 h-3 border border-slate-600 bg-slate-950 p-[2px]"><div className="h-full w-[12%] bg-gradient-to-r from-fuchsia-500 to-cyan-300 pixel-pulse" /></div>
+                <div className="mt-5 grid grid-cols-2 gap-2 font-mono text-xs">
+                  <span className="border border-cyan-800 bg-cyan-950/30 px-3 py-2 text-cyan-200">{lang === 'de' ? 'ROLLE & KONTEXT' : 'ROLE & CONTEXT'}</span>
+                  <span className="border border-emerald-800 bg-emerald-950/30 px-3 py-2 text-emerald-200">{lang === 'de' ? 'ERST ANALYSIEREN' : 'ANALYSE FIRST'}</span>
+                  <span className="border border-fuchsia-800 bg-fuchsia-950/30 px-3 py-2 text-fuchsia-200">TOOLS & CODE</span>
+                  <span className="border border-amber-800 bg-amber-950/30 px-3 py-2 text-amber-200">{lang === 'de' ? 'BELEGE & SICHERHEIT' : 'EVIDENCE & SAFETY'}</span>
                 </div>
               </div>
+              <div className="pixel-font text-center text-slate-500">{lang === 'de' ? 'LARS MOELLEKEN // WEB · SYSADMIN · PHP' : 'LARS MOELLEKEN // WEB · SYSADMIN · PHP'}</div>
             </div>
           </div>
         );
@@ -184,26 +218,26 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
       case SlideType.CONTENT:
       case SlideType.END:
         return (
-          <div className="flex h-full flex-col animate-fadeIn">
-            <div className="mb-6 flex items-center gap-5 border-b-2 border-indigo-900 pb-5">
-              <div className="border-2 border-fuchsia-700 bg-fuchsia-950/50 p-3 text-cyan-300 shadow-[4px_4px_0_#020617]"><IconComponent size={32} /></div>
-              <div>
-                <div className="pixel-font mb-2 text-[8px] text-fuchsia-400">{contentLabel}</div>
-                <h2 className="text-3xl font-black uppercase tracking-tight text-white md:text-5xl">{title}</h2>
+          <div className="flex min-h-full flex-col animate-fadeIn">
+            <div className={`flex items-center gap-5 border-b border-indigo-500/25 ${isToolbox ? "mb-4 pb-3" : "mb-6 pb-5"}`}>
+              <div className={`flex shrink-0 items-center justify-center border border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-950/70 to-indigo-950 text-cyan-300 shadow-[0_0_28px_rgba(217,70,239,.28)] ${isToolbox ? "h-14 w-14" : "h-16 w-16 md:h-20 md:w-20"}`}><IconComponent size={34} strokeWidth={1.75} /></div>
+              <div className="min-w-0">
+                <div className="pixel-font mb-2 text-fuchsia-400">{contentLabel}</div>
+                <h2 className={`text-balance text-3xl font-bold leading-[1.05] tracking-tight text-white ${isToolbox ? "md:text-4xl" : "md:text-5xl"}`}>{title}</h2>
               </div>
             </div>
 
-            {subtitle && <p className="mb-6 max-w-6xl text-lg font-semibold leading-relaxed text-cyan-100 md:text-xl">{subtitle}</p>}
+            {subtitle && <p className={`lead-rule ${isToolbox ? "max-w-none" : "max-w-5xl"} pl-5 font-medium leading-relaxed text-cyan-100/90 ${isToolbox ? "mb-4 text-base md:text-lg" : "mb-6 text-lg md:text-xl"}`}>{subtitle}</p>}
 
             {data.visual === 'toolbox' ? (
               <div className="flex-grow">
-                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7"><L2ToolboxPanel lang={lang} /></div>
-                {content && <div className="mt-4 border-l-4 border-indigo-700 bg-slate-950/55 px-4 py-3 text-sm font-medium text-slate-300">{typeof content === 'string' ? content : content.join(' ')}</div>}
+                <div className="retro-panel bg-[#080d20]/75 p-4 md:p-5"><L2ToolboxPanel lang={lang} /></div>
+                {content && <div className="mt-3 border-l-4 border-indigo-700 bg-slate-950/55 px-4 py-2 text-sm font-medium text-slate-300">{typeof content === 'string' ? content : content.join(' ')}</div>}
               </div>
             ) : data.visual && legacyVisuals.includes(data.visual) ? (
-              <div className="grid flex-grow gap-6 xl:grid-cols-[1.65fr_.6fr] xl:items-center">
-                <div className="retro-panel bg-[#080d20]/75 p-5 md:p-7">{renderVisual()}</div>
-                <div>{renderTextBlock()}</div>
+              <div className="flex flex-grow flex-col gap-5">
+                <div className="flex flex-grow flex-col [&>*]:flex-1">{renderVisual()}</div>
+                {renderTakeaways()}
               </div>
             ) : data.visual ? (
               <div className="grid flex-grow gap-6 lg:grid-cols-[1.55fr_.72fr] lg:items-center">
@@ -218,18 +252,18 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               <div className="flex-grow">{renderTextBlock()}</div>
             )}
 
-            {data.type === SlideType.END && <div className="pixel-font mt-auto pt-7 text-center text-[10px] text-emerald-300">{thanksLabel}</div>}
+            {data.type === SlideType.END && <div className="pixel-font mt-auto pt-7 text-center text-emerald-300">{thanksLabel}</div>}
           </div>
         );
 
       case SlideType.COMPARISON:
         return (
-          <div className="flex h-full flex-col animate-fadeIn">
-            <div className="mb-4 flex items-center gap-4">
-              <div className="border-2 border-fuchsia-700 bg-fuchsia-950/50 p-2 text-cyan-300"><IconComponent size={28} /></div>
+          <div className="flex min-h-full flex-col animate-fadeIn">
+            <div className="mb-5 flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center border border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-950/70 to-indigo-950 text-cyan-300 shadow-[0_0_24px_rgba(217,70,239,.25)]"><IconComponent size={28} /></div>
               <div>
-                <div className="pixel-font mb-2 text-[8px] uppercase text-fuchsia-400">{compareLabel}</div>
-                <h2 className="text-3xl font-black uppercase text-white md:text-4xl">{title}</h2>
+                <div className="pixel-font mb-2 uppercase text-fuchsia-400">{compareLabel}</div>
+                <h2 className="text-balance text-3xl font-bold tracking-tight text-white md:text-5xl">{title}</h2>
               </div>
             </div>
             {subtitle && <p className="mb-5 text-lg font-semibold text-cyan-100">{subtitle}</p>}
@@ -252,7 +286,12 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
     }
   };
 
-  return <section className="retro-panel relative mx-auto h-full w-full max-w-[1500px] overflow-auto bg-[#0a0f22]/95 p-6 md:p-10 lg:p-12"><div className="pointer-events-none absolute right-4 top-4 pixel-font text-[7px] text-indigo-700">SYS://PROMPT_INTRO</div>{renderContent()}</section>;
+  return (
+    <section className="retro-panel hud relative mx-auto h-full min-h-0 w-full overflow-y-auto bg-[#0a0f22]/90 p-6 backdrop-blur-sm md:p-9 lg:px-12 lg:py-10">
+      <div className="pointer-events-none absolute right-5 top-4 pixel-font text-indigo-500/70">SYS://PROMPT_INTRO</div>
+      {renderContent()}
+    </section>
+  );
 };
 
 export default SlideLayout;
