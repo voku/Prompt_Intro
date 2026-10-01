@@ -6,6 +6,8 @@ import {
   Bot,
   CarFront,
   CheckCircle2,
+  Scale,
+  XCircle,
   CircleHelp,
   Cpu,
   Eye,
@@ -21,7 +23,7 @@ import {
 } from 'lucide-react';
 import { Lang, VisualKind } from '../types';
 
-interface VisualPanelProps { kind: VisualKind; lang: Lang; }
+interface VisualPanelProps { kind: VisualKind; lang: Lang; revealed?: boolean; }
 
 const Box: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = '', children }) => (
   <div className={`border-2 border-indigo-800 bg-slate-950/90 p-4 shadow-[5px_5px_0_#020617] ${className}`}>{children}</div>
@@ -31,7 +33,7 @@ const Label: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ clas
   <div className={`pixel-font uppercase tracking-wider ${className}`}>{children}</div>
 );
 
-const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
+const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang, revealed = false }) => {
   const de = lang === 'de';
 
   if (kind === 'carwash') {
@@ -54,6 +56,48 @@ const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang }) => {
         <div className="flex items-center justify-center gap-3 border-2 border-fuchsia-800 bg-fuchsia-950/20 px-4 py-3 text-center text-fuchsia-100">
           <Route size={20} className="text-fuchsia-300" />
           <strong>{de ? 'Die explizite Frage kann stärker wirken als das implizite Ziel.' : 'The explicit question can dominate the implicit goal.'}</strong>
+        </div>
+      </div>
+    );
+  }
+
+  if (kind === 'unpuzzle') {
+    // Pair 8 of google-deepmind/unpuzzles_and_simple_reasoning (datasets/unpuzzles.json, "The Coin Weighing Puzzle"); German is our translation.
+    const before = de ? 'Du hast 12 Münzen, und eine ist falsch – schwerer oder leichter als die anderen. ' : 'You have 12 coins, and one is counterfeit, being either heavier or lighter than the others';
+    const after = de ? 'Du hast eine Balkenwaage. Wie viele Wägungen braucht man mindestens, um die falsche Münze zu finden?' : '. You have a balance scale. What’s the minimum number of weighings needed to identify the counterfeit coin?';
+    const twist = de ? 'Sie hat außerdem eine andere Farbe. ' : ', and of a different color';
+    return (
+      <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] md:items-stretch">
+          <Box className="flex flex-col border-indigo-600 bg-slate-950/90">
+            <div className="flex items-center justify-between"><Label className="text-slate-300">{de ? 'ORIGINAL · BEKANNT' : 'ORIGINAL · FAMOUS'}</Label><Scale size={22} className="text-slate-400" /></div>
+            <p className="mt-3 flex-grow text-base font-semibold leading-relaxed text-white">{before}{after}</p>
+            <div className="mt-4 flex items-center gap-2 border border-emerald-700 bg-emerald-950/25 px-3 py-2 text-emerald-200"><CheckCircle2 size={18} /><span className="font-bold">{de ? 'Bekannte Lösung: 3 Wägungen' : 'Known solution: 3 weighings'}</span></div>
+          </Box>
+          <div className="flex flex-col items-center justify-center gap-1 text-center">
+            <span className="pixel-font text-amber-300">{de ? '+ 1 SATZTEIL' : '+ 1 CLAUSE'}</span>
+            <ArrowRight className="rotate-90 text-amber-300 md:rotate-0" size={30} />
+          </div>
+          <Box className="flex flex-col border-amber-600 bg-amber-950/15">
+            <div className="flex items-center justify-between"><Label className="text-amber-300">{de ? 'UNPUZZLE · TRIVIAL' : 'UNPUZZLE · TRIVIAL'}</Label><Sparkles size={22} className="text-amber-300" /></div>
+            <p className="mt-3 flex-grow text-base font-semibold leading-relaxed text-white">
+              {before}<mark className="bg-amber-400/25 px-1 text-amber-100">{twist}</mark>{after}
+            </p>
+            {revealed ? (
+              <div className="mt-4 grid gap-2 animate-fadeIn">
+                <div className="flex items-center gap-2 border border-rose-700 bg-rose-950/30 px-3 py-2 text-rose-200"><XCircle size={18} className="shrink-0" /><span className="font-bold line-through decoration-rose-400/80">{de ? 'Musterantwort: 3' : 'Pattern answer: 3'}</span></div>
+                <div className="flex items-center gap-2 border border-emerald-600 bg-emerald-950/30 px-3 py-2 text-emerald-200"><CheckCircle2 size={18} className="shrink-0" /><span className="font-bold">{de ? 'Richtig: 0 – an der Farbe erkennbar' : 'Correct: 0 – spot it by colour'}</span></div>
+              </div>
+            ) : (
+              <div className="mt-4 flex items-center gap-2 border border-slate-600 bg-slate-950/60 px-3 py-2 text-slate-300"><CircleHelp size={18} /><span className="font-bold">{de ? 'Was würde ein Modell antworten?' : 'What would a model answer?'}</span></div>
+            )}
+          </Box>
+        </div>
+        <div className="text-xs text-slate-500">{de ? 'Rätsel „The Coin Weighing Puzzle“ aus dem Datensatz, Wortlaut frei ins Deutsche übersetzt.' : 'Puzzle “The Coin Weighing Puzzle” from the dataset, wording verbatim.'}</div>
+        <div className="flex flex-wrap items-center justify-center gap-3 border-2 border-fuchsia-800 bg-fuchsia-950/20 px-4 py-3 text-center text-fuchsia-100">
+          <strong>{de ? 'Bekanntes Muster erkannt' : 'Known pattern recognised'}</strong><ArrowRight size={16} className="text-fuchsia-300" />
+          <strong>{de ? 'bekannte Lösung abgespult' : 'known solution recited'}</strong><ArrowRight size={16} className="text-fuchsia-300" />
+          <strong>{de ? 'konkrete Aufgabe übersehen' : 'actual task missed'}</strong>
         </div>
       </div>
     );

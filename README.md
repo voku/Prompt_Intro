@@ -50,8 +50,9 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 - **Retro HUD & Keyboard-Navigation:** Vor/Zurück (Pfeiltasten, Leertaste), Touch-Swipe, Vollbild und Grid-Übersicht.
 - **Bilingual (DE / EN):** Vollständig umschaltbar zwischen Deutsch und Englisch im HUD.
 - **Interaktive Vorher/Nachher-Vergleiche:** Standard-Prompt vs. optimierter Prompt mit aufklappbaren Arbeitsaufträgen.
-- **Klickbare Vorlagen-Toolbox:** Auf Folie 22 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
-- **Pointen-Kette:** Auf den Folien 6–9, 11, 12, 19 und 20 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
+- **Klickbare Vorlagen-Toolbox:** Auf Folie 23 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
+- **Unpuzzles-Folie:** Echtes Rätselpaar aus dem DeepMind-Datensatz (Original vs. trivial gemachte Variante) mit Reveal per Klick; Quelle und Lizenz stehen auf der Folie.
+- **Pointen-Kette:** Auf den Folien 6–10, 12, 13, 20 und 21 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
 - **Visuelle Diagramme & Animationen:** Integrierte visuelle Panels für Waschanlage, Rauschbild, Tokens, Next-Token, Vorlage → Arbeitsauftrag, Scope-Map, Evidenzzustände und Agent-Loops.
 
 ---
@@ -78,7 +79,7 @@ npm run build
 | Datei | Zweck |
 |---|---|
 | `introSlides.ts` | 2-Folien-Brücke mit Reaction-GIFs aus dem vorherigen Vortrag |
-| `constants.ts` | 22-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
+| `constants.ts` | 23-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
 | `components/ChapterSlide.tsx` | Kapitel-Trennfolie mit rotem Faden |
 | `components/PromptComparison.tsx` | Gegenüberstellung von Standard-Prompt vs. optimiertem Prompt / Arbeitsauftrag |
 | `components/SlideLayout.tsx` | Layout-Renderer für Titel, Visual Panels, leveled Content Cards und Comparisons |

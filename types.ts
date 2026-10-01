@@ -14,6 +14,7 @@ export type VisualKind =
   | 'legacy-recap'
   | 'legacy-timejump'
   | 'carwash'
+  | 'unpuzzle'
   | 'noise-hallucination'
   | 'tokens'
   | 'next-token'

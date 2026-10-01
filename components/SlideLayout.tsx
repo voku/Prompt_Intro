@@ -25,7 +25,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
   const punchlineNext = t(data.punchlineNext, data.punchlineNextDE);
   const thanksLabel = lang === 'de' ? 'ENDE // VIELEN DANK // FRAGEN & DISKUSSION' : 'END // THANK YOU // QUESTIONS & DISCUSSION';
   const trainingLabel = 'PROMPT ENGINEERING · TRAINING';
-  const mentalModelVisuals = ['carwash', 'noise-hallucination', 'tokens', 'next-token'];
+  const mentalModelVisuals = ['carwash', 'unpuzzle', 'noise-hallucination', 'tokens', 'next-token'];
   const legacyVisuals = ['legacy-recap', 'legacy-timejump'];
   const contentLabel = data.type === SlideType.END
     ? (lang === 'de' ? 'FAZIT // TAKEAWAYS' : 'SUMMARY // TAKEAWAYS')
@@ -163,7 +163,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
       return <LegacyBridge kind={data.visual} lang={lang} />;
     }
     if (!data.visual) return null;
-    return <VisualPanel kind={data.visual} lang={lang} />;
+    return <VisualPanel kind={data.visual} lang={lang} revealed={isRevealed} />;
   };
 
   const renderContent = () => {

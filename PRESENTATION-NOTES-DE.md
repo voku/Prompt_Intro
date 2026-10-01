@@ -14,12 +14,12 @@ Die Botschaft ist ausdrücklich **nicht** „LLMs sind dumm“. Die Kernaussage 
 > Aber sie kennen unsere Gedanken nicht. Wer vage fragt, bekommt leicht plausible, aber unzuverlässige Antworten. Wer Ziel, Kontext, passende Werkzeuge und Prüfwege vorgibt, bekommt bessere Ergebnisse – und kann wichtige Aussagen nachvollziehen.
 
 ### Roter Faden: Verstehen → Führen → Prüfen → Wiederverwenden
-Vier Trennfolien (Folien 4, 10, 17, 21) gliedern den Vortrag. Jede stellt die Leitfrage des Kapitels und zeigt, wo wir im Faden stehen. Die Segmente in der Fortschrittsleiste unten sind entsprechend gruppiert.
+Vier Trennfolien (Folien 4, 11, 18, 22) gliedern den Vortrag. Jede stellt die Leitfrage des Kapitels und zeigt, wo wir im Faden stehen. Die Segmente in der Fortschrittsleiste unten sind entsprechend gruppiert.
 
 ### Pointen-Kette (Follow the white rabbit 🐇)
-Auf den Folien 6–9, 11, 12, 19 und 20 blendet der nächste Klick erst eine **Pointe** ein, bevor es weitergeht (← nimmt sie wieder weg). Jede Pointe beantwortet das *Warum* der Folie; die 🐇-Zeile darunter stellt die Frage, die die nächste Folie beantwortet:
+Auf den Folien 6–10, 12, 13, 20 und 21 blendet der nächste Klick erst eine **Pointe** ein, bevor es weitergeht (← nimmt sie wieder weg). Jede Pointe beantwortet das *Warum* der Folie; die 🐇-Zeile darunter stellt die Frage, die die nächste Folie beantwortet:
 
-Waschanlage (Muster überlagert Ziel) → Rauschbild (Muster ohne Beobachtung) → Tokens (warum das Modell anders „sieht“) → Next Token (gemeinsame Wurzel: plausibel ≠ belegt) → Mathe (Rechnen an Code abgeben) → Fakten (Quelle pro Aussage) → … → VPN (Waschanlagen-Muster im Ticket) → Drei Fehler (wir schreiben das Muster selbst in die Frage) → zurück zur Waschanlage.
+Waschanlage (Muster überlagert Ziel) → Unpuzzle (dasselbe Muster, wissenschaftlich vermessen) → Rauschbild (Muster ohne Beobachtung) → Tokens (warum das Modell anders „sieht“) → Next Token (gemeinsame Wurzel: plausibel ≠ belegt) → Mathe (Rechnen an Code abgeben) → Fakten (Quelle pro Aussage) → … → VPN (Waschanlagen-Muster im Ticket) → Drei Fehler (wir schreiben das Muster selbst in die Frage) → zurück zur Waschanlage.
 
 Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklären.
 
@@ -54,7 +54,7 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 
 ### 4 – Kapitel 1 – Verstehen (Folie 4)
 * **Wie das Modell tickt.** Trennfolie. Der rote Faden des Vortrags in vier Schritten: **Verstehen → Führen → Prüfen → Wiederverwenden**. Jede Trennfolie zeigt unten die vier Schritte; erledigte sind abgehakt, der aktuelle leuchtet.
-* Frage vorlesen: „Warum klingt das Modell richtig, auch wenn es falsch liegt?“ – die nächsten fünf Folien beantworten sie.
+* Frage vorlesen: „Warum klingt das Modell richtig, auch wenn es falsch liegt?“ – die nächsten sechs Folien beantworten sie.
 
 ### 5 – Das LLM-Problem (Folie 5)
 * **Metapher:** Der überaus selbstbewusste Praktikant am ersten Arbeitstag. Fragt man ihn nach etwas, das er nicht weiß, gibt er nicht zu: „Keine Ahnung“, sondern erfindet eine extrem überzeugend klingende Geschichte.
@@ -68,17 +68,27 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 * Prompt: *„Ich will mein Auto waschen. Die Waschanlage ist 50 Meter entfernt. Laufen oder fahren?“*
 * Muster benennen, nicht erklären, wie ein LLM funktioniert: „50 Meter“ triggert „kurze Strecke → laufen“. Das eigentliche Ziel steckt im Kontext: Das Auto muss in die Waschanlage.
 * Zwei Mini-Beispiele, je ein Satz Beispiel + ein Satz Pointe, dann weiter (beide kommen später ausführlich):
-  - *„Finde drei Fehler in diesem Code.“* – Die Zahl in der Formulierung lenkt die Suche. Vielleicht gibt es zwei, vielleicht sieben. (→ Folie 20)
-  - *„Der Benutzer sagt, VPN geht wieder. Ticket schließen?“* – Klingt gelöst, ist aber noch kein technischer Nachweis. (→ Folie 19)
+  - *„Finde drei Fehler in diesem Code.“* – Die Zahl in der Formulierung lenkt die Suche. Vielleicht gibt es zwei, vielleicht sieben. (→ Folie 21)
+  - *„Der Benutzer sagt, VPN geht wieder. Ticket schließen?“* – Klingt gelöst, ist aber noch kein technischer Nachweis. (→ Folie 20)
 * **Klick → Pointe:** „Starke Muster in Fragen können das eigentliche Ziel überlagern.“
-  🐇 *„Und wenn es gar kein Ziel gibt – nur Rauschen?“*
+  🐇 *„Und was passiert, wenn ein berühmtes Rätsel unbemerkt trivial wird?“* → Unpuzzles.
 * **Überleitung:**
   > „Ein LLM versucht nicht automatisch herauszufinden, was ich wirklich gemeint habe. Es erzeugt eine passende Fortsetzung aus dem Kontext, den ich ihm gebe. Deshalb müssen Ziel, Prüfkriterien und benötigte Belege sichtbar werden.“
 * **Formulierung:** Nicht „das LLM macht nur Pattern Matching“ sagen – zu grob. Besser:
   > „Das Modell arbeitet stark über gelernte sprachliche Muster. Ein starkes Muster in der Frage kann dabei das eigentliche Ziel überlagern.“
 * **Zeitbudget:** ein bis zwei Minuten für alle drei Beispiele.
 
-### 7 – Da war nichts. Beide Modelle fanden trotzdem etwas. (Folie 7)
+### 7 – Unpuzzles: Das Rätsel wird einfacher, das Modell schlechter (Folie 7)
+* **Herkunft (sauber zitieren):** Malek, Ge, Lazic, Jin, György, Szepesvári (Google DeepMind), *„Frontier LLMs Still Struggle with Simple Reasoning Tasks“*, 2025 ([arXiv 2507.07313](https://arxiv.org/abs/2507.07313)). Datensatz mit 97 Rätselpaaren (Original + Unpuzzle) unter Apache-2.0: `github.com/google-deepmind/unpuzzles_and_simple_reasoning`.
+* **Das Paar auf der Folie** („The Coin Weighing Puzzle“, Eintrag 9 in `datasets/unpuzzles.json`, deutsch frei übersetzt):
+  - Original: 12 Münzen, eine ist falsch (schwerer *oder* leichter), Balkenwaage – wie viele Wägungen mindestens? → **3** (das berühmte Rätsel).
+  - Unpuzzle: derselbe Text plus *„… und sie hat eine andere Farbe“* → **0**, man sieht es einfach.
+* **Ablauf:** Erst beide Texte zeigen, den hervorgehobenen Satzteil benennen und das Publikum raten lassen, was ein Modell antworten würde. Klick → die Musterantwort „3“ wird durchgestrichen, „0“ erscheint. Zweiter Klick → Pointe.
+* **Ehrlich bleiben:** Die Folie behauptet **nicht**, dass ein bestimmtes Modell hier „3“ sagt. Die Studie zeigt ein systematisches Muster über viele Modelle und Rätsel („tend to fail“, Bezug zum Auswendiglernen der Originale) – nicht jedes Modell scheitert bei jedem Rätsel. Wer es live zeigen will: das Paar vorab im eigenen Modell testen und das tatsächliche Ergebnis erzählen.
+* **Brücke zur Waschanlage:** Dasselbe Prinzip – bekanntes Muster erkannt → bekannte Lösung abgespult → konkrete Aufgabe übersehen –, nur wissenschaftlich vermessen und mit reproduzierbarem Datensatz.
+* 🐇 *„Und wenn es gar kein Rätsel gibt – nur Rauschen?“* → Rauschbild.
+
+### 8 – Da war nichts. Beide Modelle fanden trotzdem etwas. (Folie 8)
 * Das Rauschbild wirken lassen: Es enthält reines Rauschen.
 * GPT und Claude halluzinieren trotzdem („I love you“, „Geheime Rose“).
 * **Merksatz:**
@@ -86,7 +96,7 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 * **Klick → Pointe:** „Da war gar keine Nachricht. Beide Modelle haben ein Muster vervollständigt – beobachtet hat keins.“ (Die Ground-Truth-Box ist bis dahin versteckt.)
   🐇 *„Warum sieht es Dinge, die nicht da sind – und übersieht Buchstaben, die da sind?“*
 
-### 8 – Buchstaben, Wörter, Tokens: nicht dasselbe (Folie 8)
+### 9 – Buchstaben, Wörter, Tokens: nicht dasselbe (Folie 9)
 * Auf `strawberry` und die drei `r` hinweisen.
 * LLMs sehen Text in Token-Slices, nicht als Buchstabengitter.
 * **Merksatz:**
@@ -94,18 +104,18 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 * **Klick → Pointe:** „Das Modell arbeitet mit Tokens, nicht mit Buchstaben. Exakte Zeichenarbeit gehört in Code.“
   🐇 *„Wenn es keine Buchstaben sieht – was macht es dann eigentlich mit dem Text?“*
 
-### 9 – Plausible Fortsetzung ist keine Wahrheitsdatenbank (Folie 9)
+### 10 – Plausible Fortsetzung ist keine Wahrheitsdatenbank (Folie 10)
 * Plausibilität belohnt, was in den Kontext passt. Wahrheit braucht Evidenz.
 * **Überleitung:**
   > „Genau hier kommen unsere ersten konkreten Werkzeuge ins Spiel: Mathe und Fakten.“
 * **Klick → Pointe:** „Es wählt, was zum Kontext passt – nicht, was belegt ist. Das ist die gemeinsame Wurzel aller drei Fallen.“ (Waschanlage, Rauschbild, strawberry – hier laufen die Fäden zusammen.)
   🐇 *„Wie kommt dann Wahrheit rein? Wir geben die Teile ab, bei denen ‚plausibel‘ nicht reicht.“*
 
-### 10 – Kapitel 2 – Führen (Folie 10)
+### 11 – Kapitel 2 – Führen (Folie 11)
 * **Briefing & Werkzeuge.** Überleitung von „plausibel ≠ belegt“ zu „dann müssen wir dem Modell Struktur und Werkzeuge geben“.
 * Frage: „Wie briefe ich ein Modell so, dass es wirklich liefern kann?“
 
-### 11 – Beispiel: Logik & Mathe (Code-Aided Reasoning / PoT) (Folie 11)
+### 12 – Beispiel: Logik & Mathe (Code-Aided Reasoning / PoT) (Folie 12)
 * **Szenario:** Müllwagen mit 32L/100km, 2 Touren à 45km/Tag, Diesel 1,70€ im November 2024 ohne Sonntage.
 * Standard-Prompt: Modell verzählt sich bei Kalendertagen.
 * Optimierter Prompt:
@@ -116,7 +126,7 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 * **Klick → Pointe:** „Nicht dem Kopfrechnen des Modells vertrauen – den Rechenweg prüfbar machen.“
   🐇 *„Rechnen lässt sich an Code abgeben. Und Fakten?“*
 
-### 12 – Beispiel: Fakten & Wissen (Fact Grounding & Tool Use) (Folie 12)
+### 13 – Beispiel: Fakten & Wissen (Fact Grounding & Tool Use) (Folie 13)
 * **Szenario:** „Wer sitzt aktuell im Vorstand der Siemens AG?“
 * Standard-Prompt: Nennt Vorstände von 2021 oder erfindet Namen.
 * Optimierter Prompt: Google Search auf der offiziellen Firmenwebsite + URL-Quellenpflicht für jede Person.
@@ -124,7 +134,7 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
 * **Klick → Pointe:** „Suche allein ist kein Beleg. Erst die Quelle pro Aussage macht die Antwort prüfbar.“
   🐇 *„Code, Suche, Quellen – braucht jede Frage das alles?“*
 
-### 13 – Wie viel Führung braucht die Aufgabe? (Folie 13)
+### 14 – Wie viel Führung braucht die Aufgabe? (Folie 14)
 * Ausdrücklich **keine** Leiter vom Anfänger zum Profi. Die vier Punkte sind kombinierbare Bausteine; je nach Aufgabe reicht schon der erste.
 * Die 4 Bausteine:
   1. **Direkt fragen:** einfache, unkritische Fragen.
@@ -133,56 +143,56 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
   4. **Werkzeuge und Prüfung:** Code, Suche, Quellen – wenn das Ergebnis halten muss.
 * **Merksatz:** Nicht jeder Prompt braucht alle vier Bausteine. Mehr Prompt ist nicht automatisch besser.
 
-### 14 – Technik: Erst analysieren, dann Ergebnis erstellen (Folie 14)
+### 15 – Technik: Erst analysieren, dann Ergebnis erstellen (Folie 15)
 * **Szenario:** Wartungsplan für Sortieranlage X.
 * Standard-Prompt liefert beliebige, oberflächliche Tabellen.
 * Die Struktur teilt auf: 1. Analyse der Komponenten → 2. Ausfallrisiken → 3. Zeitplan → 4. fehlende Informationen ausdrücklich markieren.
 * **Wichtig:** „Denk Schritt für Schritt“ ist kein Zauberspruch mehr – aktuelle Modelle denken ohnehin mit. Der Gewinn kommt daraus, dass *wir* festlegen, was zuerst geklärt werden muss.
 * **Takeaway:** Erst analysieren, dann Ergebnis erstellen.
 
-### 15 – Technik: Persona & Kontext (Folie 15)
+### 16 – Technik: Persona & Kontext (Folie 16)
 * **Szenario:** Tonnen nicht geleert wegen Glatteis – Mitteilung an die Kommune.
 * Ohne Kontext: Generische Standard-Entschuldigung.
 * Mit Rolle (Betriebsleiter), Kontext (Glatteis), Ziel (Zweitversuch morgen) und Ton (sicherheitsbewusst): Professionelle, kooperative Lösung.
 
-### 16 – Technik: Strukturierte Ausgabe (Folie 16)
+### 17 – Technik: Strukturierte Ausgabe (Folie 17)
 * **Szenario:** Unfallbericht auswerten.
 * Standard liefert Fließtext.
 * Optimiert nutzt `<task>`, `<format>`, `<bericht>` und erzwingt reines JSON.
 * **Im Chat** reicht das Format im Prompt. **Per API** besser ein echtes JSON-Schema (Structured Output) – dann erzwingt das System das Format, statt es nur zu erbitten.
 * **Takeaway:** Ideal für Schnittstellen und Weiterverarbeitung ohne Nacharbeit.
 
-### 17 – Kapitel 3 – Prüfen (Folie 17)
+### 18 – Kapitel 3 – Prüfen (Folie 18)
 * **Belege statt Bauchgefühl.** Ab hier drei Praxisfälle aus dem IT-Alltag. Gemeinsamer Nenner: Wer sagt, dass es wirklich erledigt ist – und womit belegt er das?
 * Frage: „Wann ist etwas wirklich erledigt – und wer sagt das?“
 
-### 18 – Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping. (Folie 18)
+### 19 – Freitag, 16:47 Uhr. 742 Benutzer. Ein verdächtiges Mapping. (Folie 19)
 * CSV-Benutzerimport: 742 Zeilen, neues Mapping `cost_center → department`.
 * Den daraus entstandenen Arbeitsauftrag aufklappen: Vor dem Import erst Dry-Run, bestehende Konten schützen, jede Zeile belegen.
 
-### 19 – Benutzer sagt: „VPN geht wieder.“ Ticket zu? (Folie 19)
+### 20 – Benutzer sagt: „VPN geht wieder.“ Ticket zu? (Folie 20)
 * Drei Ebenen unterscheiden: Was das Ticket fordert, was der User sagt, was nachweisbar geprüft wurde.
 * Benutzeraussage ist Input, kein Beweis.
 * Rückbezug auf Folie 6: „Klingt gelöst → schließen“ ist genau so ein starkes Muster.
 * **Klick → Pointe:** „‚Klingt gelöst → schließen‘ ist wieder das Waschanlagen-Muster: plausibel, aber nicht geprüft.“
   🐇 *„Und was, wenn wir das Muster selbst in die Frage schreiben?“*
 
-### 20 – Bestell keine drei Fehler (Folie 20)
+### 21 – Bestell keine drei Fehler (Folie 21)
 * Change-Review um 18:00 Uhr: Drei ernsthafte Falsifikationsversuche statt Fundquote. `CLEAN` ist ein gültiges Ergebnis.
 * Rückbezug auf Folie 6: „Finde drei Fehler“ lenkt die Suche – das Modell liefert sonst eben drei.
 * **Klick → Pointe:** „Wer drei Fehler bestellt, bekommt drei – ob es sie gibt oder nicht. Die Frage formt die Antwort.“
   🐇 *„Zurück zur Waschanlage: Ziel, Prüfkriterien und Belege sichtbar machen – und als Vorlage wiederverwenden.“* – der Kreis schließt sich, weiter zur Toolbox.
 
-### 21 – Kapitel 4 – Wiederverwenden (Folie 21)
+### 22 – Kapitel 4 – Wiederverwenden (Folie 22)
 * **Vorlagen & Regeln.** Letzter Schritt: aus einem guten Prompt eine Vorlage machen und die Spielregeln (Compliance) klären.
 * Frage: „Wie wird aus einem guten Prompt eine sichere, wiederverwendbare Vorlage?“
 
-### 22 – Kleine Vorlagen-Toolbox statt Mega-Prompt (Folie 22)
+### 23 – Kleine Vorlagen-Toolbox statt Mega-Prompt (Folie 23)
 * Drei Karten: VPN-Fehler erst nachstellen · Volle Platte: erst Lücken klären · Schichtwechsel ohne Chatverlauf.
 * Pro Karte läuft eine kurze Animation: Schnellschuss (durchgestrichen) → Vorlage + heutiger Fall → Arbeitsauftrag, Zeile für Zeile.
 * Botschaft: Die Vorlage bleibt gleich, nur der Fall wechselt. „Nochmal abspielen“ für die Wiederholung, „Vollständige Vorlage“ zeigt/kopiert den ganzen Prompt.
 
-### 23 – Sicherheit & Compliance (Folie 23)
+### 24 – Sicherheit & Compliance (Folie 24)
 * **Kernformel:** freigegebener Dienst + zulässige Daten.
   1. Nur freigegebene KI-Dienste – ein privater Account ist kein Arbeitswerkzeug.
   2. Nur Daten, die für diesen Dienst zulässig sind; personenbezogene Daten und Betriebsgeheimnisse nur, wo ausdrücklich erlaubt.
@@ -190,7 +200,7 @@ Die Pointe vorlesen, die 🐇-Frage stellen, dann klicken – nicht vorab erklä
   4. Im Zweifel vor dem Einfügen IT-Security oder Datenschutz fragen.
 * **Mündlich ergänzen (nicht auf der Folie, weil Open Source):** Welche Dienste bei uns konkret freigegeben sind und für welche Daten.
 
-### 24 – Zusammenfassung & Takeaways (Folie 24)
+### 25 – Zusammenfassung & Takeaways (Folie 25)
 * **Kernregeln:**
   1. Briefen wie einen klugen neuen Kollegen: Rolle, Kontext, Ziel.
   2. Rechnen mit Code, Fakten mit Quelle, erst analysieren, dann Ergebnis.
