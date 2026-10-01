@@ -14,7 +14,7 @@ const TOOL_ICONS: Record<L2ToolIcon, React.FC<{ size?: number; className?: strin
 };
 
 const Label: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ className = '', children }) => (
-  <div className={`pixel-font text-[8px] uppercase tracking-wider ${className}`}>{children}</div>
+  <div className={`pixel-font uppercase tracking-wider ${className}`}>{children}</div>
 );
 
 /** Reveals children one after another; remounting (via key) replays the sequence. */
@@ -77,7 +77,7 @@ const L2ToolboxPanel: React.FC<L2ToolboxPanelProps> = ({ lang }) => {
       <div key={`${selectedTool.id}-${replayCount}`} className="space-y-3">
         <div style={appear(0)} className="flex flex-wrap items-center gap-3 border-2 border-rose-900 bg-rose-950/20 px-4 py-2 text-sm text-rose-100">
           <Zap size={16} className="text-rose-300" />
-          <span className="pixel-font text-[8px] text-rose-300">{de ? 'SCHNELLSCHUSS' : 'QUICK FIX'}</span>
+          <span className="pixel-font text-rose-300">{de ? 'SCHNELLSCHUSS' : 'QUICK FIX'}</span>
           <span className="line-through decoration-rose-400/70">{text.quickFix}</span>
         </div>
 

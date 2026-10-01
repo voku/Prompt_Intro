@@ -14,40 +14,82 @@
     <meta name="twitter:title" content="Prompt Engineering in der Praxis" />
     <meta name="twitter:description" content="Wie wir aufhören, den Computer anzuschreien, und anfangen, echte Ergebnisse zu erzielen." />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-      :root { color-scheme: dark; }
-      html, body, #root { min-height: 100%; background: #050816; }
-      body { margin: 0; font-family: 'Inter', sans-serif; }
-      .pixel-font { font-family: 'Press Start 2P', monospace; }
+      :root {
+        color-scheme: dark;
+        --bg: #050816;
+        --ink: #e2e8f0;
+        --line: rgba(129,140,248,.28);
+        --accent: #d946ef;
+        --accent-2: #22d3ee;
+        --ease: cubic-bezier(.22,.8,.24,1);
+      }
+      html, body, #root { height: 100%; background: var(--bg); }
+      body { margin: 0; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+      h1, h2, h3, .display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+      .pixel-font { font-family: 'Press Start 2P', monospace; font-size: clamp(9px, .55vw + 3px, 11px) !important; line-height: 1.7 !important; letter-spacing: .06em; }
+
+      /* Stage: calm aurora + fine grid that fades toward the edges */
       .retro-stage {
-        background-color: #050816;
+        background-color: var(--bg);
         background-image:
-          linear-gradient(rgba(109,40,217,.06) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(34,211,238,.045) 1px, transparent 1px),
-          radial-gradient(circle at 75% 10%, rgba(124,58,237,.22), transparent 34%),
-          radial-gradient(circle at 18% 82%, rgba(8,145,178,.12), transparent 30%);
-        background-size: 32px 32px, 32px 32px, auto, auto;
+          radial-gradient(ellipse 60% 50% at 85% -5%, rgba(124,58,237,.30), transparent 70%),
+          radial-gradient(ellipse 50% 45% at 0% 100%, rgba(8,145,178,.20), transparent 70%),
+          radial-gradient(ellipse 35% 30% at 50% 55%, rgba(217,70,239,.06), transparent 70%);
       }
+      .retro-stage::before {
+        content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        background-image: linear-gradient(rgba(129,140,248,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(129,140,248,.07) 1px, transparent 1px);
+        background-size: 40px 40px;
+        -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+        mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+      }
+
+      /* Panels: gradient hairline, soft depth, HUD corner brackets */
       .retro-panel {
-        border: 2px solid #312e81;
-        box-shadow: 0 0 0 2px #111827, 0 0 30px rgba(124,58,237,.18), 8px 8px 0 rgba(0,0,0,.35);
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        box-shadow: 0 0 0 1px rgba(2,6,23,.9), 0 24px 60px -24px rgba(0,0,0,.8), 0 0 48px -12px rgba(124,58,237,.30), inset 0 1px 0 rgba(255,255,255,.04);
       }
-      .retro-button { border: 2px solid #475569; box-shadow: 3px 3px 0 #020617; }
-      .retro-button:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #020617, 0 0 18px rgba(34,211,238,.22); }
-      .retro-button:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 #020617; }
+      .hud::before, .hud::after {
+        content: ''; position: absolute; width: 18px; height: 18px; pointer-events: none; z-index: 2;
+        border: 2px solid var(--accent-2); opacity: .85;
+      }
+      .hud::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+      .hud::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; border-color: var(--accent); }
+
+      .retro-button { border: 1px solid rgba(148,163,184,.35); border-radius: 3px; box-shadow: 0 2px 0 #020617; transition: transform .15s var(--ease), box-shadow .15s var(--ease), background-color .15s, border-color .15s; }
+      .retro-button:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(34,211,238,.7); box-shadow: 0 3px 0 #020617, 0 0 20px rgba(34,211,238,.22); }
+      .retro-button:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 0 0 #020617; }
+      :focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
       .scanlines::after {
         content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100;
-        background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0, rgba(255,255,255,.018) 1px, transparent 1px, transparent 4px);
+        background: repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0, rgba(255,255,255,.012) 1px, transparent 1px, transparent 4px);
         mix-blend-mode: overlay;
       }
       ::-webkit-scrollbar { width: 8px; height: 8px; }
-      ::-webkit-scrollbar-track { background: #020617; }
-      ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 0; }
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-      .animate-fadeIn { animation: fadeIn .35s steps(6,end) forwards; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(124,58,237,.7); border-radius: 4px; }
+
+      .text-gradient { background: linear-gradient(90deg, #f0abfc, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .lead-rule { border-left: 3px solid; border-image: linear-gradient(180deg, var(--accent), var(--accent-2)) 1; }
+
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-fadeIn { animation: fadeIn .5s var(--ease) both; }
+      @keyframes slideUp { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+      .stagger > * { animation: slideUp .55s var(--ease) both; }
+      .stagger > *:nth-child(1) { animation-delay: .05s; }
+      .stagger > *:nth-child(2) { animation-delay: .15s; }
+      .stagger > *:nth-child(3) { animation-delay: .25s; }
+      .stagger > *:nth-child(4) { animation-delay: .35s; }
       @keyframes pixelPulse { 0%,100% { opacity:.55 } 50% { opacity:1 } }
-      .pixel-pulse { animation: pixelPulse 1.2s steps(2,end) infinite; }
+      .pixel-pulse { animation: pixelPulse 1.4s ease-in-out infinite; }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
+      }
     </style>
   </head>
   <body class="scanlines">

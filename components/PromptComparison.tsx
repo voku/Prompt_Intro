@@ -46,27 +46,27 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
         <span>{description}</span>
       </div>
 
-      <div className="grid flex-grow grid-cols-1 gap-5 md:grid-cols-2">
-        <div className="flex flex-col overflow-hidden border-2 border-amber-700 bg-slate-950/90 shadow-[5px_5px_0_#020617]">
+      <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-2">
+        <div className="flex flex-col overflow-hidden border border-amber-500/50 bg-slate-950/90 shadow-[0_0_30px_-10px_rgba(245,158,11,.35)]">
           <div className="border-b-2 border-amber-800 bg-amber-950/35 px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              <span className="pixel-font text-[8px] text-amber-300">{labels.standardLabel}</span>
+              <span className="pixel-font text-amber-300">{labels.standardLabel}</span>
               <FileClock size={20} className="text-amber-300" />
             </div>
             <div className="mt-3 flex flex-wrap gap-2">{labels.standardTags.map((value) => tag(value, 'amber'))}</div>
           </div>
-          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{standard}</pre>
+          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-base leading-7 md:text-[17px] text-slate-200">{standard}</pre>
         </div>
 
-        <div className="flex flex-col overflow-hidden border-2 border-cyan-700 bg-slate-950/90 shadow-[5px_5px_0_#020617]">
+        <div className="flex flex-col overflow-hidden border border-cyan-400/60 bg-slate-950/90 shadow-[0_0_34px_-8px_rgba(34,211,238,.4)]">
           <div className="border-b-2 border-cyan-800 bg-cyan-950/30 px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              <span className="pixel-font text-[8px] text-cyan-300">{labels.optimizedLabel}</span>
+              <span className="pixel-font text-cyan-300">{labels.optimizedLabel}</span>
               <Sparkles size={20} className="text-cyan-300" />
             </div>
             <div className="mt-3 flex flex-wrap gap-2">{labels.optimizedTags.map((value) => tag(value, 'cyan'))}</div>
           </div>
-          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{optimized}</pre>
+          <pre className="flex-grow whitespace-pre-wrap p-5 font-mono text-base leading-7 md:text-[17px] text-slate-200">{optimized}</pre>
         </div>
       </div>
 
@@ -86,10 +86,10 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({ standard, optimized
           {showWorkOrder && (
             <div className="mt-3 overflow-hidden border-2 border-emerald-700 bg-emerald-950/15 shadow-[5px_5px_0_#020617]">
               <div className="border-b-2 border-emerald-800 px-4 py-3">
-                <span className="pixel-font text-[8px] text-emerald-300">{labels.workOrderLabel}</span>
+                <span className="pixel-font text-emerald-300">{labels.workOrderLabel}</span>
                 <p className="mt-2 text-xs text-slate-400">{labels.workOrderNote}</p>
               </div>
-              <pre className="whitespace-pre-wrap p-5 font-mono text-sm leading-6 text-slate-200">{workOrder}</pre>
+              <pre className="whitespace-pre-wrap p-5 font-mono text-base leading-7 md:text-[17px] text-slate-200">{workOrder}</pre>
             </div>
           )}
         </div>
