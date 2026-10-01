@@ -4,6 +4,7 @@ export enum SlideType {
   TITLE = 'TITLE',
   CONTENT = 'CONTENT',
   COMPARISON = 'COMPARISON',
+  CHAPTER = 'CHAPTER',
   END = 'END'
 }
 
@@ -27,6 +28,8 @@ export interface SlideData {
   type: SlideType;
   icon?: IconName;
   visual?: VisualKind;
+  /** 1-based chapter number, only used by CHAPTER slides. */
+  chapter?: number;
   title: string;
   subtitle?: string;
   content?: string | string[];

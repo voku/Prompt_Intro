@@ -7,7 +7,7 @@ interface LegacyBridgeProps {
   lang: Lang;
 }
 
-const oldGif = (name: string): string => `https://raw.githubusercontent.com/voku/LLM/main/images/reactions/${name}`;
+const oldGif = (name: string): string => `${import.meta.env.BASE_URL}images/${name}`;
 
 type Tone = 'cyan' | 'fuchsia' | 'amber' | 'emerald';
 

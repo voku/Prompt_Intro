@@ -3,6 +3,7 @@ import PromptComparison from './PromptComparison';
 import VisualPanel from './VisualPanel';
 import L2ToolboxPanel from './L2ToolboxPanel';
 import LegacyBridge from './LegacyBridge';
+import ChapterSlide from './ChapterSlide';
 import { CheckCircle2, ChevronsDown, Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
@@ -255,6 +256,9 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
             {data.type === SlideType.END && <div className="pixel-font mt-auto pt-7 text-center text-emerald-300">{thanksLabel}</div>}
           </div>
         );
+
+      case SlideType.CHAPTER:
+        return <ChapterSlide chapter={data.chapter ?? 1} icon={data.icon} title={title} subtitle={subtitle} lang={lang} />;
 
       case SlideType.COMPARISON:
         return (

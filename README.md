@@ -49,8 +49,8 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 - **Retro HUD & Keyboard-Navigation:** Vor/Zurück (Pfeiltasten, Leertaste), Touch-Swipe, Vollbild und Grid-Übersicht.
 - **Bilingual (DE / EN):** Vollständig umschaltbar zwischen Deutsch und Englisch im HUD.
 - **Interaktive Vorher/Nachher-Vergleiche:** Standard-Prompt vs. optimierter Prompt mit aufklappbaren Arbeitsaufträgen.
-- **Klickbare Vorlagen-Toolbox:** Auf Folie 18 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
-- **Pointen-Kette:** Auf den Folien 5–10, 16 und 17 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
+- **Klickbare Vorlagen-Toolbox:** Auf Folie 22 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
+- **Pointen-Kette:** Auf den Folien 6–9, 11, 12, 19 und 20 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
 - **Visuelle Diagramme & Animationen:** Integrierte visuelle Panels für Waschanlage, Rauschbild, Tokens, Next-Token, Vorlage → Arbeitsauftrag, Scope-Map, Evidenzzustände und Agent-Loops.
 
 ---
@@ -77,10 +77,13 @@ npm run build
 | Datei | Zweck |
 |---|---|
 | `introSlides.ts` | 2-Folien-Brücke mit Reaction-GIFs aus dem vorherigen Vortrag |
-| `constants.ts` | 18-Folien-Hauptdeck (Mentales Modell, Praxisfälle, IT-Methoden, Compliance) |
+| `constants.ts` | 22-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
+| `components/ChapterSlide.tsx` | Kapitel-Trennfolie mit rotem Faden |
 | `components/PromptComparison.tsx` | Gegenüberstellung von Standard-Prompt vs. optimiertem Prompt / Arbeitsauftrag |
 | `components/SlideLayout.tsx` | Layout-Renderer für Titel, Visual Panels, leveled Content Cards und Comparisons |
 | `components/VisualPanel.tsx` | Visuelle Render-Panels für Waschanlage, Rauschen, Tokens, Scope, etc. |
 | `components/L2ToolboxPanel.tsx` | Animierte Vorlagen-Toolbox (Vorlage + Fall → Arbeitsauftrag) |
+| `index.css`, `tailwind.config.js` | Lokal gebautes Tailwind plus Design-Tokens – keine CDN-Abhängigkeit, läuft offline |
+| `public/images/` | Lokale Kopien der Reaction-GIFs (Schriften kommen über `@fontsource`) |
 | `App.tsx` | Präsentationssteuerung, Progress-Tracking, Timer und Modals |
 | `PRESENTATION-NOTES-DE.md` | Umfassende deutsche Vortragsnotizen für den Sprecher |

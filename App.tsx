@@ -3,7 +3,7 @@ import { BrainCircuit, ChevronLeft, ChevronRight, Clock, Github, LayoutGrid, Max
 import SlideLayout from './components/SlideLayout';
 import { SLIDES } from './constants';
 import { INTRO_SLIDES } from './introSlides';
-import { Lang } from './types';
+import { Lang, SlideType } from './types';
 import { resolveIcon } from './iconUtils';
 
 const App: React.FC = () => {
@@ -98,7 +98,7 @@ const App: React.FC = () => {
                   title={`${String(index + 1).padStart(2, '0')} · ${segmentTitle(slide)}`}
                   aria-label={`${slideLabel} ${index + 1}`}
                   aria-current={index === safeCurrentSlideIndex}
-                  className="group flex h-full flex-1 items-center"
+                  className={`group flex h-full flex-1 items-center ${slide.type === SlideType.CHAPTER ? "ml-2" : ""}`}
                 >
                   <span className={`block w-full transition-all duration-300 ${index === safeCurrentSlideIndex ? 'h-3 bg-gradient-to-r from-fuchsia-400 to-cyan-300 shadow-[0_0_12px_rgba(217,70,239,.7)]' : index < safeCurrentSlideIndex ? 'h-1.5 bg-violet-500/80 group-hover:h-3' : 'h-1.5 bg-slate-700/80 group-hover:h-3 group-hover:bg-slate-500'}`} />
                 </button>
