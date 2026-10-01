@@ -1,15 +1,69 @@
-import * as Icons from 'lucide-react';
-import { IconName } from './types';
+import {
+  AlertTriangle,
+  Binary,
+  BookOpen,
+  BrainCircuit,
+  Calculator,
+  CarFront,
+  CheckCircle,
+  Code,
+  Compass,
+  Eye,
+  FastForward,
+  FileSpreadsheet,
+  Globe,
+  HelpCircle,
+  History,
+  Layers,
+  Library,
+  ListOrdered,
+  LucideIcon,
+  NotebookPen,
+  Puzzle,
+  Repeat,
+  ScanSearch,
+  SearchCheck,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  TicketCheck,
+  UserCog,
+} from 'lucide-react';
 
 /**
- * Lucide icons are `forwardRef` objects, not plain functions, so a `typeof ===
- * 'function'` guard rejects every real icon and falls back to HelpCircle.
+ * Explicit registry instead of `import * as Icons`: slide data names its icon as a
+ * string, and a namespace import would pull every lucide icon into the bundle.
  */
-const isLucideIcon = (candidate: unknown): candidate is Icons.LucideIcon =>
-  typeof candidate === 'function'
-  || (typeof candidate === 'object' && candidate !== null && '$$typeof' in candidate);
+export const ICONS = {
+  AlertTriangle,
+  Binary,
+  BookOpen,
+  BrainCircuit,
+  Calculator,
+  CarFront,
+  CheckCircle,
+  Code,
+  Compass,
+  Eye,
+  FastForward,
+  FileSpreadsheet,
+  Globe,
+  History,
+  Layers,
+  Library,
+  ListOrdered,
+  NotebookPen,
+  Puzzle,
+  Repeat,
+  ScanSearch,
+  SearchCheck,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  TicketCheck,
+  UserCog,
+} satisfies Record<string, LucideIcon>;
 
-export const resolveIcon = (iconName?: IconName): Icons.LucideIcon => {
-  const candidate = iconName ? Icons[iconName] : undefined;
-  return isLucideIcon(candidate) ? candidate : Icons.HelpCircle;
-};
+export type IconName = keyof typeof ICONS;
+
+export const resolveIcon = (iconName?: IconName): LucideIcon => (iconName ? ICONS[iconName] : undefined) ?? HelpCircle;
