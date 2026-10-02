@@ -4,6 +4,7 @@ import SlideLayout from './components/SlideLayout';
 import { SLIDES } from './constants';
 import { INTRO_SLIDES } from './introSlides';
 import { Lang, SlideType } from './types';
+import { getRevealSteps } from './revealSteps';
 import { resolveIcon } from './iconUtils';
 
 const ALL_SLIDES = [...INTRO_SLIDES, ...SLIDES];
@@ -21,7 +22,7 @@ const slideIndexFromHash = (hash: string): number => {
 const App: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(() => slideIndexFromHash(window.location.hash));
   const [isGridOpen, setIsGridOpen] = useState(false);
-  const [isRevealVisible, setIsRevealVisible] = useState(false);
+  const [revealStep, setRevealStep] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [lang, setLang] = useState<Lang>('de');
   const [isPresenting, setIsPresenting] = useState(() => new URLSearchParams(window.location.search).has('present'));
@@ -34,25 +35,25 @@ const App: React.FC = () => {
   const safeSlideCount = Math.max(slides.length, 1);
   const safeCurrentSlideIndex = Math.min(currentSlideIndex, safeSlideCount - 1);
   const currentSlide = slides[safeCurrentSlideIndex];
-  const hasCurrentReveal = Boolean(currentSlide?.punchline);
+  const totalRevealSteps = currentSlide ? getRevealSteps(currentSlide) : 0;
   const progress = slides.length > 0 ? ((safeCurrentSlideIndex + 1) / slides.length) * 100 : 0;
   const nextSlide = (): void => {
-    if (hasCurrentReveal && !isRevealVisible) {
-      setIsRevealVisible(true);
+    if (revealStep < totalRevealSteps) {
+      setRevealStep(revealStep + 1);
       return;
     }
     if (safeCurrentSlideIndex < slides.length - 1) {
-      setIsRevealVisible(false);
+      setRevealStep(0);
       setCurrentSlideIndex((v) => v + 1);
     }
   };
   const prevSlide = (): void => {
-    if (hasCurrentReveal && isRevealVisible) {
-      setIsRevealVisible(false);
+    if (revealStep > 0) {
+      setRevealStep(revealStep - 1);
       return;
     }
     if (safeCurrentSlideIndex > 0) {
-      setIsRevealVisible(false);
+      setRevealStep(0);
       setCurrentSlideIndex((v) => v - 1);
     }
   };
@@ -90,12 +91,12 @@ const App: React.FC = () => {
     if (window.location.hash !== hash) window.history.replaceState(null, '', hash);
   }, [safeCurrentSlideIndex, slides]);
   useEffect(() => {
-    const onHash = (): void => { setCurrentSlideIndex(slideIndexFromHash(window.location.hash)); setIsRevealVisible(false); };
+    const onHash = (): void => { setCurrentSlideIndex(slideIndexFromHash(window.location.hash)); setRevealStep(0); };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
   useEffect(() => { setCurrentSlideIndex((i) => Math.min(i, Math.max(slides.length - 1, 0))); }, [slides.length]);
-  useEffect(() => { const handleKeyDown = (event: KeyboardEvent): void => { const tag = document.activeElement?.tagName.toLowerCase(); if (tag === 'input' || tag === 'textarea') return; if (event.key === 'ArrowRight') nextSlide(); if (event.key === 'ArrowLeft') prevSlide(); if (event.key === ' ' && !isGridOpen) { event.preventDefault(); nextSlide(); } if ((event.key === 'p' || event.key === 'P') && !event.metaKey && !event.ctrlKey) setIsPresenting((v) => !v); if (event.key === 'Escape') { if (isGridOpen) setIsGridOpen(false); else if (isPresenting) setIsPresenting(false); } }; window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [currentSlideIndex, isGridOpen, isRevealVisible, isPresenting, slides.length]);
+  useEffect(() => { const handleKeyDown = (event: KeyboardEvent): void => { const tag = document.activeElement?.tagName.toLowerCase(); if (tag === 'input' || tag === 'textarea') return; if (event.key === 'ArrowRight') nextSlide(); if (event.key === 'ArrowLeft') prevSlide(); if (event.key === ' ' && !isGridOpen) { event.preventDefault(); nextSlide(); } if ((event.key === 'p' || event.key === 'P') && !event.metaKey && !event.ctrlKey) setIsPresenting((v) => !v); if (event.key === 'Escape') { if (isGridOpen) setIsGridOpen(false); else if (isPresenting) setIsPresenting(false); } }; window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [currentSlideIndex, isGridOpen, revealStep, isPresenting, slides.length]);
   const formatTime = (seconds: number): string => `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
   const prevLabel = lang === 'de' ? 'ZURÜCK' : 'BACK';
   const nextLabel = lang === 'de' ? 'WEITER' : 'NEXT';
@@ -131,9 +132,9 @@ const App: React.FC = () => {
 
       <main className={`relative z-10 flex min-h-0 flex-1 justify-center ${isPresenting ? "p-2 md:p-4" : "px-3 py-3 md:px-7 md:py-5"}`} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
         <div className={`flex min-h-0 w-full ${isPresenting ? "max-w-none" : "max-w-[1560px]"} justify-center transition-opacity duration-200 ${isGridOpen ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
-          {currentSlide && <SlideLayout key={safeCurrentSlideIndex} data={currentSlide} isActive={!isGridOpen} isRevealed={isRevealVisible} lang={lang} />}
+          {currentSlide && <SlideLayout key={safeCurrentSlideIndex} data={currentSlide} isActive={!isGridOpen} revealStep={revealStep} lang={lang} />}
         </div>
-        {isGridOpen && <div className="absolute inset-0 z-40 overflow-y-auto bg-[#050816]/95 p-6 backdrop-blur-sm animate-fadeIn"><div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{slides.map((slide, index) => { const Icon = resolveIcon(slide.icon); const title = segmentTitle(slide); return <button key={slide.id} type="button" onClick={() => { setCurrentSlideIndex(index); setIsRevealVisible(false); setIsGridOpen(false); }} className={`retro-panel group relative flex min-h-44 flex-col items-start p-5 text-left transition ${safeCurrentSlideIndex === index ? 'bg-indigo-950 text-white' : 'bg-slate-950/90 text-slate-400 hover:bg-slate-900 hover:text-white'}`}><div className="mb-4 border border-indigo-700 bg-slate-900 p-2 text-cyan-300"><Icon size={22} /></div><span className="pixel-font mb-3 text-fuchsia-400">{slideLabel} {String(index + 1).padStart(2, '0')}</span><h3 className="font-bold leading-tight">{title}</h3>{safeCurrentSlideIndex === index && <span className="pixel-pulse absolute right-3 top-3 h-2 w-2 bg-emerald-400" />}</button>; })}</div></div>}
+        {isGridOpen && <div className="absolute inset-0 z-40 overflow-y-auto bg-[#050816]/95 p-6 backdrop-blur-sm animate-fadeIn"><div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{slides.map((slide, index) => { const Icon = resolveIcon(slide.icon); const title = segmentTitle(slide); return <button key={slide.id} type="button" onClick={() => { setCurrentSlideIndex(index); setRevealStep(0); setIsGridOpen(false); }} className={`retro-panel group relative flex min-h-44 flex-col items-start p-5 text-left transition ${safeCurrentSlideIndex === index ? 'bg-indigo-950 text-white' : 'bg-slate-950/90 text-slate-400 hover:bg-slate-900 hover:text-white'}`}><div className="mb-4 border border-indigo-700 bg-slate-900 p-2 text-cyan-300"><Icon size={22} /></div><span className="pixel-font mb-3 text-fuchsia-400">{slideLabel} {String(index + 1).padStart(2, '0')}</span><h3 className="font-bold leading-tight">{title}</h3>{safeCurrentSlideIndex === index && <span className="pixel-pulse absolute right-3 top-3 h-2 w-2 bg-emerald-400" />}</button>; })}</div></div>}
       </main>
 
       <footer className={`z-50 bg-[#070a19]/90 backdrop-blur-md transition-transform duration-300 border-t border-indigo-500/25 px-3 py-3 md:px-7 ${isPresenting ? 'absolute inset-x-0 bottom-0 shadow-2xl ' + (isChromeVisible ? 'translate-y-0' : 'translate-y-full') : 'relative'}`}>
@@ -145,7 +146,7 @@ const App: React.FC = () => {
                 <button
                   key={slide.id}
                   type="button"
-                  onClick={() => { setCurrentSlideIndex(index); setIsRevealVisible(false); }}
+                  onClick={() => { setCurrentSlideIndex(index); setRevealStep(0); }}
                   title={`${String(index + 1).padStart(2, '0')} · ${segmentTitle(slide)}`}
                   aria-label={`${slideLabel} ${index + 1}`}
                   aria-current={index === safeCurrentSlideIndex}

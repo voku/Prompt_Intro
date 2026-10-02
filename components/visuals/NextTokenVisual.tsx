@@ -61,9 +61,9 @@ const NextTokenVisual: React.FC<{ lang: Lang }> = ({ lang }) => {
       <Box className={`border-rose-700 bg-rose-950/15 transition-opacity duration-500 ${step >= 3 ? 'opacity-100' : 'opacity-25'}`}>
         <div className="mb-3 flex items-center justify-between gap-2"><Label className="text-rose-300">{de ? 'Gefährlich' : 'Dangerous'}</Label><TriangleAlert size={18} className="text-rose-300" /></div>
         <Step
-          prompt={de ? 'Laut § 7 unserer Betriebsvereinbarung sind mobil bis zu' : 'According to § 7 of our works agreement, remote work is allowed up to'}
-          candidates={de ? [{ word: 'drei', p: 44 }, { word: 'zwei', p: 35 }, { word: 'fünf', p: 9 }] : [{ word: 'three', p: 44 }, { word: 'two', p: 35 }, { word: 'five', p: 9 }]}
-          tail={de ? ' Tage pro Woche erlaubt.' : ' days a week.'}
+          prompt={de ? 'Laut § 7 Abs. 2 der Betriebsvereinbarung dürfen Mitarbeitende nur KI-Software von der' : 'According to § 7(2) of the works agreement, employees may only use AI software from the'}
+          candidates={de ? [{ word: 'Whitelist', p: 44 }, { word: 'IT-Liste', p: 35 }, { word: 'Zentrale', p: 9 }] : [{ word: 'whitelist', p: 44 }, { word: 'IT list', p: 35 }, { word: 'vendor', p: 9 }]}
+          tail={de ? ' nutzen.' : '.'}
           step={Math.max(0, step - 3)}
           tone="rose"
         />

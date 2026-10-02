@@ -12,12 +12,14 @@ import LevelLoader from './LevelLoader';
 import { CheckCircle2, ChevronsDown, Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
+import { getRevealSteps } from '../revealSteps';
 
-interface SlideLayoutProps { data: SlideData; isActive: boolean; isRevealed?: boolean; lang: Lang; }
+interface SlideLayoutProps { data: SlideData; isActive: boolean; revealStep?: number; lang: Lang; }
 
-const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = false, lang }) => {
+const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, revealStep = 0, lang }) => {
+  const isRevealed = Boolean(data.punchline) && revealStep >= getRevealSteps(data);
   const IconComponent = resolveIcon(data.icon);
-  const fitRef = useFitToBox<HTMLDivElement>([data.id, isRevealed, lang, isActive]);
+  const fitRef = useFitToBox<HTMLDivElement>([data.id, revealStep, lang, isActive]);
   if (!isActive) return null;
 
   const t = (en: string | undefined, de: string | undefined): string | undefined => lang === 'de' && de ? de : en;
@@ -33,12 +35,12 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
   const de = lang === 'de';
   const legacyVisuals = ['legacy-recap', 'legacy-timejump'];
   // Visuals that need the full width; their text runs as a strip underneath.
-  const wideVisuals = ['guidance-ladder', 'compliance-gates', 'evidence-board', 'bug-quota'];
+  const wideVisuals = ['guidance-ladder', 'compliance-gates', 'bug-quota'];
   const visualPrefix: Record<string, string> = {
     carwash: 'LLM', unpuzzle: 'LLM', 'noise-hallucination': 'LLM', tokens: 'LLM', 'next-token': 'LLM',
     'guidance-ladder': de ? 'FÜHREN' : 'GUIDE',
     'vpn-status': de ? 'PRÜFEN' : 'VERIFY', 'bug-quota': de ? 'PRÜFEN' : 'VERIFY',
-    'compliance-gates': 'COMPLIANCE', 'evidence-board': 'BONUS',
+    'compliance-gates': 'COMPLIANCE',
   };
   const contentLabel = data.visual && legacyVisuals.includes(data.visual)
     ? (de ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')
@@ -146,13 +148,13 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
   const renderTakeaways = () => {
     if (!Array.isArray(content)) return null;
     return (
-      <div className="stagger grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
         {content.map((point, index) => {
           const isLast = index === content.length - 1;
           return (
             <div
               key={index}
-              className={`relative flex items-center gap-4 border px-5 py-4 ${isLast ? 'border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/60 shadow-[0_0_30px_-6px_rgba(217,70,239,.45)]' : 'border-indigo-500/30 bg-slate-950/60'}`}
+              className={`relative flex items-center gap-4 border px-5 py-4 ${revealStep > index ? 'animate-slideUp' : 'invisible'} ${isLast ? 'border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/60 shadow-[0_0_30px_-6px_rgba(217,70,239,.45)]' : 'border-indigo-500/30 bg-slate-950/60'}`}
             >
               <span className={`pixel-font mt-1 ${isLast ? 'text-fuchsia-300' : 'text-amber-300'}`}>{String(index + 1).padStart(2, '0')}</span>
               <p className={`text-base leading-snug md:text-lg ${isLast ? 'font-semibold text-white' : 'font-medium text-slate-200'}`}>{point}</p>
@@ -165,7 +167,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
 
   const renderVisual = () => {
     if (data.visual === 'legacy-recap' || data.visual === 'legacy-timejump') {
-      return <LegacyBridge kind={data.visual} lang={lang} />;
+      return <LegacyBridge kind={data.visual} lang={lang} step={revealStep} />;
     }
     if (!data.visual) return null;
     return <VisualPanel kind={data.visual} lang={lang} revealed={isRevealed} />;
@@ -186,7 +188,7 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
               </h1>
               <div className="my-8 h-1 w-48 bg-gradient-to-r from-fuchsia-500 via-amber-400 to-cyan-400" />
               <h2 className="lead-rule max-w-3xl pl-5 text-xl font-medium leading-relaxed text-cyan-100/90 md:text-2xl">{subtitle}</h2>
-              <div className="mt-9 flex flex-wrap items-center gap-3 font-mono text-sm">
+              <div className={`mt-9 flex flex-wrap items-center gap-3 font-mono text-sm ${revealStep >= 1 ? 'animate-slideUp' : 'invisible'}`}>
                 <span className="border border-slate-600 bg-slate-950 px-4 py-2 text-slate-300">PROMPT</span>
                 <span className="text-fuchsia-400">→</span>
                 <span className="border border-amber-600/70 bg-amber-950/30 px-4 py-2 text-amber-200">{lang === 'de' ? 'LEITPLANKEN' : 'GUARDRAILS'}</span>
@@ -198,15 +200,15 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
             </div>
 
             {/* Save-game card: the previous talk is cleared, this one is loading. */}
-            <div className="stagger hidden flex-col gap-4 lg:flex">
-              <div className="border border-emerald-400/40 bg-emerald-950/20 p-5">
+            <div className="hidden flex-col gap-4 lg:flex">
+              <div className={`${revealStep >= 2 ? 'animate-slideUp' : 'invisible'} border border-emerald-400/40 bg-emerald-950/20 p-5`}>
                 <div className="flex items-center justify-between"><span className="pixel-font text-emerald-300">{lang === 'de' ? 'LEVEL 1 // GESCHAFFT' : 'LEVEL 1 // CLEARED'}</span><CheckCircle2 size={22} className="text-emerald-300" /></div>
                 <div className="mt-3 text-2xl font-bold leading-tight text-white">{lang === 'de' ? '„Willkommen in der Welt der LLMs!“' : '“Welcome to the world of LLMs!”'}</div>
                 <p className="mt-2 text-sm leading-snug text-slate-400">{lang === 'de' ? 'Wie Maschinen Sprache verstehen, generieren und unterstützen.' : 'How machines understand, generate and support language.'}</p>
               </div>
-              <div className="flex justify-center text-fuchsia-400"><ChevronsDown size={30} className="pixel-pulse" /></div>
-              <div className="relative overflow-hidden border border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/70 p-6 shadow-[0_0_44px_-8px_rgba(217,70,239,.5)]">
-                <LevelLoader lang={lang} />
+              <div className={`flex justify-center text-fuchsia-400 ${revealStep >= 3 ? 'animate-slideUp' : 'invisible'}`}><ChevronsDown size={30} className="pixel-pulse" /></div>
+              <div className={`${revealStep >= 3 ? 'animate-slideUp' : 'invisible'} relative overflow-hidden border border-fuchsia-400/60 bg-gradient-to-br from-fuchsia-950/60 to-indigo-950/70 p-6 shadow-[0_0_44px_-8px_rgba(217,70,239,.5)]`}>
+                {revealStep >= 3 ? <LevelLoader lang={lang} /> : <div className="h-[5.5rem]" />}
                 <div className="mt-4 flex items-center gap-3"><IconComponent size={26} className="shrink-0 text-cyan-300" /><div className="text-3xl font-bold leading-tight text-white">{title}</div></div>
                 <div className="mt-5 grid grid-cols-2 gap-2 font-mono text-xs">
                   <span className="border border-cyan-800 bg-cyan-950/30 px-3 py-2 text-cyan-200">{lang === 'de' ? 'ROLLE & KONTEXT' : 'ROLE & CONTEXT'}</span>
@@ -221,10 +223,10 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, isRevealed = 
         );
 
       case SlideType.STATEMENT:
-        return <StatementSlide icon={data.icon} kicker={title} statement={subtitle ?? ''} points={Array.isArray(content) ? content : []} lang={lang} />;
+        return <StatementSlide icon={data.icon} kicker={title} statement={subtitle ?? ''} points={Array.isArray(content) ? content : []} lang={lang} step={revealStep} />;
 
       case SlideType.END:
-        return <EndSlide title={title} subtitle={subtitle} points={Array.isArray(content) ? content : []} action={technique} lang={lang} />;
+        return <EndSlide title={title} subtitle={subtitle} points={Array.isArray(content) ? content : []} lang={lang} step={revealStep} />;
 
       case SlideType.CONTENT:
         return (

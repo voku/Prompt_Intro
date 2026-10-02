@@ -10,16 +10,17 @@ interface StatementSlideProps {
   statement: string;
   points: string[];
   lang: Lang;
+  step?: number;
 }
 
 /** One big sentence on the left, a chat that proves it on the right. */
-const StatementSlide: React.FC<StatementSlideProps> = ({ icon, kicker, statement, points, lang }) => {
+const StatementSlide: React.FC<StatementSlideProps> = ({ icon, kicker, statement, points, lang, step: revealStep = 0 }) => {
   const de = lang === 'de';
   const Icon = resolveIcon(icon);
   const step = useSequence(4, 900, 400);
   const answer = de
-    ? 'Laut § 7 Abs. 2 der Betriebsvereinbarung dürfen Mitarbeitende bis zu drei Tage pro Woche mobil arbeiten.'
-    : 'According to § 7(2) of the works agreement, staff may work remotely up to three days a week.';
+    ? 'Laut § 7 Abs. 2 der Betriebsvereinbarung dürfen Mitarbeitende nur KI-Software von der Whitelist nutzen.'
+    : 'According to § 7(2) of the works agreement, employees may only use AI software from the whitelist.';
   const typed = useTypewriter(answer, step >= 1, 22);
   const done = typed.length === answer.length;
 
@@ -33,9 +34,9 @@ const StatementSlide: React.FC<StatementSlideProps> = ({ icon, kicker, statement
         <h2 className="text-balance text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl xl:text-7xl">
           {statement}
         </h2>
-        <ol className="stagger mt-10 grid gap-3">
+        <ol className="mt-10 grid gap-3">
           {points.map((p, i) => (
-            <li key={p} className="flex items-baseline gap-4 text-lg text-slate-200 md:text-xl">
+            <li key={p} className={`${revealStep > i ? 'animate-slideUp' : 'invisible'} flex items-baseline gap-4 text-lg text-slate-200 md:text-xl`}>
               <span className="pixel-font text-fuchsia-300">{String(i + 1).padStart(2, '0')}</span>
               <span>{p}</span>
             </li>
@@ -45,7 +46,7 @@ const StatementSlide: React.FC<StatementSlideProps> = ({ icon, kicker, statement
 
       <div className="space-y-4">
         <div className="flex items-start justify-end gap-3">
-          <div className="rounded-2xl rounded-tr-sm border border-slate-600 bg-slate-800/80 px-4 py-3 text-lg text-white">{de ? 'Was steht in unserer Betriebsvereinbarung zum Homeoffice?' : 'What does our works agreement say about remote work?'}</div>
+          <div className="rounded-2xl rounded-tr-sm border border-slate-600 bg-slate-800/80 px-4 py-3 text-lg text-white">{de ? 'Was steht in unserer Betriebsvereinbarung zum Einsatz künstlicher Intelligenz?' : 'What does our works agreement say about AI?'}</div>
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-700 text-slate-200"><User size={18} /></div>
         </div>
         <div className="flex items-start gap-3">

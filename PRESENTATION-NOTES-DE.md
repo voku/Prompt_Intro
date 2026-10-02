@@ -32,8 +32,9 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 
 **Vor dem Vortrag:**
 * `P` drücken (Präsentationsmodus, kein Header) und – falls gewünscht – zusätzlich Vollbild. Steuerung erscheint, wenn die Maus den oberen oder unteren Rand berührt; `Esc` beendet den Modus.
-* Jede Folie hat einen Link: `#12` springt zu Folie 12, `#vorlagen` zur Toolbox (dorthin zeigt auch der QR-Code auf der Fazit-Folie).
+* Jede Folie hat einen Link: `#12` springt zu Folie 12, `#vorlagen` zur Toolbox.
 * Die Folien passen sich der Auflösung an: Ist der Beamer kleiner als 1920×1080, wird der Inhalt automatisch verkleinert statt abgeschnitten.
+* **Boxen kommen nach und nach:** Auf der Titelfolie, den beiden Recap-Folien, der Aussage-Folie (5), den Folien mit Takeaway-Leiste (12, 20, 24) und der Fazit-Folie blendet jeder Klick die nächste Box ein (← nimmt sie wieder weg). Eine Pointe kommt immer als letzter Klick. Heißt: bei diesen Folien ein paar Klicks einplanen.
 * Die Animationen starten beim Aufruf der Folie. Wer eine Folie nochmal sehen will: kurz zurück und wieder vor.
 
 ## Ablauf & Notizen pro Folie
@@ -43,7 +44,7 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 * Kurze Brücke:
   > „Beim letzten Mal ging es um die Grundlagen: Text rein → plausible Antwort raus. Gut zum Zusammenfassen, Übersetzen, Coden. Das Modell lernt Muster und setzt Text plausibel fort.“
 
-### 2 – Dann bekam der Chatbot plötzlich Hände (Folie 2)
+### 2 – Dann bekam der Chatbot plötzlich Fähigkeiten (Folie 2)
 * Die beiden GIFs als Zeitmarker:
   - Links: Früher ging es überwiegend um Text-Antworten.
   - Rechts: Heute lesen Modelle Dateien, nutzen Suchmaschinen und APIs, schreiben und testen Code und führen mehrstufige Aufgaben aus.
@@ -62,7 +63,7 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 
 ### 5 – Der selbstbewusste Praktikant (Folie 5)
 * **Eine Aussage, groß:** „Ein LLM klingt genauso überzeugend, wenn es falsch liegt.“
-* Rechts tippt sich eine Chat-Antwort ein: Frage nach „unserer Betriebsvereinbarung zum Homeoffice“, Antwort „§ 7 Abs. 2 … drei Tage“. Darunter: *Wie sicher es klingt* 100 %, *Was belegt ist* 0 % – das Dokument wurde nie hochgeladen.
+* Rechts tippt sich eine Chat-Antwort ein: Frage nach „unserer Betriebsvereinbarung zum Einsatz künstlicher Intelligenz“, Antwort „Nur KI-Software von der Whitelist …“. Darunter: *Wie sicher es klingt* 100 %, *Was belegt ist* 0 % – das Dokument wurde nie hochgeladen.
 * Das ist als **Illustration** markiert – nicht als Mitschnitt eines bestimmten Modells ausgeben.
 * **Metapher:** Der überaus selbstbewusste Praktikant am ersten Arbeitstag: Statt „keine Ahnung“ kommt eine überzeugende Geschichte.
 * Drei Punkte: gute Geschichte statt „keine Ahnung“ · Schwachstellen Rechnen, aktuelle Fakten, Zitate · Antwort: Werkzeuge und Leitplanken.
@@ -103,7 +104,7 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 
 ### 10 – Plausible Fortsetzung ist keine Wahrheitsdatenbank (Folie 10)
 * Oben „Der Himmel ist …“: Balken wachsen, „blau“ gewinnt – harmlos.
-* Unten der gefährliche Fall: „Laut § 7 unserer Betriebsvereinbarung sind mobil bis zu …“ → „drei“ gewinnt mit 44 %. Darunter: „Passt perfekt. Belegt? Das Dokument lag nie vor.“ – der Praktikant von Folie 5 ist zurück.
+* Unten der gefährliche Fall: „Laut § 7 Abs. 2 der Betriebsvereinbarung dürfen Mitarbeitende nur KI-Software von der …“ → „Whitelist“ gewinnt mit 44 %. Darunter: „Passt perfekt. Belegt? Das Dokument lag nie vor.“ – der Praktikant von Folie 5 ist zurück.
 * Die Prozente sind **Illustration**, keine echten Modellwahrscheinlichkeiten (steht auf der Folie).
 * **Klick → Pointe:** „Es wählt, was zum Kontext passt – nicht, was belegt ist. Das ist die gemeinsame Wurzel all dieser Fallen.“
   🐇 *„Wie kommt dann Wahrheit rein? Mit genau so viel Führung, wie die Aufgabe braucht.“*
@@ -178,7 +179,7 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 
 ### 24 – Drei Schranken vor dem Einfügen (Folie 24)
 * Ein Dokument wandert durch drei Schranken, jede leuchtet beim Passieren grün: **Dienst freigegeben?** · **Daten zulässig?** · **Mensch prüft?** – erst dann einfügen.
-* Darunter: Ein privater Account ist kein Arbeitswerkzeug · Im Zweifel IT-Security oder Datenschutz fragen.
+* Darunter: Im Zweifel IT-Security oder Datenschutz fragen.
 * **Mündlich ergänzen (nicht auf der Folie, weil Open Source):** Welche Dienste bei uns konkret freigegeben sind und für welche Daten.
 
 ### 25 – Drei Dinge zum Mitnehmen (Folie 25)
@@ -186,11 +187,5 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
   1. Briefen wie eine kluge neue Kollegin: Rolle, Kontext, Ziel – und was „erledigt“ heißt.
   2. Abgeben, was Plausibilität nicht kann: Rechnen mit Code, Fakten mit Quelle.
   3. Sagen, was belegt, vermutet oder offen ist – und gute Prompts als Vorlage aufheben.
-* **Aufgabe für morgen:** eine wiederkehrende Aufgabe als Arbeitsauftrag aufschreiben (Ziel, Kontext, Grenzen, Prüfung, Erledigt-wenn).
-* Der **QR-Code** führt direkt zur Toolbox (`#vorlagen`) – zum Abfotografieren stehen lassen, während die Fragen laufen.
+* Die Karten kommen mit je einem Klick. Aufgabe für morgen und QR-Code gibt es auf der Folie nicht mehr; die Toolbox bleibt über `#vorlagen` erreichbar – bei Bedarf mündlich nennen: „eine wiederkehrende Aufgabe als Arbeitsauftrag aufschreiben (Ziel, Kontext, Grenzen, Prüfung, Erledigt-wenn)“.
 * Was früher hier stand und jetzt nur noch mündlich kommt: „Erst verstehen oder nachstellen, dann ändern“ und „Dreht sich die KI im Kreis? Nicht neu würfeln – neue Infos geben oder neu anfangen.“
-
-### 26 – Bonus: Das Vokabular dahinter (Folie 26)
-* Nur bei Nachfragen oder fortgeschrittenem Publikum zeigen.
-* Belegt / vermutet / offen mit den genauen Begriffen aus den Vorlagen (VERIFIED, INFERRED, ASSUMED, UNKNOWN, BLOCKED, CONTRADICTED).
-* Arbeitsauftrag = Ziel + Kontext + Grenzen + Prüfung + Erledigt-wenn; Vorlage (L2) vs. Arbeitsauftrag (L1).

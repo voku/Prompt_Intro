@@ -10,7 +10,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 
 ### Prolog
 1. **Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt …** — Rückblick auf den letzten Vortrag
-2. **Dann bekam der Chatbot plötzlich Hände** — der Sprung zu Werkzeugen, Dateien, Code & Agents
+2. **Dann bekam der Chatbot plötzlich Fähigkeiten** — der Sprung zu Werkzeugen, Dateien, Code & Agents
 3. **Prompt Engineering in der Praxis** — Titelfolie, „Level 2 // lädt …“
 
 ### Kapitel 1 – Verstehen
@@ -41,8 +41,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 22. *Kapitel-Trennfolie*
 23. **Kleine Vorlagen-Toolbox statt Mega-Prompt** — Vorlage + Fall → Arbeitsauftrag (`#vorlagen`)
 24. **Drei Schranken vor dem Einfügen** — Dienst, Daten, Mensch
-25. **Drei Dinge zum Mitnehmen** — plus Aufgabe für morgen und QR-Code zu den Vorlagen
-26. **Bonus: Das Vokabular dahinter** — VERIFIED, UNKNOWN, BLOCKED & Co.
+25. **Drei Dinge zum Mitnehmen** — drei Karten, die nacheinander erscheinen
 
 ---
 
@@ -56,6 +55,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 - **Interaktive Vorher/Nachher-Vergleiche:** Standard-Prompt vs. optimierter Prompt mit aufklappbaren Arbeitsaufträgen.
 - **Klickbare Vorlagen-Toolbox:** Auf Folie 23 zeigen drei Fälle animiert, wie aus Vorlage und Fall ein Arbeitsauftrag wird; die Vorlagen lassen sich kopieren.
 - **Unpuzzles-Folie:** Echtes Rätselpaar aus dem DeepMind-Datensatz (Original vs. trivial gemachte Variante) mit Reveal per Klick; Quelle und Lizenz stehen auf der Folie.
+- **Boxen nach und nach:** Auf Titel-, Recap-, Aussage-, Takeaway- und Fazit-Folien blendet jeder Klick die nächste Box ein, eine Pointe kommt zuletzt (Schrittzahl pro Folie in `revealSteps.ts`, Zustand `revealStep` in `App.tsx`).
 - **Pointen-Kette:** Auf den Folien 6–10, 16, 17 und 19–21 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
 - **Animierte Visuals:** Waschanlagen-Szene, Münz-Rätsel, Live-Rauschen, Token-Animation, Wahrscheinlichkeitsbalken, Führungs-Treppe, VPN-Prüftabelle, Fundquote vs. Widerlegung, Compliance-Schranken. Alle respektieren `prefers-reduced-motion`.
 - **Vorher/Nachher mit Ergebnis:** Vergleichsfolien zeigen optional die Ausgabe des guten Prompts – als Terminal oder als Tabelle mit hervorgehobenen „offen“-Feldern.
@@ -84,12 +84,12 @@ npm run build
 | Datei | Zweck |
 |---|---|
 | `introSlides.ts` | 2-Folien-Brücke mit Reaction-GIFs aus dem vorherigen Vortrag |
-| `constants.ts` | 24-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
+| `constants.ts` | 23-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
 | `components/ChapterSlide.tsx` | Kapitel-Trennfolie mit rotem Faden |
 | `components/PromptComparison.tsx` | Gegenüberstellung von Standard-Prompt vs. optimiertem Prompt / Arbeitsauftrag |
 | `components/SlideLayout.tsx` | Layout-Renderer für alle Folientypen (Titel, Kapitel, Aussage, Visual, Vergleich, Fazit) |
 | `components/VisualPanel.tsx` | Verteiler auf die animierten Visuals in `components/visuals/` |
-| `components/StatementSlide.tsx`, `components/EndSlide.tsx` | Aussage-Folie mit Chat-Illustration, Fazit mit QR-Code |
+| `components/StatementSlide.tsx`, `components/EndSlide.tsx` | Aussage-Folie mit Chat-Illustration, Fazit mit drei Karten |
 | `components/useFitToBox.ts` | Auto-Fit: verkleinert den Folieninhalt, bis er in den Bildschirm passt |
 | `components/L2ToolboxPanel.tsx` | Animierte Vorlagen-Toolbox (Vorlage + Fall → Arbeitsauftrag) |
 | `index.css`, `tailwind.config.js` | Lokal gebautes Tailwind plus Design-Tokens – keine CDN-Abhängigkeit, läuft offline |

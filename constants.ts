@@ -7,8 +7,8 @@ export const SLIDES: SlideData[] = [
     icon: 'BrainCircuit',
     title: 'Prompt Engineering in der Praxis',
     titleDE: 'Prompt Engineering in der Praxis',
-    subtitle: 'I work with LLMs every day and hand them real work. But trust comes from verifiable steps — not from a convincing answer.',
-    subtitleDE: 'Ich arbeite jeden Tag mit LLMs und vertraue ihnen echte Arbeit an. Vertrauen entsteht aber durch prüfbare Schritte – nicht durch eine überzeugende Antwort.',
+    subtitle: 'I trust LLMs with real work – but only with verifiable steps.',
+    subtitleDE: 'Ich vertraue LLMs echte Arbeit an – aber nur mit prüfbaren Schritten.',
   },
 
   // ── Chapter 1: Understand ────────────────────────────────────────────────
@@ -320,14 +320,16 @@ Regeln:
 Do NOT calculate in your head.
 Write a Python script that:
 1. counts the working days (Mon–Sat),
-2. uses 90 km/day,
-3. prints days, litres and total cost.`,
+2. uses 90 km/day (2 routes × 45 km),
+3. uses 32 L/100 km and €1.70 per litre,
+4. prints days, litres and total cost.`,
     codeOptimizedDE: `Ziel: Treibstoffkosten November 2024.
 Rechne NICHT im Kopf.
 Schreib ein Python-Skript, das:
 1. die Werktage (Mo–Sa) zählt,
-2. mit 90 km/Tag rechnet,
-3. Tage, Liter und Gesamtkosten ausgibt.`,
+2. mit 90 km/Tag rechnet (2 Touren × 45 km),
+3. 32 L/100 km und 1,70 € pro Liter ansetzt,
+4. Tage, Liter und Gesamtkosten ausgibt.`,
     codeResult: `$ python fuel.py
 working days (Mon–Sat): 26
 distance: 2340 km
@@ -527,11 +529,9 @@ Erledigt, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; Mapp
     subtitle: 'Approved service + permitted data + a human who checks.',
     subtitleDE: 'Freigegebener Dienst + zulässige Daten + ein Mensch, der prüft.',
     content: [
-      'A private account is not a work tool.',
       'When in doubt: ask IT security or data protection before you paste.',
     ],
     contentDE: [
-      'Ein privater Account ist kein Arbeitswerkzeug.',
       'Im Zweifel: vor dem Einfügen IT-Security oder Datenschutz fragen.',
     ],
   },
@@ -552,30 +552,6 @@ Erledigt, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; Mapp
       'Briefen wie eine kluge neue Kollegin: Rolle, Kontext, Ziel – und was „erledigt“ heißt.',
       'Abgeben, was Plausibilität nicht kann: Rechnen mit Code, Fakten mit Quelle.',
       'Sagen, was belegt, vermutet oder offen ist – und gute Prompts als Vorlage aufheben.',
-    ],
-    technique: 'Take one recurring task and write it as a work order – goal, context, limits, check, done when.',
-    techniqueDE: 'Nimm eine wiederkehrende Aufgabe und schreib sie als Arbeitsauftrag – Ziel, Kontext, Grenzen, Prüfung, Erledigt-wenn.',
-  },
-  {
-    id: 205,
-    type: SlideType.CONTENT,
-    visual: 'evidence-board',
-    icon: 'BookOpen',
-    title: 'Bonus: The Vocabulary Behind It',
-    titleDE: 'Bonus: Das Vokabular dahinter',
-    topic: 'For the curious',
-    topicDE: 'Für Neugierige',
-    subtitle: 'In the templates you will meet these labels – they are just precise words for “proven, assumed, open”.',
-    subtitleDE: 'In den Vorlagen tauchen diese Begriffe auf – es sind nur genaue Wörter für „belegt, vermutet, offen“.',
-    content: [
-      'Work order = goal + context + limits + verification + done when.',
-      'Template (L2) = reusable way of working. Work order (L1) = the concrete job for today.',
-      'BLOCKED = we know what we need but cannot get it right now.',
-    ],
-    contentDE: [
-      'Arbeitsauftrag = Ziel + Kontext + Grenzen + Prüfung + Erledigt, wenn.',
-      'Vorlage (L2) = wiederverwendbare Arbeitsweise. Arbeitsauftrag (L1) = der konkrete Job für heute.',
-      'BLOCKED = Wir wissen, was wir brauchen, kommen aber gerade nicht dran.',
     ],
   },
 ];

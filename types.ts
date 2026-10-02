@@ -20,7 +20,6 @@ export type VisualKind =
   | 'noise-hallucination'
   | 'tokens'
   | 'next-token'
-  | 'evidence-board'
   | 'toolbox'
   | 'guidance-ladder'
   | 'vpn-status'

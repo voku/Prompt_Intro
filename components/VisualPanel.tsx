@@ -9,7 +9,6 @@ import GuidanceLadderVisual from './visuals/GuidanceLadderVisual';
 import VpnStatusVisual from './visuals/VpnStatusVisual';
 import BugQuotaVisual from './visuals/BugQuotaVisual';
 import ComplianceGatesVisual from './visuals/ComplianceGatesVisual';
-import EvidenceBoardVisual from './visuals/EvidenceBoardVisual';
 
 interface VisualPanelProps { kind: VisualKind; lang: Lang; revealed?: boolean; }
 
@@ -24,7 +23,6 @@ const VisualPanel: React.FC<VisualPanelProps> = ({ kind, lang, revealed = false 
     case 'vpn-status': return <VpnStatusVisual lang={lang} revealed={revealed} />;
     case 'bug-quota': return <BugQuotaVisual lang={lang} />;
     case 'compliance-gates': return <ComplianceGatesVisual lang={lang} />;
-    case 'evidence-board': return <EvidenceBoardVisual lang={lang} />;
     default: return null;
   }
 };

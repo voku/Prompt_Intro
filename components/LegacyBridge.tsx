@@ -5,6 +5,8 @@ import { Lang, VisualKind } from '../types';
 interface LegacyBridgeProps {
   kind: Extract<VisualKind, 'legacy-recap' | 'legacy-timejump'>;
   lang: Lang;
+  /** Reveal step; fact card n is shown once step >= n. */
+  step?: number;
 }
 
 const oldGif = (name: string): string => `${import.meta.env.BASE_URL}images/${name}`;
@@ -18,8 +20,8 @@ const TONES: Record<Tone, { box: string; badge: string; label: string }> = {
   emerald: { box: 'border-emerald-500/40 bg-emerald-950/25 hover:border-emerald-300/80', badge: 'border-emerald-400/50 bg-emerald-900/40 text-emerald-300', label: 'text-emerald-300' },
 };
 
-const FactCard: React.FC<{ tone: Tone; icon: React.ReactNode; title: string; text: string }> = ({ tone, icon, title, text }) => (
-  <div className={`flex items-center gap-4 border px-4 py-4 transition-colors md:px-5 ${TONES[tone].box}`}>
+const FactCard: React.FC<{ tone: Tone; icon: React.ReactNode; title: string; text: string; shown: boolean }> = ({ tone, icon, title, text, shown }) => (
+  <div className={`${shown ? 'animate-slideUp' : 'invisible'} flex items-center gap-4 border px-4 py-4 transition-colors md:px-5 ${TONES[tone].box}`}>
     <div className={`flex h-12 w-12 shrink-0 items-center justify-center border ${TONES[tone].badge}`}>{icon}</div>
     <div className="min-w-0">
       <div className="text-lg font-bold leading-tight text-white">{title}</div>
@@ -41,45 +43,44 @@ const GifCard: React.FC<{ src: string; alt: string; tone: Tone; tag: string; tit
   </div>
 );
 
-const LegacyBridge: React.FC<LegacyBridgeProps> = ({ kind, lang }) => {
+const LegacyBridge: React.FC<LegacyBridgeProps> = ({ kind, lang, step = 0 }) => {
   const de = lang === 'de';
 
   if (kind === 'legacy-recap') {
     return (
-      <div className="stagger grid h-full gap-5 lg:grid-cols-[1.1fr_.9fr]">
+      <div className="grid h-full gap-5 lg:grid-cols-[1.1fr_.9fr]">
         <GifCard
           src={oldGif('tumblr_inline_mmrb6wlC0g1qz4rgp.gif')}
           alt={de ? 'Reaction-GIF aus der früheren LLM-Präsentation' : 'Reaction GIF from the previous LLM presentation'}
           tone="fuchsia"
           tag="RECALL // OLD DECK"
           title={de ? '„Willkommen in der Welt der LLMs!“' : '“Welcome to the world of LLMs!”'}
-          sub={de ? 'Ja, genau die Präsentation.' : 'Yes, that presentation.'}
           big
           className="min-h-[300px]"
         />
         <div className="grid grid-rows-3 gap-3">
-          <FactCard tone="cyan" icon={<MessageSquareText size={24} />} title={de ? 'Sprache rein, Sprache raus' : 'Language in, language out'} text={de ? 'Zusammenfassen, Übersetzen, Schreiben.' : 'Summarise, translate, write.'} />
-          <FactCard tone="fuchsia" icon={<Bot size={24} />} title={de ? 'Muster statt Nachschlagewerk' : 'Patterns, not a lookup table'} text={de ? 'Kontext verstehen und plausibel fortsetzen.' : 'Understand context and continue plausibly.'} />
-          <FactCard tone="amber" icon={<FileSearch size={24} />} title={de ? 'Damals schon wichtig' : 'Already important then'} text={de ? 'Quellen prüfen. Nicht jede Antwort glauben.' : 'Check sources. Do not trust every answer.'} />
+          <FactCard shown={step >= 1} tone="cyan" icon={<MessageSquareText size={24} />} title={de ? 'Sprache rein, Sprache raus' : 'Language in, language out'} text={de ? 'Zusammenfassen, Übersetzen, Schreiben.' : 'Summarise, translate, write.'} />
+          <FactCard shown={step >= 2} tone="fuchsia" icon={<Bot size={24} />} title={de ? 'Muster statt Nachschlagewerk' : 'Patterns, not a lookup table'} text={de ? 'Kontext verstehen und plausibel fortsetzen.' : 'Understand context and continue plausibly.'} />
+          <FactCard shown={step >= 3} tone="amber" icon={<FileSearch size={24} />} title={de ? 'Schon immer wichtig' : 'Already important'} text={de ? 'Quellen prüfen. Nicht jede Antwort glauben.' : 'Check sources. Do not trust every answer.'} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="stagger grid h-full grid-rows-[1fr_auto] gap-5">
+    <div className="grid h-full grid-rows-[1fr_auto] gap-5">
       <div className="grid min-h-[300px] gap-4 md:grid-cols-[1fr_auto_1fr] md:items-stretch">
-        <GifCard src={oldGif('tumblr_mej27iJ3rC1qdpvjdo1_500.gif')} alt="" tone="cyan" tag={de ? 'DAMALS // CHATBOT' : 'THEN // CHATBOT'} title={de ? 'Antworten erzeugen' : 'Generate answers'} />
+        <GifCard src={oldGif('tumblr_n7vqltNUdZ1qequb0o6_250.gif')} alt="" tone="cyan" tag={de ? 'DAMALS // CHATBOT' : 'THEN // CHATBOT'} title={de ? 'Antworten erzeugen' : 'Generate answers'} />
         <div className="flex items-center justify-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-fuchsia-400/60 bg-fuchsia-950/60 text-fuchsia-300 shadow-[0_0_24px_rgba(217,70,239,.4)]"><ArrowRight className="rotate-90 md:rotate-0" size={24} /></div>
         </div>
-        <GifCard src={oldGif('tumblr_n7vqltNUdZ1qequb0o6_250.gif')} alt="" tone="amber" tag={de ? 'HEUTE // AGENTISCH' : 'NOW // AGENTIC'} title={de ? 'Arbeit ausführen' : 'Execute work'} />
+        <GifCard src={oldGif('tumblr_mej27iJ3rC1qdpvjdo1_500.gif')} alt="" tone="amber" tag={de ? 'HEUTE // AGENTISCH' : 'NOW // AGENTIC'} title={de ? 'Arbeit ausführen' : 'Execute work'} />
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <FactCard tone="cyan" icon={<Wrench size={22} />} title="Tools" text="Web · Files · APIs" />
-        <FactCard tone="fuchsia" icon={<Hammer size={22} />} title={de ? 'Aktionen' : 'Actions'} text={de ? 'Code · Tickets · Daten' : 'Code · Tickets · Data'} />
-        <FactCard tone="emerald" icon={<ShieldCheck size={22} />} title={de ? 'Neue Frage' : 'New question'} text={de ? 'Wie kontrollieren wir das?' : 'How do we control it?'} />
+        <FactCard shown={step >= 1} tone="cyan" icon={<Wrench size={22} />} title="Tools" text="Web · Files · APIs" />
+        <FactCard shown={step >= 2} tone="fuchsia" icon={<Hammer size={22} />} title={de ? 'Aktionen' : 'Actions'} text={de ? 'Code · Tickets · Daten' : 'Code · Tickets · Data'} />
+        <FactCard shown={step >= 3} tone="emerald" icon={<ShieldCheck size={22} />} title={de ? 'Neue Frage' : 'New question'} text={de ? 'Wie kontrollieren wir das?' : 'How do we control it?'} />
       </div>
     </div>
   );
