@@ -9,10 +9,12 @@ import StatementSlide from './StatementSlide';
 import EndSlide from './EndSlide';
 import StepIndicator from './StepIndicator';
 import LevelLoader from './LevelLoader';
-import { CheckCircle2, ChevronsDown, Rabbit } from 'lucide-react';
+import { CheckCircle2, ChevronsDown, ExternalLink, Rabbit } from 'lucide-react';
 import { resolveIcon } from '../iconUtils';
 import { Lang, SlideData, SlideType } from '../types';
 import { getRevealSteps } from '../revealSteps';
+
+const PREVIOUS_TALK_URL = 'https://voku.github.io/LLM/#/';
 
 interface SlideLayoutProps { data: SlideData; isActive: boolean; revealStep?: number; lang: Lang; }
 
@@ -240,6 +242,11 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, revealStep = 
             </div>
 
             {subtitle && <p className={`lead-rule ${isToolbox ? "max-w-none" : "max-w-5xl"} pl-5 font-medium leading-relaxed text-cyan-100/90 ${isToolbox ? "mb-4 text-base md:text-lg" : "mb-6 text-lg md:text-xl"}`}>{subtitle}</p>}
+            {data.visual === 'legacy-recap' && (
+              <a href={PREVIOUS_TALK_URL} target="_blank" rel="noopener noreferrer" className="-mt-3 mb-5 flex w-fit items-center gap-2 pl-5 font-mono text-sm text-cyan-300 underline decoration-cyan-300/40 underline-offset-4 hover:text-cyan-100">
+                <ExternalLink size={15} />{PREVIOUS_TALK_URL.replace(/^https:\/\//, '')}
+              </a>
+            )}
 
             {data.visual === 'toolbox' ? (
               <div className="flex-grow">

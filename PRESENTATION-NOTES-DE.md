@@ -41,6 +41,7 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 
 ### 1 – Vor langer Zeit, in einer LLM-Präsentation weit, weit entfernt … (Folie 1)
 * Erst den alten Star Wars GIF wirken lassen.
+* Unter der Einleitung steht der Link zur letzten Präsentation (https://voku.github.io/LLM/#/) – klickbar, öffnet in neuem Tab; zum Nachlesen nennen.
 * Kurze Brücke:
   > „Beim letzten Mal ging es um die Grundlagen: Text rein → plausible Antwort raus. Gut zum Zusammenfassen, Übersetzen, Coden. Das Modell lernt Muster und setzt Text plausibel fort.“
 
