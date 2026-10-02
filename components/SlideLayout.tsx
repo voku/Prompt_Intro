@@ -37,12 +37,12 @@ const SlideLayout: React.FC<SlideLayoutProps> = ({ data, isActive, revealStep = 
   const de = lang === 'de';
   const legacyVisuals = ['legacy-recap', 'legacy-timejump'];
   // Visuals that need the full width; their text runs as a strip underneath.
-  const wideVisuals = ['guidance-ladder', 'compliance-gates', 'bug-quota'];
+  const wideVisuals = ['guidance-ladder', 'compliance-gates', 'bug-quota', 'decision-stack'];
   const visualPrefix: Record<string, string> = {
     carwash: 'LLM', unpuzzle: 'LLM', 'noise-hallucination': 'LLM', tokens: 'LLM', 'next-token': 'LLM',
     'guidance-ladder': de ? 'FÜHREN' : 'GUIDE',
     'vpn-status': de ? 'PRÜFEN' : 'VERIFY', 'bug-quota': de ? 'PRÜFEN' : 'VERIFY',
-    'compliance-gates': 'COMPLIANCE',
+    'compliance-gates': 'COMPLIANCE', 'decision-stack': de ? 'ARCHITEKTUR' : 'ARCHITECTURE',
   };
   const contentLabel = data.visual && legacyVisuals.includes(data.visual)
     ? (de ? 'RECAP // WAS WAR NOCHMAL?' : 'RECAP // WHERE WERE WE?')

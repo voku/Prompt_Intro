@@ -34,7 +34,7 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 * `P` drücken (Präsentationsmodus, kein Header) und – falls gewünscht – zusätzlich Vollbild. Steuerung erscheint, wenn die Maus den oberen oder unteren Rand berührt; `Esc` beendet den Modus.
 * Jede Folie hat einen Link: `#12` springt zu Folie 12, `#vorlagen` zur Toolbox.
 * Die Folien passen sich der Auflösung an: Ist der Beamer kleiner als 1920×1080, wird der Inhalt automatisch verkleinert statt abgeschnitten.
-* **Boxen kommen nach und nach:** Auf der Titelfolie, den beiden Recap-Folien, der Aussage-Folie (5), den Folien mit Takeaway-Leiste (12, 20, 24) und der Fazit-Folie blendet jeder Klick die nächste Box ein (← nimmt sie wieder weg). Eine Pointe kommt immer als letzter Klick. Heißt: bei diesen Folien ein paar Klicks einplanen.
+* **Boxen kommen nach und nach:** Auf der Titelfolie, den beiden Recap-Folien, der Aussage-Folie (5), den Folien mit Takeaway-Leiste (12, 20, 24, 25) und der Fazit-Folie blendet jeder Klick die nächste Box ein (← nimmt sie wieder weg). Eine Pointe kommt immer als letzter Klick. Heißt: bei diesen Folien ein paar Klicks einplanen.
 * Die Animationen starten beim Aufruf der Folie. Wer eine Folie nochmal sehen will: kurz zurück und wieder vor.
 
 ## Ablauf & Notizen pro Folie
@@ -183,7 +183,16 @@ Der „§ 7 der Betriebsvereinbarung“ taucht zweimal auf: auf Folie 5 als selb
 * Darunter: Im Zweifel IT-Security oder Datenschutz fragen.
 * **Mündlich ergänzen (nicht auf der Folie, weil Open Source):** Welche Dienste bei uns konkret freigegeben sind und für welche Daten.
 
-### 25 – Drei Dinge zum Mitnehmen (Folie 25)
+### 25 – LLM vorne, Code dahinter (Folie 25)
+* **Kernaussage:** Das LLM gehört an die Schnittstelle zum Menschen (Sprache rein, Sprache raus). Entscheidungen und Datenverarbeitung in der Produktion gehören deterministischem Code – SQL zählt 100.000 Bestellungen in Millisekunden, immer mit demselben Ergebnis; ein LLM-Aufruf pro Datensatz braucht Sekunden, kostet Token und kann abweichen.
+* Die Kette baut sich auf: **Mensch → LLM → System One → Code + SQL**. Danach laufen die beiden Balken (LLM pro Datensatz vs. SQL) los.
+* **Was ist ein „System One“-Modell?** Neue Klasse von **Entscheidungsmodellen** (Name nach Kahnemans „System 1“ = schnell, intuitiv). Statt Text liefern sie **typisierte Antworten**: Ja/Nein mit Wahrscheinlichkeit, Auswahl aus vorgegebenen Optionen mit Verteilung, oder einen Score. Software kann das direkt auswerten (routen, Schwellwert, protokollieren), ohne Freitext zu parsen. Typische Rolle: Routing und Gating *im* Code; das LLM schreibt nur, was ein Mensch lesen soll.
+* **Vorsicht – sehr neu:** Der Begriff stammt von TypeSafe AI, das erste Modell „Jev“ wurde Mitte September 2026 vorgestellt (u. a. Simon Willison, 21.09.2026; Preis laut Anbieter ca. 0,042 $ pro Mio. Input-Tokens, Output gratis). Das sind **Herstellerangaben**, keine unabhängigen Messungen. Bekannte Schwächen: Zahlen, Datumsangaben, gezielt manipulierte Inhalte; als Black Box heikel bei sensiblen Entscheidungen (z. B. Bewerbungen). Auf der Folie steht deshalb „Illustration, keine Messung“.
+* Weitere Quellen zum Nachlesen: IBM Research „Decision-Centric Design for LLM Systems“ (arXiv 2604.00414), „Blueprint First, Model Second“ (arXiv 2508.02721).
+* **Brücke zum Fazit:** Bessere Prompts sind gut – aber was deterministisch lösbar ist, gehört nicht ins Modell.
+* Takeaways kommen mit je einem Klick, die Pointe gibt es hier nicht.
+
+### 26 – Drei Dinge zum Mitnehmen (Folie 26)
 * Drei Karten:
   1. Briefen wie eine kluge neue Kollegin: Rolle, Kontext, Ziel – und was „erledigt“ heißt.
   2. Abgeben, was Plausibilität nicht kann: Rechnen mit Code, Fakten mit Quelle.

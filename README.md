@@ -41,7 +41,8 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 22. *Kapitel-Trennfolie*
 23. **Kleine Vorlagen-Toolbox statt Mega-Prompt** — Vorlage + Fall → Arbeitsauftrag (`#vorlagen`)
 24. **Drei Schranken vor dem Einfügen** — Dienst, Daten, Mensch
-25. **Drei Dinge zum Mitnehmen** — drei Karten, die nacheinander erscheinen
+25. **LLM vorne, Code dahinter** — System-One-Entscheidungsmodelle, LLM als Schnittstelle, SQL/Code für die Arbeit
+26. **Drei Dinge zum Mitnehmen** — drei Karten, die nacheinander erscheinen
 
 ---
 
@@ -57,7 +58,7 @@ Die interaktive React + TypeScript Präsentation verbindet ein **praktisches men
 - **Unpuzzles-Folie:** Echtes Rätselpaar aus dem DeepMind-Datensatz (Original vs. trivial gemachte Variante) mit Reveal per Klick; Quelle und Lizenz stehen auf der Folie.
 - **Boxen nach und nach:** Auf Titel-, Recap-, Aussage-, Takeaway- und Fazit-Folien blendet jeder Klick die nächste Box ein, eine Pointe kommt zuletzt (Schrittzahl pro Folie in `revealSteps.ts`, Zustand `revealStep` in `App.tsx`).
 - **Pointen-Kette:** Auf den Folien 6–10, 16, 17 und 19–21 blendet der nächste Klick erst eine Pointe ein; eine 🐇-Frage leitet jeweils zur nächsten Folie über (Feld `punchline` / `punchlineNext` in `constants.ts`).
-- **Animierte Visuals:** Waschanlagen-Szene, Münz-Rätsel, Live-Rauschen, Token-Animation, Wahrscheinlichkeitsbalken, Führungs-Treppe, VPN-Prüftabelle, Fundquote vs. Widerlegung, Compliance-Schranken. Alle respektieren `prefers-reduced-motion`.
+- **Animierte Visuals:** Waschanlagen-Szene, Münz-Rätsel, Live-Rauschen, Token-Animation, Wahrscheinlichkeitsbalken, Führungs-Treppe, VPN-Prüftabelle, Fundquote vs. Widerlegung, Compliance-Schranken, Architektur-Kette mit LLM-vs.-SQL-Balken. Alle respektieren `prefers-reduced-motion`.
 - **Vorher/Nachher mit Ergebnis:** Vergleichsfolien zeigen optional die Ausgabe des guten Prompts – als Terminal oder als Tabelle mit hervorgehobenen „offen“-Feldern.
 
 ---
@@ -84,7 +85,7 @@ npm run build
 | Datei | Zweck |
 |---|---|
 | `introSlides.ts` | 2-Folien-Brücke mit Reaction-GIFs aus dem vorherigen Vortrag |
-| `constants.ts` | 23-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
+| `constants.ts` | 24-Folien-Hauptdeck inkl. 4 Kapitel-Trennfolien (Verstehen → Führen → Prüfen → Wiederverwenden) |
 | `components/ChapterSlide.tsx` | Kapitel-Trennfolie mit rotem Faden |
 | `components/PromptComparison.tsx` | Gegenüberstellung von Standard-Prompt vs. optimiertem Prompt / Arbeitsauftrag |
 | `components/SlideLayout.tsx` | Layout-Renderer für alle Folientypen (Titel, Kapitel, Aussage, Visual, Vergleich, Fazit) |

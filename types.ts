@@ -24,7 +24,8 @@ export type VisualKind =
   | 'guidance-ladder'
   | 'vpn-status'
   | 'bug-quota'
-  | 'compliance-gates';
+  | 'compliance-gates'
+  | 'decision-stack';
 
 export interface SlideData {
   id: number;

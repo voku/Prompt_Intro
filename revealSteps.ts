@@ -1,7 +1,7 @@
 import { SlideData, SlideType } from './types';
 
 const LEGACY_VISUALS = ['legacy-recap', 'legacy-timejump'];
-const WIDE_VISUALS = ['guidance-ladder', 'compliance-gates', 'bug-quota'];
+const WIDE_VISUALS = ['guidance-ladder', 'compliance-gates', 'bug-quota', 'decision-stack'];
 
 /**
  * How many times "next" reveals more of a slide before moving on.

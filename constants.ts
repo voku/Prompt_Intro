@@ -536,6 +536,28 @@ Erledigt, wenn: jede Zeile erklärt ist; 0 unbeabsichtigte Schreibzugriffe; Mapp
     ],
   },
   {
+    id: 23,
+    type: SlideType.CONTENT,
+    visual: 'decision-stack',
+    icon: 'Layers',
+    title: 'LLM in Front, Code Behind',
+    titleDE: 'LLM vorne, Code dahinter',
+    topic: 'Where the LLM belongs',
+    topicDE: 'Wo das LLM hingehört',
+    subtitle: 'The LLM is the interface to people. Decisions and data belong to deterministic code.',
+    subtitleDE: 'Das LLM ist die Schnittstelle zum Menschen. Entscheidungen und Daten gehören deterministischem Code.',
+    content: [
+      'Language in, language out: that is where the LLM shines.',
+      'Fixed options and probabilities: new “System One” decision models – fast, but still very young.',
+      'Counting, filtering, writing: SQL and code – faster, cheaper, same result every time.',
+    ],
+    contentDE: [
+      'Sprache rein, Sprache raus: Dort glänzt das LLM.',
+      'Feste Optionen mit Wahrscheinlichkeiten: neue „System-One“-Entscheidungsmodelle – schnell, aber noch sehr jung.',
+      'Zählen, Filtern, Schreiben: SQL und Code – schneller, günstiger, immer dasselbe Ergebnis.',
+    ],
+  },
+  {
     id: 22,
     type: SlideType.END,
     icon: 'CheckCircle',
